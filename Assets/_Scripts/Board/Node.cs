@@ -1,8 +1,8 @@
+using System.Collections;
 using System.Collections.Generic;
 using _Scripts.Enums;
 using _Scripts.Player;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace _Scripts.Board
 {
@@ -13,8 +13,8 @@ namespace _Scripts.Board
         public bool IsFinishNode;
 
         private const int MaxPlayersPerNormalNode = 2;
-        
-        public int MaxPawnsAllowed => IsFinishNode ? 4 : MaxPlayersPerNormalNode;
+
+        private int MaxPawnsAllowed => IsFinishNode ? 4 : MaxPlayersPerNormalNode;
     
         public List<Pawn> PawnsOnNode = new List<Pawn>();
         
@@ -23,8 +23,6 @@ namespace _Scripts.Board
         // checking if the pawn can enter a given node / path
         public bool CanPawnEnter(Pawn pawn)
         {
-            int maxPawnsAllowed = IsFinishNode ? 4 : MaxPlayersPerNormalNode;
-            
             if (PawnsOnNode.Count == MaxPawnsAllowed)
             {
                 return false;
@@ -54,20 +52,34 @@ namespace _Scripts.Board
                 return;
             }
             PawnsOnNode.Add(pawn);
+            pawn.CurrentNode = this;
+            StartCoroutine(PositionPawnsCo());
         }
 
         // remove pawn from this node
         public void RemovePawn(Pawn pawn)
         {
-            if(PawnsOnNode.Contains(pawn))
+            if (PawnsOnNode.Contains(pawn))
+            {
                 PawnsOnNode.Remove(pawn);
+            }
+            PositionPawns();
+        }
 
+        public IEnumerator PositionPawnsCo()
+        {
+            yield return new WaitForSeconds(0.4f);
             PositionPawns();
         }
         
         public void PositionPawns()
         {
-            float offset = 0.3f;
+            float offset = 0.2f;
+            if (PawnsOnNode.Count == 0)
+            {
+                return;
+            }
+            
             if (PawnsOnNode.Count == 2)
             {
                 if (ArrangeType == PawnArrangeType.HORIZONTAL)
@@ -81,6 +93,10 @@ namespace _Scripts.Board
                     PawnsOnNode[1].transform.position = transform.position + new Vector3(0, offset, 0);
                 }
                 
+            }
+            else if (PawnsOnNode.Count == 1)
+            {
+                PawnsOnNode[0].transform.position = transform.position;
             }
             else if (PawnsOnNode.Count == 3)
             {
@@ -105,9 +121,11 @@ namespace _Scripts.Board
             {
                 if(p.MainPlayer != pawn.MainPlayer)
                 {
-                    // p.ResetToHomePosition();
+                    p.ResetToHomePosition();
                     Debug.Log($"Pawn {p.name} eliminated by {pawn.name}.");
                 }
+                
+                // if(p.MainPlayer.PawnPath[0])
             }
         }
     }

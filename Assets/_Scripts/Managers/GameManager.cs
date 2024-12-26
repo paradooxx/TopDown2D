@@ -1,7 +1,8 @@
-using System;
+using System.Collections;
 using System.Collections.Generic;
 using _Scripts.Enums;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace _Scripts.Managers
 {
@@ -21,7 +22,7 @@ namespace _Scripts.Managers
         
         [SerializeField] private DiceManager DiceManager;
 
-        public event Action OnTurnFinished;
+        [SerializeField] private float TurnChangeTime = 1.5f;
 
         private void Awake()
         {
@@ -103,6 +104,7 @@ namespace _Scripts.Managers
             if (CurrentPlayer._enteredPawns.Count < 4)
             {
                 CurrentPlayer.MakePawnEnterBoard();
+                CurrentPlayer._pawnsInPlay = CurrentPlayer._enteredPawns.Count;
             }
             else
             {
@@ -112,23 +114,35 @@ namespace _Scripts.Managers
 
         public void ChangeTurn()
         {
+            StartCoroutine(ChangeTurnCoroutine());
+        }
+
+        public bool RepeatTurn;
+        private IEnumerator ChangeTurnCoroutine()
+        {
+            yield return new WaitForSeconds(TurnChangeTime);
             // clearing current player Dice results
-            CurrentPlayer.PlayerDiceResults.Clear();
+            
             
             // changing the current player
-            _currentPlayerIndex = (_currentPlayerIndex + 1) % StartingPlayers.Count;
+            if (!RepeatTurn)
+            {
+                CurrentPlayer.PlayerDiceResults.Clear();
+                _currentPlayerIndex = (_currentPlayerIndex + 1) % StartingPlayers.Count;
+            }
+
+            RepeatTurn = false;
+
             CurrentPlayer = StartingPlayers[_currentPlayerIndex];
-            
             
             for (int i = 0; i < StartingPlayers.Count; i++)
             {
                 StartingPlayers[i].IsMyTurn = i == _currentPlayerIndex;
             }
-
-            DiceManager.EnableDiceCollider();
             
             SetDicePosition(CurrentPlayer);
             DiceManager.ResetDice();
+            
         }
     }
 }

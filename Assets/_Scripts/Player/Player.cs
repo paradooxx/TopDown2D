@@ -1,12 +1,9 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using _Scripts.Board;
 using _Scripts.Enums;
 using _Scripts.Managers;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace _Scripts.Player
 {
@@ -33,13 +30,20 @@ namespace _Scripts.Player
         public bool IsMyTurn;
         public bool RepeatTurn = false;
 
-        private int _pawnsInPlay;
-
-        public event Action OnPawnMoveComplete;
+        public int _pawnsInPlay;
+        public int bonusMove;
 
         private void Start()
         {
             InitializeMyPawns();
+        }
+
+        private void OnEnable()
+        {
+            foreach (Pawn p in _myPawns)
+            {
+                p.OnPawnMoveComplete += CheckForDiceResults;
+            }
         }
 
         // setting this player's pawns in the respective home positions
@@ -56,22 +60,47 @@ namespace _Scripts.Player
                 _myPawnsColliders[i].enabled = false;
             }
         }
-
+        
         public int PawnInPlayCount()
         {
-            foreach (var pawn in _myPawns)
+            foreach (var pawn in _enteredPawns)
             {
-                if (pawn.IsInPlay)
-                {
-                    _pawnsInPlay++;
-                }
+                _pawnsInPlay++;
             }
             return _pawnsInPlay;
         }
 
+        private void CheckForDiceResults()
+        {
+            if (PlayerDiceResults.Count == 0)
+            {
+                if (HasBonusMove())
+                {
+                    // check for bonus and movable pawns
+                }
+                else
+                {
+                    GameManager.INSTANCE.RepeatTurn = false;
+                    GameManager.INSTANCE.ChangeTurn();
+                }
+            }
+            else if (PlayerDiceResults.Count == 1)
+            {
+                foreach (Pawn p in _enteredPawns)
+                {
+                    if (p.CanPawnMove(PlayerDiceResults[0]))
+                    {
+                        p.EnableCollider();
+                        p.ShowPawnOption();
+                    }
+                }
+            }
+        }
+
         public void MakePawnEnterBoard()
         {
-            switch(PawnInPlayCount())
+            // _pawnsInPlay = _enteredPawns.Count;
+            switch(_pawnsInPlay)
             {
                 case 0:
                     PawnEnterCaseZero();
@@ -88,52 +117,55 @@ namespace _Scripts.Player
             } 
         }
 
+        // pawn entry cases when there is/arenot pawns already
+        // entry case when no pawn is in play
         private void PawnEnterCaseZero()
         {
-            if(PlayerDiceResults[0] == 5)
+            if (PlayerDiceResults[0] == 5 && PlayerDiceResults[1] == 5)
+            {
+                EnterPawnOnBoard(_myPawns[0]);
+                EnterPawnOnBoard(_myPawns[0]);
+                GameManager.INSTANCE.RepeatTurn = true;
+                GameManager.INSTANCE.ChangeTurn();
+            }
+            else if(PlayerDiceResults[0] == 5)
             {
                 EnterPawnOnBoard(_myPawns[0]);
                 MoveActivePawn(_enteredPawns[0], PlayerDiceResults[1]);
+                GameManager.INSTANCE.RepeatTurn = false;
+                GameManager.INSTANCE.ChangeTurn();
             }
             else if(PlayerDiceResults[1] == 5)
             {
                 EnterPawnOnBoard(_myPawns[0]);
                 MoveActivePawn(_enteredPawns[0], PlayerDiceResults[0]);
+                GameManager.INSTANCE.RepeatTurn = false;
+                GameManager.INSTANCE.ChangeTurn();
             }
             else if(PlayerDiceResults[0] + PlayerDiceResults[1] == 5)
             {
                 EnterPawnOnBoard(_myPawns[0]);
                 PlayerDiceResults.Clear();
-            }
-            else if(PlayerDiceResults[0] == 5 && PlayerDiceResults[1] == 5)
-            {
-                EnterPawnOnBoard(_myPawns[0]);
-                EnterPawnOnBoard(_myPawns[0]);
-                //ReRoll();
+                GameManager.INSTANCE.RepeatTurn = false;
+                GameManager.INSTANCE.ChangeTurn();
             }
             else if(PlayerDiceResults[0] == PlayerDiceResults[1])
             {
-                //ReRoll();
+                PlayerDiceResults.Clear();
+                
+                GameManager.INSTANCE.RepeatTurn = true;
+                GameManager.INSTANCE.ChangeTurn();
             }
             else
             {
-                //ChangeTurn();
+                GameManager.INSTANCE.ChangeTurn();
             }
         }
 
+        // entry case when 1 play is in play
         private void PawnEnterCaseOne()
         {
-            if(PlayerDiceResults[0] == 5 || PlayerDiceResults[1] == 5)
-            {
-                EnterPawnOnBoard(_myPawns[0]);
-                MakePawnPlay();
-            }
-            else if(PlayerDiceResults[0] + PlayerDiceResults[1] == 5)
-            {
-                EnterPawnOnBoard(_myPawns[0]);
-                PlayerDiceResults.Clear();
-            }
-            else if(PlayerDiceResults[0] == 5 && PlayerDiceResults[1] == 5)
+            if(PlayerDiceResults[0] == 5 && PlayerDiceResults[1] == 5)
             {
                 EnterPawnOnBoard(_myPawns[0]);
                 if(PawnPath[0].PawnsOnNode.Count != 2)
@@ -144,20 +176,37 @@ namespace _Scripts.Player
                 {
                     MakePawnPlay();
                 }
-                //ReRoll();
+                GameManager.INSTANCE.RepeatTurn = true;
+                GameManager.INSTANCE.ChangeTurn();;//recet dice has problem in this class
+            }
+            else if(PlayerDiceResults[0] == 5 || PlayerDiceResults[1] == 5)
+            {
+                EnterPawnOnBoard(_myPawns[0]);
+                PlayerDiceResults.Remove(5);
+                MakePawnPlay();
+            }
+            else if(PlayerDiceResults[0] + PlayerDiceResults[1] == 5)
+            {
+                EnterPawnOnBoard(_myPawns[0]);
+                PlayerDiceResults.Clear();
+                GameManager.INSTANCE.RepeatTurn = false;
+                GameManager.INSTANCE.ChangeTurn();
             }
             else if(PlayerDiceResults[0] == PlayerDiceResults[1])
             {
                 MoveActivePawn(_enteredPawns[0], PlayerDiceResults[0] + PlayerDiceResults[1]);
-                //ReRoll();
+                GameManager.INSTANCE.RepeatTurn = true;
+                GameManager.INSTANCE.ChangeTurn();
             }
             else
             {
                 MoveActivePawn(_enteredPawns[0], PlayerDiceResults[0] + PlayerDiceResults[1]);
-                //ChangeTurn();
+                GameManager.INSTANCE.RepeatTurn = false;
+                GameManager.INSTANCE.ChangeTurn();
             }
         }
 
+        // entry case when 2 pawns are in play
         private void PawnEnterCaseTwo()
         {
             if(PlayerDiceResults[0] == 5 || PlayerDiceResults[1] == 5)
@@ -179,6 +228,8 @@ namespace _Scripts.Player
                 {
                     EnterPawnOnBoard(_myPawns[0]);
                     PlayerDiceResults.Clear();
+                    GameManager.INSTANCE.RepeatTurn = false;
+                    GameManager.INSTANCE.ChangeTurn();
                 }
                 else
                 {
@@ -203,20 +254,23 @@ namespace _Scripts.Player
                 {
                     MakePawnPlay();
                 }
-                //ReRoll();
+                GameManager.INSTANCE.RepeatTurn = true;
+                GameManager.INSTANCE.ChangeTurn();
             }
             else if(PlayerDiceResults[0] == PlayerDiceResults[1])
             {
                 MakePawnPlay();
-                //ReRoll();
+                GameManager.INSTANCE.RepeatTurn = true;
+                GameManager.INSTANCE.ChangeTurn();
             }
             else
             {
                 MakePawnPlay();
-                //ChangeTurn();
+                // GameManager.INSTANCE.ChangeTurn();
             }
         }
 
+        // entry case when 3 pawns are in play
         private void PawnEnterCaseThree()
         {
             if(PlayerDiceResults[0] == 5 || PlayerDiceResults[1] == 5)
@@ -256,47 +310,34 @@ namespace _Scripts.Player
                 {
                     MakePawnPlay();
                 }
-                //ReRoll();
+                GameManager.INSTANCE.RepeatTurn = true;
+                GameManager.INSTANCE.ChangeTurn();
             }
             else if(PlayerDiceResults[0] == PlayerDiceResults[1])
             {
                 MakePawnPlay();
-                //ReRoll();
+                GameManager.INSTANCE.RepeatTurn = true;
+                GameManager.INSTANCE.ChangeTurn();
             }
             else
             {
                 MakePawnPlay();
-                //ChangeTurn();
-            }
-        }
-
-        private void PawnPlay()
-        {
-            StartCoroutine(PawnPlayCo());
-        }
-
-        private IEnumerator PawnPlayCo()
-        {
-            yield return new WaitForSeconds(1f);
-            if (PlayerDiceResults.Count == 1 && _enteredPawns.Count == 1)
-            {
-                MoveActivePawn(_enteredPawns[0], PlayerDiceResults[0]);
-            }
-            else if (PlayerDiceResults.Count == 1 && _enteredPawns.Count > 1)
-            {
-                foreach (Pawn p in _enteredPawns)
-                {
-                    p.EnableCollider();
-                }
-            }
-            else
-            {
-                TurnComplete();
+                GameManager.INSTANCE.RepeatTurn = false;
+                GameManager.INSTANCE.ChangeTurn();
             }
         }
 
         public void MakePawnPlay()
         {
+            if (PlayerDiceResults.Count == 0 && !HasBonusMove())
+            {
+                GameManager.INSTANCE.RepeatTurn = false;
+                GameManager.INSTANCE.ChangeTurn();
+                return;
+            }
+            
+            // else if (PlayerDiceResults.Count == 1)
+            
             foreach (Pawn p in _enteredPawns)
             {
                 p.ShowPawnOption();
@@ -304,34 +345,12 @@ namespace _Scripts.Player
             }
         }
 
-        // enabling colliders of this player's pawns
-        public void EnableMyPawns()
-        {
-            for (int i = 0; i < _myPawns.Count; i++)
-            {
-                if (_myPawns[i].IsInPlay)
-                    _myPawnsColliders[i].enabled = true;
-            }
-        }
-
-        public void DisableMyPawns()
-        {
-            for (int i = 0; i < _myPawns.Count; i++)
-            {
-                _myPawnsColliders[i].enabled = false;
-            }
-        }
-
         private void MoveActivePawn(Pawn pawn, int steps)
         {
-            pawn.MovePawn(steps);
-            // if(pawn.CanPawnMove(steps))
-            //     pawn.MovePawn(steps);
-            // else
-            // {
-            //     Debug.Log("Cannot move pawn");
-            //     // change turn or something
-            // }
+            if(pawn.CanPawnMove(steps))
+                pawn.MovePawn(steps);
+            
+            // pawn.MovePawn(steps);
         }
 
         //enters the pawn into enteredpawns list and removes it from mypawns list
@@ -358,30 +377,33 @@ namespace _Scripts.Player
             }
         }
 
-        private void BonusMove()
+        public bool HasBonusMove()
         {
-            // if kill other player, 20
-            // if a pawn reaches finish, 10
+            return false;
         }
 
-        private void TurnComplete()
+        public void BonusMove(int bonusMoveStep)
         {
-            StartCoroutine(ReRollDice());
-        }
+            // if (!HasBonusMove()) return;
 
-        private void ShowPawnOption()
-        {
-            foreach(Pawn p in _enteredPawns)
+            if (_enteredPawns.Count == 1)
             {
-                p.ShowPawnOption();
-                p.EnableCollider();
+                // if the active pawn can move bonus step
+                // the check if implemented but has errors
+                MoveActivePawn(_enteredPawns[0], bonusMoveStep);
+                //else break the loop and return
             }
-        }
-
-        private IEnumerator ReRollDice()
-        {
-            yield return new WaitForSeconds(1f);
-            GameManager.INSTANCE.ChangeTurn();
+            else if (_enteredPawns.Count > 1)
+            {
+                foreach (Pawn p in _enteredPawns)
+                {
+                    if (p.CanPawnMove(bonusMoveStep))
+                    {
+                        p.EnableCollider();
+                        p.ShowPawnOption();
+                    }
+                }
+            }
         }
 
         private bool MyPawnKilledOtherPawn()
