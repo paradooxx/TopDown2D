@@ -12,9 +12,11 @@ namespace _Scripts.Board
         public bool IsStartNode;
         public bool IsFinishNode;
 
+        public Player.Player StartNodePlayer;
+
         private const int MaxPlayersPerNormalNode = 2;
 
-        private int MaxPawnsAllowed => IsFinishNode ? 4 : MaxPlayersPerNormalNode;
+        [SerializeField] private int MaxPawnsAllowed = 2;
     
         public List<Pawn> PawnsOnNode = new List<Pawn>();
         
@@ -27,13 +29,35 @@ namespace _Scripts.Board
             {
                 return false;
             }
+            
             if (PawnsOnNode.Count < MaxPawnsAllowed)
             {
+                if (IsStartNode && StartNodePlayer == pawn.MainPlayer)
+                {
+                    return true;
+                }
+                
                 foreach (Pawn p in PawnsOnNode)
                 {
+                    if (IsStartNode && StartNodePlayer != pawn.MainPlayer)
+                    {
+                        if (StartNodePlayer != p.MainPlayer)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    
                     if (p.MainPlayer == pawn.MainPlayer)
                     {
                         return true;
+                    }
+                    else if (IsStarNode && p.MainPlayer != pawn.MainPlayer)
+                    {
+                        return false;
                     }
                     else
                     {
@@ -65,16 +89,16 @@ namespace _Scripts.Board
             }
             PositionPawns();
         }
-
+        
         public IEnumerator PositionPawnsCo()
         {
-            yield return new WaitForSeconds(0.4f);
+            yield return new WaitForSeconds(0.01f);
             PositionPawns();
         }
         
         public void PositionPawns()
         {
-            float offset = 0.2f;
+            float offset = 0.3f;
             if (PawnsOnNode.Count == 0)
             {
                 return;
@@ -92,6 +116,11 @@ namespace _Scripts.Board
                     PawnsOnNode[0].transform.position = transform.position + new Vector3(0, -offset, 0);
                     PawnsOnNode[1].transform.position = transform.position + new Vector3(0, offset, 0);
                 }
+                else
+                {
+                    PawnsOnNode[0].transform.position = transform.position + new Vector3(0, -offset, 0);
+                    PawnsOnNode[1].transform.position = transform.position + new Vector3(0, offset, 0);
+                }
                 
             }
             else if (PawnsOnNode.Count == 1)
@@ -102,7 +131,7 @@ namespace _Scripts.Board
             {
                 PawnsOnNode[0].transform.position = transform.position + new Vector3(-offset, 0, 0);
                 PawnsOnNode[1].transform.position = transform.position + new Vector3(offset, 0, 0);
-                PawnsOnNode[2].transform.position = transform.position + new Vector3(0, offset, 0);
+                PawnsOnNode[2].transform.position = transform.position + new Vector3(0, -offset, 0);
             }
             else if (PawnsOnNode.Count == 4)
             {
@@ -122,7 +151,15 @@ namespace _Scripts.Board
                 if(p.MainPlayer != pawn.MainPlayer)
                 {
                     p.ResetToHomePosition();
-                    Debug.Log($"Pawn {p.name} eliminated by {pawn.name}.");
+                    if (p.MainPlayer._pawnsInPlay < 0)
+                    {
+                        p.MainPlayer._pawnsInPlay = 0;
+                    }
+                    else
+                    {
+                        p.MainPlayer._pawnsInPlay--;
+                    }
+                    // Debug.Log($"Pawn {p.name} eliminated by {pawn.name}.");
                 }
                 
                 // if(p.MainPlayer.PawnPath[0])

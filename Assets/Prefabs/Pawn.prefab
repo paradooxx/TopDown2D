@@ -264,7 +264,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!114 &3396363591858003484
 MonoBehaviour:
@@ -480,6 +480,7 @@ MonoBehaviour:
   CurrentNode: {fileID: 0}
   MainPlayer: {fileID: 0}
   CurrentPositionIndex: -1
+  MovePawnToThisIndex: 0
   HasKilledOtherPawn: 0
   HomePosition: {fileID: 0}
   PawnCanvas: {fileID: 3396363591858003487}

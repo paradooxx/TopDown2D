@@ -4,6 +4,7 @@ using _Scripts.Board;
 using _Scripts.Enums;
 using _Scripts.Managers;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace _Scripts.Player
 {
@@ -29,6 +30,8 @@ namespace _Scripts.Player
         public List<int> PlayerDiceResults = new List<int>(2);
         public bool IsMyTurn;
         public bool RepeatTurn = false;
+        public bool ChangeTurn;
+        public bool ResetDice => PlayerDiceResults.Count == 0;
 
         public int _pawnsInPlay;
         public int bonusMove;
@@ -37,13 +40,15 @@ namespace _Scripts.Player
         {
             InitializeMyPawns();
         }
-
+        
         private void OnEnable()
         {
-            foreach (Pawn p in _myPawns)
-            {
-                p.OnPawnMoveComplete += CheckForDiceResults;
-            }
+            Pawn.OnPawnMoveCompleted += OnPawnMoveComplete;
+        }
+
+        private void OnDisable()
+        {
+            Pawn.OnPawnMoveCompleted -= OnPawnMoveComplete;
         }
 
         // setting this player's pawns in the respective home positions
@@ -60,47 +65,10 @@ namespace _Scripts.Player
                 _myPawnsColliders[i].enabled = false;
             }
         }
-        
-        public int PawnInPlayCount()
-        {
-            foreach (var pawn in _enteredPawns)
-            {
-                _pawnsInPlay++;
-            }
-            return _pawnsInPlay;
-        }
-
-        private void CheckForDiceResults()
-        {
-            if (PlayerDiceResults.Count == 0)
-            {
-                if (HasBonusMove())
-                {
-                    // check for bonus and movable pawns
-                }
-                else
-                {
-                    GameManager.INSTANCE.RepeatTurn = false;
-                    GameManager.INSTANCE.ChangeTurn();
-                }
-            }
-            else if (PlayerDiceResults.Count == 1)
-            {
-                foreach (Pawn p in _enteredPawns)
-                {
-                    if (p.CanPawnMove(PlayerDiceResults[0]))
-                    {
-                        p.EnableCollider();
-                        p.ShowPawnOption();
-                    }
-                }
-            }
-        }
 
         public void MakePawnEnterBoard()
         {
-            // _pawnsInPlay = _enteredPawns.Count;
-            switch(_pawnsInPlay)
+            switch (_pawnsInPlay)
             {
                 case 0:
                     PawnEnterCaseZero();
@@ -114,7 +82,11 @@ namespace _Scripts.Player
                 case 3:
                     PawnEnterCaseThree();
                     break;
-            } 
+                default:
+                    Debug.Log("Unexpected _pawnsInPlay value: " + _pawnsInPlay);
+                    break;
+
+            }
         }
 
         // pawn entry cases when there is/arenot pawns already
@@ -125,147 +97,151 @@ namespace _Scripts.Player
             {
                 EnterPawnOnBoard(_myPawns[0]);
                 EnterPawnOnBoard(_myPawns[0]);
-                GameManager.INSTANCE.RepeatTurn = true;
-                GameManager.INSTANCE.ChangeTurn();
+                PlayerDiceResults.Clear();
+                GameManager.INSTANCE.ChangeTurn(false, ResetDice);
+                ;
             }
-            else if(PlayerDiceResults[0] == 5)
+            else if (PlayerDiceResults[0] + PlayerDiceResults[1] == 5)
             {
                 EnterPawnOnBoard(_myPawns[0]);
-                MoveActivePawn(_enteredPawns[0], PlayerDiceResults[1]);
-                GameManager.INSTANCE.RepeatTurn = false;
-                GameManager.INSTANCE.ChangeTurn();
+                PlayerDiceResults.Clear();
+                GameManager.INSTANCE.ChangeTurn(true, ResetDice);
             }
-            else if(PlayerDiceResults[1] == 5)
+            else if (PlayerDiceResults[0] == 5 || PlayerDiceResults[1] == 5)
             {
                 EnterPawnOnBoard(_myPawns[0]);
+                PlayerDiceResults.Remove(5);
                 MoveActivePawn(_enteredPawns[0], PlayerDiceResults[0]);
-                GameManager.INSTANCE.RepeatTurn = false;
-                GameManager.INSTANCE.ChangeTurn();
+                GameManager.INSTANCE.ChangeTurn(true, ResetDice);
             }
-            else if(PlayerDiceResults[0] + PlayerDiceResults[1] == 5)
-            {
-                EnterPawnOnBoard(_myPawns[0]);
-                PlayerDiceResults.Clear();
-                GameManager.INSTANCE.RepeatTurn = false;
-                GameManager.INSTANCE.ChangeTurn();
-            }
-            else if(PlayerDiceResults[0] == PlayerDiceResults[1])
+            else if (PlayerDiceResults[0] == PlayerDiceResults[1])
             {
                 PlayerDiceResults.Clear();
-                
-                GameManager.INSTANCE.RepeatTurn = true;
-                GameManager.INSTANCE.ChangeTurn();
+                GameManager.INSTANCE.ChangeTurn(false, ResetDice);
             }
             else
             {
-                GameManager.INSTANCE.ChangeTurn();
+                PlayerDiceResults.Clear();
+                GameManager.INSTANCE.ChangeTurn(true, ResetDice);
             }
         }
 
         // entry case when 1 play is in play
         private void PawnEnterCaseOne()
         {
-            if(PlayerDiceResults[0] == 5 && PlayerDiceResults[1] == 5)
+            if (PlayerDiceResults[0] == 5 && PlayerDiceResults[1] == 5)
             {
                 EnterPawnOnBoard(_myPawns[0]);
-                if(PawnPath[0].PawnsOnNode.Count != 2)
+                PlayerDiceResults.RemoveAt(1);
+                if (PawnPath[0].PawnsOnNode.Count != 2)
                 {
                     EnterPawnOnBoard(_myPawns[0]);
+                    PlayerDiceResults.RemoveAt(0);
                 }
                 else
                 {
-                    MakePawnPlay();
+                    MakePawnPlay(PlayerDiceResults[0]);
                 }
-                GameManager.INSTANCE.RepeatTurn = true;
-                GameManager.INSTANCE.ChangeTurn();;//recet dice has problem in this class
+                GameManager.INSTANCE.ChangeTurn(false, ResetDice);
             }
-            else if(PlayerDiceResults[0] == 5 || PlayerDiceResults[1] == 5)
+            else if (PlayerDiceResults[0] == 5 || PlayerDiceResults[1] == 5)
             {
                 EnterPawnOnBoard(_myPawns[0]);
                 PlayerDiceResults.Remove(5);
-                MakePawnPlay();
+                MakePawnPlay(PlayerDiceResults[0]);
             }
-            else if(PlayerDiceResults[0] + PlayerDiceResults[1] == 5)
+            else if (PlayerDiceResults[0] + PlayerDiceResults[1] == 5)
             {
                 EnterPawnOnBoard(_myPawns[0]);
                 PlayerDiceResults.Clear();
-                GameManager.INSTANCE.RepeatTurn = false;
-                GameManager.INSTANCE.ChangeTurn();
+                GameManager.INSTANCE.ChangeTurn(true, ResetDice);
             }
-            else if(PlayerDiceResults[0] == PlayerDiceResults[1])
+            else if (PlayerDiceResults[0] == PlayerDiceResults[1])
             {
                 MoveActivePawn(_enteredPawns[0], PlayerDiceResults[0] + PlayerDiceResults[1]);
-                GameManager.INSTANCE.RepeatTurn = true;
-                GameManager.INSTANCE.ChangeTurn();
+                GameManager.INSTANCE.ChangeTurn(false, ResetDice);
             }
             else
             {
-                MoveActivePawn(_enteredPawns[0], PlayerDiceResults[0] + PlayerDiceResults[1]);
-                GameManager.INSTANCE.RepeatTurn = false;
-                GameManager.INSTANCE.ChangeTurn();
+                MoveActivePawn(_enteredPawns[0], PlayerDiceResults[0]);
+                MoveActivePawn(_enteredPawns[0], PlayerDiceResults[1]);
+                // MoveActivePawn(_enteredPawns[0], PlayerDiceResults[0] + PlayerDiceResults[1]);
+                GameManager.INSTANCE.ChangeTurn(true, ResetDice);
             }
         }
 
         // entry case when 2 pawns are in play
         private void PawnEnterCaseTwo()
         {
-            if(PlayerDiceResults[0] == 5 || PlayerDiceResults[1] == 5)
+            if (PlayerDiceResults[0] == 5 && PlayerDiceResults[1] == 5)
             {
-                if(PawnPath[0].PawnsOnNode.Count != 2)
-                {
-                    EnterPawnOnBoard(_myPawns[0]);
-                    PlayerDiceResults.Remove(5);
-                    MakePawnPlay();
-                }
-                else if(PawnPath[0].PawnsOnNode.Count == 2)
-                {
-                    MakePawnPlay();
-                }
-            }
-            else if(PlayerDiceResults[0] + PlayerDiceResults[1] == 5)
-            {
-                if(PawnPath[0].PawnsOnNode.Count != 2)
-                {
-                    EnterPawnOnBoard(_myPawns[0]);
-                    PlayerDiceResults.Clear();
-                    GameManager.INSTANCE.RepeatTurn = false;
-                    GameManager.INSTANCE.ChangeTurn();
-                }
-                else
-                {
-                    MakePawnPlay();
-                }
-            }
-            else if(PlayerDiceResults[0] == 5 && PlayerDiceResults[1] == 5)
-            {
-                if(PawnPath[0].PawnsOnNode.Count == 0)
+                if (PawnPath[0].PawnsOnNode.Count == 0)
                 {
                     EnterPawnOnBoard(_myPawns[0]);
                     EnterPawnOnBoard(_myPawns[0]);
                     PlayerDiceResults.Clear();
+                    GameManager.INSTANCE.ChangeTurn(false, ResetDice);
                 }
-                else if(PawnPath[0].PawnsOnNode.Count == 1)
+                else if (PawnPath[0].PawnsOnNode.Count == 1)
                 {
                     EnterPawnOnBoard(_myPawns[0]);
                     PlayerDiceResults.RemoveAt(1);
-                    MakePawnPlay();
+                    MakePawnPlay(5);
+                    ChangeTurn = false;
+                }
+                else if (PawnPath[0].PawnsOnNode.Count == 2)
+                {
+                    MoveActivePawn(_enteredPawns[0], 5);
+                    EnterPawnOnBoard(_myPawns[0]);
+                    GameManager.INSTANCE.ChangeTurn(false, ResetDice);
+                    ;
+                }
+                // GameManager.INSTANCE.ChangeTurn(false);;
+            }
+            else if (PlayerDiceResults[0] == 5 || PlayerDiceResults[1] == 5)
+            {
+                if (PawnPath[0].PawnsOnNode.Count != 2)
+                {
+                    EnterPawnOnBoard(_myPawns[0]);
+                    PlayerDiceResults.Remove(5);
+                    MakePawnPlay(PlayerDiceResults[0]);
+                }
+                else if (PawnPath[0].PawnsOnNode.Count == 2)
+                {
+                    int nonFiveDiceResult = PlayerDiceResults[0] == 5 ? PlayerDiceResults[1] : PlayerDiceResults[0];
+
+                    // moving the active pawn using the non-5 dice result
+                    MoveActivePawn(_enteredPawns[0], nonFiveDiceResult);
+                    PlayerDiceResults.Remove(nonFiveDiceResult);
+                    EnterPawnOnBoard(_myPawns[0]);
+                    PlayerDiceResults.Clear();
+                    GameManager.INSTANCE.ChangeTurn(true, ResetDice);
+                }
+            }
+            else if (PlayerDiceResults[0] + PlayerDiceResults[1] == 5)
+            {
+                if (PawnPath[0].PawnsOnNode.Count != 2)
+                {
+                    EnterPawnOnBoard(_myPawns[0]);
+                    PlayerDiceResults.Clear();
+                    GameManager.INSTANCE.ChangeTurn(true, ResetDice);
                 }
                 else
                 {
-                    MakePawnPlay();
+                    MakePawnPlay(PlayerDiceResults[0] + PlayerDiceResults[1]);
                 }
-                GameManager.INSTANCE.RepeatTurn = true;
-                GameManager.INSTANCE.ChangeTurn();
             }
-            else if(PlayerDiceResults[0] == PlayerDiceResults[1])
+            else if (PlayerDiceResults[0] == PlayerDiceResults[1])
             {
-                MakePawnPlay();
-                GameManager.INSTANCE.RepeatTurn = true;
-                GameManager.INSTANCE.ChangeTurn();
+                MakePawnPlay(PlayerDiceResults[0] + PlayerDiceResults[1]);
+                MakePawnPlayTwoSteps(PlayerDiceResults[0], PlayerDiceResults[1]);
+                GameManager.INSTANCE.ChangeTurn(false, ResetDice);
+                ;
             }
             else
             {
-                MakePawnPlay();
+                // MakePawnPlay(PlayerDiceResults[0] + PlayerDiceResults[1]);
+                MakePawnPlayTwoSteps(PlayerDiceResults[0], PlayerDiceResults[1]);
                 // GameManager.INSTANCE.ChangeTurn();
             }
         }
@@ -273,84 +249,172 @@ namespace _Scripts.Player
         // entry case when 3 pawns are in play
         private void PawnEnterCaseThree()
         {
-            if(PlayerDiceResults[0] == 5 || PlayerDiceResults[1] == 5)
+            if (PlayerDiceResults[0] == 5 && PlayerDiceResults[1] == 5)
             {
-                if(PawnPath[0].PawnsOnNode.Count != 2)
+                if (PawnPath[0].PawnsOnNode.Count != 2)
                 {
                     EnterPawnOnBoard(_myPawns[0]);
                     PlayerDiceResults.Remove(5);
-                    MakePawnPlay();
+                    MakePawnPlay(PlayerDiceResults[0]);
                 }
-                else if(PawnPath[0].PawnsOnNode.Count == 2)
+                else if (PawnPath[0].PawnsOnNode.Count == 2)
                 {
-                    MakePawnPlay();
+                    MoveActivePawn(PawnPath[0].PawnsOnNode[0], 5);
+                    EnterPawnOnBoard(_myPawns[0]);
+                }
+                else
+                {
+                    MakePawnPlay(PlayerDiceResults[0] + PlayerDiceResults[1]);
+                    MakePawnPlayTwoSteps(PlayerDiceResults[0], PlayerDiceResults[1]);
+                }
+
+                GameManager.INSTANCE.ChangeTurn(false, ResetDice);
+            }
+            else if (PlayerDiceResults[0] == 5 || PlayerDiceResults[1] == 5)
+            {
+                if (PawnPath[0].PawnsOnNode.Count != 2)
+                {
+                    EnterPawnOnBoard(_myPawns[0]);
+                    PlayerDiceResults.Remove(5);
+                    MakePawnPlay(PlayerDiceResults[0]);
+                }
+                else if (PawnPath[0].PawnsOnNode.Count == 2)
+                {
+                    int nonFiveDiceResult = PlayerDiceResults[0] == 5 ? PlayerDiceResults[1] : PlayerDiceResults[0];
+
+                    // moving the active pawn using the non-5 dice result
+                    // if three pawns are already in game and two pawns are at start move one of the pawns
+                    MoveActivePawn(PawnPath[0].PawnsOnNode[1], nonFiveDiceResult);
+                    PlayerDiceResults.Remove(nonFiveDiceResult);
+                    EnterPawnOnBoard(_myPawns[0]);
+                    PlayerDiceResults.Clear();
+                    GameManager.INSTANCE.ChangeTurn(true, ResetDice);
                 }
             }
-            else if(PlayerDiceResults[0] + PlayerDiceResults[1] == 5)
+            else if (PlayerDiceResults[0] + PlayerDiceResults[1] == 5)
             {
-                if(PawnPath[0].PawnsOnNode.Count != 2)
+                if (PawnPath[0].PawnsOnNode.Count != 2)
                 {
                     EnterPawnOnBoard(_myPawns[0]);
                     PlayerDiceResults.Clear();
                 }
                 else
                 {
-                    MakePawnPlay();
+                    MakePawnPlay(PlayerDiceResults[0] + PlayerDiceResults[1]);
+                    MakePawnPlayTwoSteps(PlayerDiceResults[0], PlayerDiceResults[1]);
                 }
             }
-            else if(PlayerDiceResults[0] == 5 && PlayerDiceResults[1] == 5)
+            else if (PlayerDiceResults[0] == PlayerDiceResults[1])
             {
-                if(PawnPath[0].PawnsOnNode.Count != 2)
-                {
-                    EnterPawnOnBoard(_myPawns[0]);
-                    PlayerDiceResults.Remove(5);
-                    MakePawnPlay();
-                }
-                else
-                {
-                    MakePawnPlay();
-                }
-                GameManager.INSTANCE.RepeatTurn = true;
-                GameManager.INSTANCE.ChangeTurn();
-            }
-            else if(PlayerDiceResults[0] == PlayerDiceResults[1])
-            {
-                MakePawnPlay();
-                GameManager.INSTANCE.RepeatTurn = true;
-                GameManager.INSTANCE.ChangeTurn();
+                MakePawnPlay(PlayerDiceResults[0] + PlayerDiceResults[1]);
+                MakePawnPlayTwoSteps(PlayerDiceResults[0], PlayerDiceResults[1]);
+                GameManager.INSTANCE.ChangeTurn(false, ResetDice);
+                ;
             }
             else
             {
-                MakePawnPlay();
-                GameManager.INSTANCE.RepeatTurn = false;
-                GameManager.INSTANCE.ChangeTurn();
+                MakePawnPlay(PlayerDiceResults[0] + PlayerDiceResults[1]);
+                MakePawnPlayTwoSteps(PlayerDiceResults[0], PlayerDiceResults[1]);
+                // GameManager.INSTANCE.ChangeTurn();
             }
         }
 
-        public void MakePawnPlay()
+        public void MakePawnPlay(int moveStep)
         {
             if (PlayerDiceResults.Count == 0 && !HasBonusMove())
             {
-                GameManager.INSTANCE.RepeatTurn = false;
-                GameManager.INSTANCE.ChangeTurn();
+                GameManager.INSTANCE.ChangeTurn(true, ResetDice);
                 return;
             }
-            
-            // else if (PlayerDiceResults.Count == 1)
-            
-            foreach (Pawn p in _enteredPawns)
+
+            for (int i = 0; i < _enteredPawns.Count; i++)
             {
-                p.ShowPawnOption();
-                p.EnableCollider();
+                if (_enteredPawns[i].CanPawnMove(moveStep))
+                {
+                    _enteredPawns[i].ShowPawnOption();
+                    _enteredPawns[i].EnableCollider();
+                }
+            }
+        }
+
+        public void MakePawnPlayTwoSteps(int moveStep1, int moveStep2)
+        {
+            if (PlayerDiceResults.Count == 0 && !HasBonusMove())
+            {
+                GameManager.INSTANCE.ChangeTurn(true, ResetDice);
+                return;
+            }
+
+            if (moveStep1 == moveStep2)
+            {
+            }
+
+            if (moveStep1 > moveStep2)
+            {
+                MakePawnPlay(moveStep2);
+            }
+            else if (moveStep1 < moveStep2)
+            {
+                MakePawnPlay(moveStep1);
+            }
+            else
+            {
+                MakePawnPlay(moveStep1);
+                MakePawnPlay(moveStep2);
+            }
+        }
+        
+        public void OnPawnMoveComplete()
+        {
+            if (PlayerDiceResults.Count == 1)
+            {
+                MakePawnPlay(PlayerDiceResults[0]);
+            }
+            else if (PlayerDiceResults.Count == 2)
+            {
+                MakePawnPlayTwoSteps(PlayerDiceResults[0], PlayerDiceResults[1]);
+            }
+            else
+            {
+                foreach (Pawn p in _enteredPawns)
+                {
+                    p.DisableCollider();
+                    p.HidePawnOption();
+                }
+            }
+
+            Debug.Log("Invoked");
+        }
+
+        // enabling colliders of this player's pawns
+        public void EnableMyPawns()
+        {
+            for (int i = 0; i < _myPawns.Count; i++)
+            {
+                if (_myPawns[i].IsInPlay)
+                    _myPawnsColliders[i].enabled = true;
+            }
+        }
+
+        public void DisableMyPawns()
+        {
+            for (int i = 0; i < _enteredPawns.Count; i++)
+            {
+                _enteredPawns[i].enabled = false;
             }
         }
 
         private void MoveActivePawn(Pawn pawn, int steps)
         {
-            if(pawn.CanPawnMove(steps))
-                pawn.MovePawn(steps);
-            
-            // pawn.MovePawn(steps);
+            if (pawn.CanPawnMove(steps))
+            {
+                pawn.MovePawn(steps, ChangeTurn);
+                PlayerDiceResults.Remove(steps);
+            }
+            else
+            {
+                MakePawnPlay(steps);
+            }
         }
 
         //enters the pawn into enteredpawns list and removes it from mypawns list
@@ -358,7 +422,7 @@ namespace _Scripts.Player
         {
             pawn.EnterBoard();
             _enteredPawns.Add(pawn);
-            _myPawns.Remove(pawn); 
+            _myPawns.Remove(pawn);
         }
 
         // get next location to move for this player's pawns
@@ -370,6 +434,21 @@ namespace _Scripts.Player
             {
                 Node nextNode = pawn.MainPlayer.PawnPath[currentIndex + 1];
                 return nextNode;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public Node GetPreviousNodeForPawn(Pawn pawn)
+        {
+            int currentIndex = pawn.CurrentPositionIndex;
+
+            if (currentIndex - 1 > -1)
+            {
+                Node previousNode = pawn.MainPlayer.PawnPath[currentIndex - 1];
+                return previousNode;
             }
             else
             {

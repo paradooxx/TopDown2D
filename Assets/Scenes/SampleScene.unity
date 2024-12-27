@@ -238,6 +238,8 @@ MonoBehaviour:
   IsStarNode: 1
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &16894313
@@ -287,6 +289,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &24162409
@@ -336,6 +340,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1001 &62499291
@@ -759,6 +765,142 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
+--- !u!1 &80795275
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 80795276}
+  - component: {fileID: 80795278}
+  - component: {fileID: 80795277}
+  m_Layer: 5
+  m_Name: Text (TMP)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &80795276
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 80795275}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 635413552}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &80795277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 80795275}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: 'SKIP
+
+    TURN'
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4281479730
+  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 60
+  m_fontSizeBase: 60
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 1
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_enableWordWrapping: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 1
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &80795278
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 80795275}
+  m_CullTransparentMesh: 1
 --- !u!1 &84369837
 GameObject:
   m_ObjectHideFlags: 0
@@ -806,6 +948,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &101440436
@@ -855,6 +999,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 1
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 155141966}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &110484133
@@ -904,6 +1050,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &121353821
@@ -1087,6 +1235,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &131874588
@@ -1136,6 +1286,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &136200055
@@ -1332,6 +1484,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!114 &155141966 stripped
@@ -1413,6 +1567,8 @@ MonoBehaviour:
   IsStarNode: 1
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &169744878
@@ -1476,7 +1632,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.size
-      value: 71
+      value: 72
       objectReference: {fileID: 0}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[0]
@@ -1609,161 +1765,165 @@ PrefabInstance:
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[31]
       value: 
-      objectReference: {fileID: 629611017}
+      objectReference: {fileID: 849223546}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[32]
       value: 
-      objectReference: {fileID: 651582185}
+      objectReference: {fileID: 629611017}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[33]
       value: 
-      objectReference: {fileID: 101440438}
+      objectReference: {fileID: 651582185}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[34]
       value: 
-      objectReference: {fileID: 930357074}
+      objectReference: {fileID: 101440438}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[35]
       value: 
-      objectReference: {fileID: 1013446318}
+      objectReference: {fileID: 930357074}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[36]
       value: 
-      objectReference: {fileID: 1352539264}
+      objectReference: {fileID: 1013446318}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[37]
       value: 
-      objectReference: {fileID: 1076771848}
+      objectReference: {fileID: 1352539264}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[38]
       value: 
-      objectReference: {fileID: 1294521880}
+      objectReference: {fileID: 1076771848}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[39]
       value: 
-      objectReference: {fileID: 247223606}
+      objectReference: {fileID: 1294521880}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[40]
       value: 
-      objectReference: {fileID: 161689703}
+      objectReference: {fileID: 247223606}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[41]
       value: 
-      objectReference: {fileID: 1099534415}
+      objectReference: {fileID: 161689703}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[42]
       value: 
-      objectReference: {fileID: 905893154}
+      objectReference: {fileID: 1099534415}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[43]
       value: 
-      objectReference: {fileID: 1656530059}
+      objectReference: {fileID: 905893154}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[44]
       value: 
-      objectReference: {fileID: 1316016725}
+      objectReference: {fileID: 1656530059}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[45]
       value: 
-      objectReference: {fileID: 1250414740}
+      objectReference: {fileID: 1316016725}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[46]
       value: 
-      objectReference: {fileID: 1506924696}
+      objectReference: {fileID: 1250414740}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[47]
       value: 
-      objectReference: {fileID: 1255982989}
+      objectReference: {fileID: 1506924696}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[48]
       value: 
-      objectReference: {fileID: 24162411}
+      objectReference: {fileID: 1255982989}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[49]
       value: 
-      objectReference: {fileID: 124950250}
+      objectReference: {fileID: 24162411}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[50]
       value: 
-      objectReference: {fileID: 1952245856}
+      objectReference: {fileID: 124950250}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[51]
       value: 
-      objectReference: {fileID: 1692786766}
+      objectReference: {fileID: 1952245856}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[52]
       value: 
-      objectReference: {fileID: 282249935}
+      objectReference: {fileID: 1692786766}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[53]
       value: 
-      objectReference: {fileID: 2117188994}
+      objectReference: {fileID: 282249935}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[54]
       value: 
-      objectReference: {fileID: 830748069}
+      objectReference: {fileID: 2117188994}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[55]
       value: 
-      objectReference: {fileID: 320662514}
+      objectReference: {fileID: 830748069}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[56]
       value: 
-      objectReference: {fileID: 1587938688}
+      objectReference: {fileID: 320662514}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[57]
       value: 
-      objectReference: {fileID: 631069945}
+      objectReference: {fileID: 1587938688}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[58]
       value: 
-      objectReference: {fileID: 1619543624}
+      objectReference: {fileID: 631069945}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[59]
       value: 
-      objectReference: {fileID: 1138873034}
+      objectReference: {fileID: 1619543624}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[60]
       value: 
-      objectReference: {fileID: 845751593}
+      objectReference: {fileID: 1138873034}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[61]
       value: 
-      objectReference: {fileID: 2129098472}
+      objectReference: {fileID: 845751593}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[62]
       value: 
-      objectReference: {fileID: 1560274614}
+      objectReference: {fileID: 2129098472}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[63]
       value: 
-      objectReference: {fileID: 388556861}
+      objectReference: {fileID: 1560274614}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[64]
       value: 
-      objectReference: {fileID: 418193720}
+      objectReference: {fileID: 388556861}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[65]
       value: 
-      objectReference: {fileID: 698154670}
+      objectReference: {fileID: 418193720}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[66]
       value: 
-      objectReference: {fileID: 1619394869}
+      objectReference: {fileID: 698154670}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[67]
       value: 
-      objectReference: {fileID: 16894315}
+      objectReference: {fileID: 1619394869}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[68]
       value: 
-      objectReference: {fileID: 84369839}
+      objectReference: {fileID: 16894315}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[69]
       value: 
-      objectReference: {fileID: 1527924801}
+      objectReference: {fileID: 84369839}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PawnPath.Array.data[70]
+      value: 
+      objectReference: {fileID: 1527924801}
+    - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
+      propertyPath: PawnPath.Array.data[71]
       value: 
       objectReference: {fileID: 2028480838}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
@@ -1918,6 +2078,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &242417666
@@ -2101,6 +2263,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &247223604
@@ -2150,6 +2314,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &259793185
@@ -2199,6 +2365,8 @@ MonoBehaviour:
   IsStarNode: 1
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &282249933
@@ -2248,6 +2416,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &290667870
@@ -2297,8 +2467,10 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
-  ArrangeType: 0
+  ArrangeType: 1
 --- !u!1 &299818807
 GameObject:
   m_ObjectHideFlags: 0
@@ -2346,6 +2518,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &320662512
@@ -2395,6 +2569,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &349174909
@@ -2444,6 +2620,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &361406279
@@ -2525,6 +2703,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &402771314
@@ -2708,6 +2888,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &448875299
@@ -3023,6 +3205,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &506773234
@@ -3072,6 +3256,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &507506150
@@ -3252,6 +3438,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &512509313
@@ -3301,6 +3489,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &519420028
@@ -3740,6 +3930,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &549042673
@@ -3923,6 +4115,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &559483029
@@ -4061,6 +4255,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &581442933
@@ -4222,7 +4418,7 @@ Transform:
   m_GameObject: {fileID: 583749940}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.9, z: 0}
+  m_LocalPosition: {x: 0, y: -0.71, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4243,6 +4439,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 4
   PawnsOnNode: []
   ArrangeType: 2
 --- !u!1 &588659291
@@ -4292,6 +4490,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &629611015
@@ -4341,6 +4541,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &631069943
@@ -4390,8 +4592,143 @@ MonoBehaviour:
   IsStarNode: 1
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
+--- !u!1 &635413551
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 635413552}
+  - component: {fileID: 635413555}
+  - component: {fileID: 635413554}
+  - component: {fileID: 635413553}
+  m_Layer: 5
+  m_Name: skip_turn_button
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &635413552
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 635413551}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 80795276}
+  m_Father: {fileID: 2036632705}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 1100}
+  m_SizeDelta: {x: 400, y: 200}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &635413553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 635413551}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 635413554}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1329256233}
+        m_TargetAssemblyTypeName: _Scripts.Managers.GameManager, Assembly-CSharp
+        m_MethodName: ChangeTurn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &635413554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 635413551}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &635413555
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 635413551}
+  m_CullTransparentMesh: 1
 --- !u!1 &643058398
 GameObject:
   m_ObjectHideFlags: 0
@@ -4439,6 +4776,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &645239933
@@ -4488,6 +4827,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &651582183
@@ -4537,6 +4878,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &652832164
@@ -4586,6 +4929,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &666500110
@@ -4635,6 +4980,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &698154668
@@ -4684,6 +5031,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &707515847
@@ -4733,6 +5082,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &719687454
@@ -4813,6 +5164,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &741458284
@@ -4862,6 +5215,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &750859917
@@ -4995,6 +5350,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &774150824
@@ -5147,6 +5504,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1001 &832801313
@@ -5621,6 +5980,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &849223544
@@ -5670,6 +6031,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &851831401
@@ -5719,6 +6082,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &852875076
@@ -5803,6 +6168,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &896575789
@@ -5964,7 +6331,7 @@ Transform:
   m_GameObject: {fileID: 899529516}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.87, y: 0, z: 0}
+  m_LocalPosition: {x: 0.73, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5985,6 +6352,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 4
   PawnsOnNode: []
   ArrangeType: 2
 --- !u!1 &905893152
@@ -6034,6 +6403,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &915800817
@@ -6247,6 +6618,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 1
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 158193457}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &930357072
@@ -6296,6 +6669,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &934860842
@@ -6345,6 +6720,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &959640486
@@ -6953,6 +7330,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &1018555241
@@ -7002,6 +7381,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &1050839153
@@ -7215,6 +7596,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &1076771846
@@ -7264,6 +7647,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &1091837508
@@ -7313,6 +7698,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &1097295785
@@ -7397,6 +7784,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &1117276966
@@ -7579,6 +7968,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &1149944007
@@ -7727,6 +8118,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &1219634305
@@ -7776,6 +8169,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &1237141453
@@ -7825,6 +8220,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &1240496287
@@ -8008,6 +8405,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &1255982987
@@ -8057,6 +8456,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &1292753846
@@ -8240,6 +8641,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &1311813973
@@ -8289,6 +8692,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &1316016723
@@ -8338,6 +8743,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &1317279622
@@ -8366,7 +8773,7 @@ Transform:
   m_GameObject: {fileID: 1317279622}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.84, y: 0, z: 0}
+  m_LocalPosition: {x: -0.74, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8386,7 +8793,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsStarNode: 0
   IsStartNode: 0
-  IsFinishNode: 0
+  IsFinishNode: 1
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 4
   PawnsOnNode: []
   ArrangeType: 2
 --- !u!1 &1329256231
@@ -8442,7 +8851,7 @@ MonoBehaviour:
   StartingPlayers: []
   MainDice: {fileID: 136200056}
   DiceManager: {fileID: 136200058}
-  TurnChangeTime: 1.5
+  TurnChangeTime: 1
   RepeatTurn: 0
 --- !u!1 &1350009753
 GameObject:
@@ -8758,6 +9167,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &1401799783
@@ -9075,6 +9486,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &1444868061
@@ -9124,6 +9537,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &1454146428
@@ -9173,6 +9588,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &1460155858
@@ -9337,6 +9754,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &1513775087
@@ -9684,6 +10103,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &1533766169
@@ -9733,6 +10154,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &1546509313
@@ -9915,6 +10338,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 1
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 1873879754}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &1559082745
@@ -9964,6 +10389,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &1560274612
@@ -10013,6 +10440,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &1572893526
@@ -10196,6 +10625,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &1601300326
@@ -10276,6 +10707,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &1619543622
@@ -10325,6 +10758,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &1631781113
@@ -10374,6 +10809,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &1633315488
@@ -10423,6 +10860,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &1649368239
@@ -10503,6 +10942,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &1665061562
@@ -10583,6 +11024,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &1679530699
@@ -10663,6 +11106,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &1692786764
@@ -10712,6 +11157,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &1741107593
@@ -10761,6 +11208,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &1744182990
@@ -10810,6 +11259,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &1766165995
@@ -10859,6 +11310,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &1766872402
@@ -11042,6 +11495,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!114 &1789760138 stripped
@@ -11154,6 +11609,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &1888950872
@@ -11203,6 +11660,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &1952245854
@@ -11252,6 +11711,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 1
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 1789760138}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &2000081099
@@ -11301,6 +11762,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &2009723377
@@ -11350,6 +11813,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &2028480836
@@ -11378,7 +11843,7 @@ Transform:
   m_GameObject: {fileID: 2028480836}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.91, z: 0}
+  m_LocalPosition: {x: 0, y: 0.69, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11399,6 +11864,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 4
   PawnsOnNode: []
   ArrangeType: 2
 --- !u!1 &2029422211
@@ -11448,6 +11915,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &2036632701
@@ -11550,6 +12019,7 @@ RectTransform:
   - {fileID: 1350652783}
   - {fileID: 1766872403}
   - {fileID: 1240496288}
+  - {fileID: 635413552}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -11604,6 +12074,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &2056627343
@@ -11787,6 +12259,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &2106399272
@@ -11970,6 +12444,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &2117188992
@@ -12019,6 +12495,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &2119476145
@@ -12103,6 +12581,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 1
 --- !u!1 &2130072148
@@ -12152,6 +12632,8 @@ MonoBehaviour:
   IsStarNode: 0
   IsStartNode: 0
   IsFinishNode: 0
+  StartNodePlayer: {fileID: 0}
+  MaxPawnsAllowed: 2
   PawnsOnNode: []
   ArrangeType: 0
 --- !u!1 &2146618306
