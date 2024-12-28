@@ -79,8 +79,7 @@ namespace _Scripts.Board
             pawn.CurrentNode = this;
             StartCoroutine(PositionPawnsCo());
 
-            if (!IsFinishNode) return;
-            else
+            if (IsFinishNode)
             {
                 pawn.MainPlayer.HasBonusMove = true;
                 pawn.MainPlayer.BonusMove = 10;

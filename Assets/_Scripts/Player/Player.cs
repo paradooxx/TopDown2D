@@ -27,10 +27,7 @@ namespace _Scripts.Player
 
         public List<int> PlayerDiceResults = new List<int>(2);
         public bool IsMyTurn;
-        public bool RepeatTurn = false;
-        public bool ChangeTurn;
         public bool HasBonusMove;
-        public bool ResetDice;
 
         public int _pawnsInPlay;
         public int OtherPawnKillCount = 0;
@@ -85,35 +82,35 @@ namespace _Scripts.Player
         {
             if (PlayerDiceResults[0] == 5 && PlayerDiceResults[1] == 5)
             {
-                ChangeTurn = false;
-                ResetDice = true;
+                GameManager.INSTANCE.ChangeTurnBool = false;
+                GameManager.INSTANCE.ResetDiceBool = true;
                 PlayerDiceResults.Clear();
                 EnterPawnOnBoard(_myPawns[0]);
                 EnterPawnOnBoard(_myPawns[0]);
             }
             else if (PlayerDiceResults[0] + PlayerDiceResults[1] == 5)
             {
-                ChangeTurn = true;
+                GameManager.INSTANCE.ChangeTurnBool = true;
                 PlayerDiceResults.Clear();
                 EnterPawnOnBoard(_myPawns[0]);
             }
             else if (PlayerDiceResults[0] == 5 || PlayerDiceResults[1] == 5)
             {
-                ChangeTurn = true;
+                GameManager.INSTANCE.ChangeTurnBool = true;
                 PlayerDiceResults.Remove(5);
                 EnterPawnOnBoard(_myPawns[0]);
                 MoveActivePawn(_enteredPawns[0], PlayerDiceResults[0]);
             }
             else if (PlayerDiceResults[0] == PlayerDiceResults[1])
             {
-                ChangeTurn = false;
-                ResetDice = true;
+                GameManager.INSTANCE.ChangeTurnBool = false;
+                GameManager.INSTANCE.ResetDiceBool = true;
                 PlayerDiceResults.Clear();
-                GameManager.INSTANCE.ResetDice();
+                // GameManager.INSTANCE.ResetDice();
             }
             else
             {
-                GameManager.INSTANCE.ChangeTurn(true);
+                GameManager.INSTANCE.ChangeTurn();
                 PlayerDiceResults.Clear();
             }
         }
@@ -123,8 +120,8 @@ namespace _Scripts.Player
         {
             if (PlayerDiceResults[0] == 5 && PlayerDiceResults[1] == 5)
             {
-                ChangeTurn = false;
-                ResetDice = true;
+                GameManager.INSTANCE.ChangeTurnBool = false;
+                GameManager.INSTANCE.ResetDiceBool = true;
                 PlayerDiceResults.RemoveAt(1);
                 EnterPawnOnBoard(_myPawns[0]);
                 if (PawnPath[0].PawnsOnNode.Count != 2)
@@ -139,21 +136,21 @@ namespace _Scripts.Player
             }
             else if (PlayerDiceResults[0] == 5 || PlayerDiceResults[1] == 5)
             {
-                ChangeTurn = true;
+                GameManager.INSTANCE.ChangeTurnBool = true;
                 PlayerDiceResults.Remove(5);
                 EnterPawnOnBoard(_myPawns[0]);
                 MakePawnPlay(PlayerDiceResults[0]);
             }
             else if (PlayerDiceResults[0] + PlayerDiceResults[1] == 5)
             {
-                ChangeTurn = true;
+                GameManager.INSTANCE.ChangeTurnBool = true;
                 PlayerDiceResults.Clear();
                 EnterPawnOnBoard(_myPawns[0]);
             }
             else if (PlayerDiceResults[0] == PlayerDiceResults[1])
             {
-                ChangeTurn = false;
-                ResetDice = true;
+                GameManager.INSTANCE.ChangeTurnBool = false;
+                GameManager.INSTANCE.ResetDiceBool = true;
                 // MoveActivePawn(_enteredPawns[0], PlayerDiceResults[0]);
                 // MoveActivePawn(_enteredPawns[0], PlayerDiceResults[1]);
                 MakePawnPlayTwoSteps(PlayerDiceResults[0], PlayerDiceResults[1]);
@@ -161,7 +158,7 @@ namespace _Scripts.Player
             }
             else
             {
-                ChangeTurn = true;
+                GameManager.INSTANCE.ChangeTurnBool = true;
                 // MoveActivePawn(_enteredPawns[0], PlayerDiceResults[0]);
                 // MoveActivePawn(_enteredPawns[0], PlayerDiceResults[1]);
                 MakePawnPlayTwoSteps(PlayerDiceResults[0], PlayerDiceResults[1]);
@@ -175,8 +172,8 @@ namespace _Scripts.Player
         {
             if (PlayerDiceResults[0] == 5 && PlayerDiceResults[1] == 5)
             {
-                ChangeTurn = false;
-                ResetDice = true;
+                GameManager.INSTANCE.ChangeTurnBool = false;
+                GameManager.INSTANCE.ResetDiceBool = true;
                 if (PawnPath[0].PawnsOnNode.Count == 0)
                 {
                     PlayerDiceResults.Clear();
@@ -199,7 +196,7 @@ namespace _Scripts.Player
             }
             else if (PlayerDiceResults[0] == 5 || PlayerDiceResults[1] == 5)
             {
-                ChangeTurn = true;
+                GameManager.INSTANCE.ChangeTurnBool = true;
                 if (PawnPath[0].PawnsOnNode.Count != 2)
                 {
                     PlayerDiceResults.Remove(5);
@@ -220,7 +217,7 @@ namespace _Scripts.Player
             }
             else if (PlayerDiceResults[0] + PlayerDiceResults[1] == 5)
             {
-                ChangeTurn = true;
+                GameManager.INSTANCE.ChangeTurnBool = true;
                 if (PawnPath[0].PawnsOnNode.Count != 2)
                 {
                     PlayerDiceResults.Clear();
@@ -233,14 +230,14 @@ namespace _Scripts.Player
             }
             else if (PlayerDiceResults[0] == PlayerDiceResults[1])
             {
-                ChangeTurn = false;
-                ResetDice = true;
+                GameManager.INSTANCE.ChangeTurnBool = false;
+                GameManager.INSTANCE.ResetDiceBool = true;
                 // MakePawnPlay(PlayerDiceResults[0] + PlayerDiceResults[1]);
                 MakePawnPlayTwoSteps(PlayerDiceResults[0], PlayerDiceResults[1]);
             }
             else
             {
-                ChangeTurn = true;
+                GameManager.INSTANCE.ChangeTurnBool = true;
                 // MakePawnPlay(PlayerDiceResults[0] + PlayerDiceResults[1]);
                 MakePawnPlayTwoSteps(PlayerDiceResults[0], PlayerDiceResults[1]);
                 // GameManager.INSTANCE.ChangeTurn();
@@ -252,8 +249,8 @@ namespace _Scripts.Player
         {
             if (PlayerDiceResults[0] == 5 && PlayerDiceResults[1] == 5)
             {
-                ChangeTurn = false;
-                ResetDice = true;
+                GameManager.INSTANCE.ChangeTurnBool = false;
+                GameManager.INSTANCE.ResetDiceBool = true;
                 if (PawnPath[0].PawnsOnNode.Count == 1)
                 {
                     PlayerDiceResults.Remove(5);
@@ -275,7 +272,7 @@ namespace _Scripts.Player
             }
             else if (PlayerDiceResults[0] == 5 || PlayerDiceResults[1] == 5)
             {
-                ChangeTurn = true;
+                GameManager.INSTANCE.ChangeTurnBool = true;
                 if (PawnPath[0].PawnsOnNode.Count != 2)
                 {
                     PlayerDiceResults.Remove(5);
@@ -296,7 +293,7 @@ namespace _Scripts.Player
             }
             else if (PlayerDiceResults[0] + PlayerDiceResults[1] == 5)
             {
-                ChangeTurn = true;
+                GameManager.INSTANCE.ChangeTurnBool = true;
                 if (PawnPath[0].PawnsOnNode.Count != 2)
                 {
                     PlayerDiceResults.Clear();
@@ -310,49 +307,17 @@ namespace _Scripts.Player
             }
             else if (PlayerDiceResults[0] == PlayerDiceResults[1])
             {
-                ChangeTurn = false;
-                ResetDice = true;
+                GameManager.INSTANCE.ChangeTurnBool = false;
+                GameManager.INSTANCE.ResetDiceBool = true;
                 // MakePawnPlay(PlayerDiceResults[0] + PlayerDiceResults[1]);
                 MakePawnPlayTwoSteps(PlayerDiceResults[0], PlayerDiceResults[1]);
             }
             else
             {
-                ChangeTurn = true;
+                GameManager.INSTANCE.ChangeTurnBool = true;
                 // MakePawnPlay(PlayerDiceResults[0] + PlayerDiceResults[1]);
                 MakePawnPlayTwoSteps(PlayerDiceResults[0], PlayerDiceResults[1]);
                 // GameManager.INSTANCE.ChangeTurn();
-            }
-        }
-
-        private void CanPawnMoveCase(Pawn p, int move1, int move2)
-        {
-            if (p.CanPawnMove(move1) && p.CanPawnMove(move2) && PlayerDiceResults.Count == 2)
-            {
-                p.MovePawn(move1);
-                p.MovePawn(move2);
-            }
-            
-            if (p.CanPawnMove(move1) && PlayerDiceResults.Count != 0)
-            {
-                p.MovePawn(move1);
-            }
-
-            if (p.CanPawnMove(move2) && PlayerDiceResults.Count != 0)
-            {
-                p.MovePawn(move2);
-            }
-
-            if (_enteredPawns.Count == 1 && PlayerDiceResults.Count == 1)
-            {
-                if (!p.CanPawnMove(PlayerDiceResults[0]))
-                {
-                    GameManager.INSTANCE.ChangeTurn(true);
-                }
-            }
-            
-            if (PlayerDiceResults.Count == 0 && !HasBonusMove)
-            {
-                GameManager.INSTANCE.ChangeTurn(true);
             }
         }
 
@@ -421,7 +386,8 @@ namespace _Scripts.Player
 
             if (allPawnsNotMovable)
             {
-                GameManager.INSTANCE.ChangeTurn(true);
+                GameManager.INSTANCE.ChangeTurnBool = true;
+                GameManager.INSTANCE.ChangeTurn();
             }
 
         }
@@ -518,7 +484,7 @@ namespace _Scripts.Player
             // if only one pawn is movable move it directly
             if (movablePawnCount == 1)
             {
-                ChangeTurn = true;
+                GameManager.INSTANCE.ChangeTurnBool = true;
                 MoveActivePawn(movablePawn, bonusMoveStep);
                 HasBonusMove = false;
                 BonusMove = 0;

@@ -86,7 +86,7 @@ namespace _Scripts.Player
 
             if (MainPlayer.HasBonusMove)
             {
-                MainPlayer.ChangeTurn = true;
+                GameManager.INSTANCE.ChangeTurnBool = true;
                 MovePawn(MainPlayer.BonusMove);
                 MainPlayer.HasBonusMove = false;
                 MainPlayer.BonusMove = 0;
