@@ -14,8 +14,6 @@ namespace _Scripts.Managers
         public Player.Player CurrentPlayer;
         [SerializeField] private List<Player.Player> StartingPlayers;
 
-        private readonly Transform[] _playerDicePositions = new Transform[4];
-
         private int _currentPlayerIndex;
 
         public Transform MainDice;
@@ -40,11 +38,13 @@ namespace _Scripts.Managers
         private void OnEnable()
         {
             DiceManager.OnDiceRollFinished += EnablePlayerPlay;
+            Pawn.OnPawnMoveCompleted += OnPawnMoveComplete;
         }
 
         private void OnDisable()
         {
             DiceManager.OnDiceRollFinished -= EnablePlayerPlay;
+            Pawn.OnPawnMoveCompleted -= OnPawnMoveComplete;
         }
 
         private void InitializeGame()
@@ -58,7 +58,6 @@ namespace _Scripts.Managers
                 {
                     StartingPlayers.Add(Players[i]);
                 }
-                
             }
 
             for (int i = 0; i < StartingPlayers.Count; i++)
@@ -82,14 +81,7 @@ namespace _Scripts.Managers
                 EnablePlayerPlay();
             });
         }
-
         
-
-        private void GetDiceResult()
-        {
-            CurrentPlayer.PlayerDiceResults.Add(DiceManager.Dice1Result);
-            CurrentPlayer.PlayerDiceResults.Add(DiceManager.Dice2Result);
-        }
 
         // setting position of the dice based on current player
         private void SetDicePosition(Player.Player currentPlayer)
@@ -112,34 +104,61 @@ namespace _Scripts.Managers
                 if (CurrentPlayer.PlayerDiceResults[0] == CurrentPlayer.PlayerDiceResults[1])
                 {
                     CurrentPlayer.ChangeTurn = false;
-                    Debug.Log(CurrentPlayer.ChangeTurn);
-                    Debug.Log(CurrentPlayer.ResetDice);
+                    CurrentPlayer.ResetDice = true;
                 }
                 else
                 {
                     CurrentPlayer.ChangeTurn = true;
-                    Debug.Log(CurrentPlayer.ChangeTurn);
-                    Debug.Log(CurrentPlayer.ResetDice);
                 }
                 CurrentPlayer.MakePawnPlayTwoSteps(CurrentPlayer.PlayerDiceResults[0], CurrentPlayer.PlayerDiceResults[1]);
             }
         }
-
-        public void ReRollDice()
+        
+        public void OnPawnMoveComplete()
         {
-            RepeatTurn = true;
-            StartCoroutine(ChangeTurnCoroutine(RepeatTurn, true));
+            if (CurrentPlayer.PlayerDiceResults.Count == 0)
+            {
+                if (CurrentPlayer.HasBonusMove)
+                {
+                    CurrentPlayer.BonusMovePlay(CurrentPlayer.BonusMove);
+                }
+                else
+                {
+                    foreach (Pawn p in CurrentPlayer._enteredPawns)
+                    {
+                        p.DisableCollider();
+                        p.HidePawnOption();
+                        p.IsPawnClicked = false;
+                        ChangeTurn(true);
+                    }
+                }
+            }
+            else if (CurrentPlayer.PlayerDiceResults.Count == 1)
+            {
+                CurrentPlayer.MakePawnPlay(CurrentPlayer.PlayerDiceResults[0]);
+            }
+
+            foreach (Pawn p in CurrentPlayer._enteredPawns)
+            {
+                p.IsPawnClicked = false;
+            }
         }
 
-        public void ChangeTurn(bool changeTurn, bool resetDice = true)
+        public void ResetDice()
         {
-            RepeatTurn = changeTurn;
-            StartCoroutine(ChangeTurnCoroutine(RepeatTurn, resetDice));
+            StartCoroutine(ResetDiceCo());
+        }
+        private IEnumerator ResetDiceCo()
+        {
+            yield return new WaitForSeconds(TurnChangeTime);
+            DiceManager.ResetDice();
+        }
+        public void ChangeTurn(bool changeTurn)
+        {
+            StartCoroutine(ChangeTurnCoroutine(changeTurn));
         }
         
-
-        public bool RepeatTurn;
-        private IEnumerator ChangeTurnCoroutine(bool changeTurn, bool resetDice)
+        private IEnumerator ChangeTurnCoroutine(bool changeTurn)
         {
             yield return new WaitForSeconds(TurnChangeTime);
             // checking for victory
@@ -153,11 +172,12 @@ namespace _Scripts.Managers
                 {
                     p.HidePawnOption();
                     p.DisableCollider();
+                    p.IsPawnMovable = false;
                 }
                 _currentPlayerIndex = (_currentPlayerIndex + 1) % StartingPlayers.Count;
+                CurrentPlayer.ChangeTurn = false;
+                DiceManager.ResetDice();
             }
-
-            RepeatTurn = false;
 
             CurrentPlayer = StartingPlayers[_currentPlayerIndex];
             
@@ -167,7 +187,12 @@ namespace _Scripts.Managers
             }
             
             SetDicePosition(CurrentPlayer);
-            DiceManager.ResetDice();
+
+            if (CurrentPlayer.ResetDice)
+            {
+                DiceManager.ResetDice(CurrentPlayer.ResetDice);
+                CurrentPlayer.ResetDice = false;
+            }
         }
 
         public void CheckForVictory()
@@ -177,7 +202,7 @@ namespace _Scripts.Managers
             {
                 return;
             }
-            else if (CurrentPlayer.PawnPath[^1].PawnsOnNode.Count == 4)
+            if (CurrentPlayer.PawnPath[^1].PawnsOnNode.Count == 4)
             {
                 // currentPlayer is 1st
                 // remove currentPlayer from starting players
@@ -195,7 +220,7 @@ namespace _Scripts.Managers
                 }
             
                 SetDicePosition(CurrentPlayer);
-                DiceManager.ResetDice();
+                // DiceManager.ResetDice();
             }
         }
     }

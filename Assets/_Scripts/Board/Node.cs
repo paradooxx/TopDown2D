@@ -16,7 +16,7 @@ namespace _Scripts.Board
 
         private const int MaxPlayersPerNormalNode = 2;
 
-        [SerializeField] private int MaxPawnsAllowed = 2;
+        private int MaxPawnsAllowed => IsFinishNode ? 4 : MaxPlayersPerNormalNode;
     
         public List<Pawn> PawnsOnNode = new List<Pawn>();
         
@@ -55,13 +55,13 @@ namespace _Scripts.Board
                     {
                         return true;
                     }
-                    else if (IsStarNode && p.MainPlayer != pawn.MainPlayer)
+                    if (IsStarNode && p.MainPlayer != pawn.MainPlayer)
                     {
                         return false;
                     }
-                    else
+                    if (IsStarNode && p.MainPlayer != pawn.MainPlayer)
                     {
-                        return false;
+                        return true;
                     }
                 }
             }
@@ -78,6 +78,13 @@ namespace _Scripts.Board
             PawnsOnNode.Add(pawn);
             pawn.CurrentNode = this;
             StartCoroutine(PositionPawnsCo());
+
+            if (!IsFinishNode) return;
+            else
+            {
+                pawn.MainPlayer.HasBonusMove = true;
+                pawn.MainPlayer.BonusMove = 10;
+            }
         }
 
         // remove pawn from this node
@@ -90,7 +97,7 @@ namespace _Scripts.Board
             PositionPawns();
         }
         
-        public IEnumerator PositionPawnsCo()
+        private IEnumerator PositionPawnsCo()
         {
             yield return new WaitForSeconds(0.01f);
             PositionPawns();
@@ -116,11 +123,6 @@ namespace _Scripts.Board
                     PawnsOnNode[0].transform.position = transform.position + new Vector3(0, -offset, 0);
                     PawnsOnNode[1].transform.position = transform.position + new Vector3(0, offset, 0);
                 }
-                else
-                {
-                    PawnsOnNode[0].transform.position = transform.position + new Vector3(0, -offset, 0);
-                    PawnsOnNode[1].transform.position = transform.position + new Vector3(0, offset, 0);
-                }
                 
             }
             else if (PawnsOnNode.Count == 1)
@@ -131,7 +133,7 @@ namespace _Scripts.Board
             {
                 PawnsOnNode[0].transform.position = transform.position + new Vector3(-offset, 0, 0);
                 PawnsOnNode[1].transform.position = transform.position + new Vector3(offset, 0, 0);
-                PawnsOnNode[2].transform.position = transform.position + new Vector3(0, -offset, 0);
+                PawnsOnNode[2].transform.position = transform.position + new Vector3(0, offset, 0);
             }
             else if (PawnsOnNode.Count == 4)
             {
@@ -151,6 +153,12 @@ namespace _Scripts.Board
                 if(p.MainPlayer != pawn.MainPlayer)
                 {
                     p.ResetToHomePosition();
+                    pawn.MainPlayer.OtherPawnKillCount++;
+                    if (pawn.MainPlayer.OtherPawnKillCount > 0)
+                    {
+                        pawn.MainPlayer.HasBonusMove = true;
+                        pawn.MainPlayer.BonusMove = 20;
+                    }
                     if (p.MainPlayer._pawnsInPlay < 0)
                     {
                         p.MainPlayer._pawnsInPlay = 0;

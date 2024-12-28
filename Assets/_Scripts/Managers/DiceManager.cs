@@ -41,7 +41,7 @@ namespace _Scripts.Managers
             OnDiceButtonClicked?.Invoke();
         }
 
-        public int[] RollDice(System.Action<int, int> onDiceRolled)
+        public int[] RollDice(Action<int, int> onDiceRolled)
         {
             StartCoroutine(RollDiceTask(onDiceRolled));
 
@@ -49,7 +49,7 @@ namespace _Scripts.Managers
         }
 
         // animating and deciding the dice roll result
-        private IEnumerator RollDiceTask(System.Action<int, int> onDiceRolled)
+        private IEnumerator RollDiceTask(Action<int, int> onDiceRolled)
         {
             float elapsedTime = 0.0f;
 
@@ -94,11 +94,14 @@ namespace _Scripts.Managers
             DiceCollider.enabled = true;
         }
 
-        public void ResetDice()
+        public void ResetDice(bool resetDice = true)
         {
-            Dice1Sprite.sprite = ResetDiceSprite;
-            Dice2Sprite.sprite = ResetDiceSprite;
-            EnableDiceCollider();
+            if (resetDice)
+            {
+                Dice1Sprite.sprite = ResetDiceSprite;
+                Dice2Sprite.sprite = ResetDiceSprite;
+                EnableDiceCollider(); 
+            }
         }
 
         public void SetDice1Result(int value)
