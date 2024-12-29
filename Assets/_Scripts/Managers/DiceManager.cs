@@ -22,7 +22,6 @@ namespace _Scripts.Managers
         [SerializeField] private float DiceSpriteChangeTime = 0.01f;
         
         [SerializeField] private Collider2D DiceCollider;
-        public static event Action OnDiceRollFinished;
         public UnityEvent OnDiceButtonClicked;
 
         public bool CustomDiceResult = true;

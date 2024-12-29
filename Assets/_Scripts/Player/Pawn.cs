@@ -50,7 +50,6 @@ namespace _Scripts.Player
                 for (int i = 0; i < MainPlayer._enteredPawns.Count; i++)
                 {
                     int thisPlayerIndex = MainPlayer._enteredPawns.IndexOf(this);
-                    Debug.Log(thisPlayerIndex);
                     MainPlayer._enteredPawns[i].IsPawnClicked = i != thisPlayerIndex;
                     MainPlayer._enteredPawns[i].PawnCanvas.SetActive(!MainPlayer._enteredPawns[i].IsPawnClicked);
                 }
@@ -81,16 +80,25 @@ namespace _Scripts.Player
                     // }
                     
                 }
+                else if (MainPlayer.HasBonusMove)
+                {
+                    GameManager.INSTANCE.ShouldChangeTurn = true;
+                    // MainPlayer.BonusMovePlay(MainPlayer.BonusMove);
+                    MovePawn(MainPlayer.BonusMove);
+                    MainPlayer.HasBonusMove = false;
+                    MainPlayer.BonusMove = 0;
+                }
                 IsPawnClicked = true;
             }
 
-            if (MainPlayer.HasBonusMove)
-            {
-                GameManager.INSTANCE.ChangeTurnBool = true;
-                MovePawn(MainPlayer.BonusMove);
-                MainPlayer.HasBonusMove = false;
-                MainPlayer.BonusMove = 0;
-            }
+            // if (MainPlayer.HasBonusMove)
+            // {
+            //     GameManager.INSTANCE.ShouldChangeTurn = true;
+            //     MainPlayer.BonusMovePlay(MainPlayer.BonusMove);
+            //     // MovePawn(MainPlayer.BonusMove);
+            //     MainPlayer.HasBonusMove = false;
+            //     MainPlayer.BonusMove = 0;
+            // }
         }
         
         // enables pawn indicator
@@ -162,10 +170,8 @@ namespace _Scripts.Player
                 startNode.EliminatePawn(this);
             }
             // OnPawnMoveCompleted?.Invoke();
-            if (MainPlayer.PlayerDiceResults.Count == 0 && !MainPlayer.HasBonusMove)
-            {
-                OnPawnMoveCompleted?.Invoke();
-            }
+            
+            OnPawnMoveCompleted?.Invoke();
         }
         
         public void MovePawn(int moveSteps)
@@ -233,7 +239,6 @@ namespace _Scripts.Player
             }
 
             MainPlayer.PlayerDiceResults.Remove(moveSteps);
-            
             OnPawnMoveCompleted?.Invoke();
             // StartCoroutine(PawnMoveCompletedCo());
         }

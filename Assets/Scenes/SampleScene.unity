@@ -4649,7 +4649,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1329256233}
         m_TargetAssemblyTypeName: _Scripts.Managers.GameManager, Assembly-CSharp
-        m_MethodName: ChangeTurn
+        m_MethodName: UIButtonChangeTurn
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8781,6 +8781,7 @@ MonoBehaviour:
   - {fileID: 155141966}
   CurrentPlayer: {fileID: 0}
   StartingPlayers: []
+  ShouldChangeTurn: 0
   MainDice: {fileID: 136200056}
   DiceManager: {fileID: 136200058}
   TurnChangeTime: 1

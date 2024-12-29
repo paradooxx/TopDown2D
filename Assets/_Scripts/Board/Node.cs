@@ -104,7 +104,8 @@ namespace _Scripts.Board
         
         public void PositionPawns()
         {
-            float offset = 0.3f;
+            float offset = 0.2f;
+            float changeScale = 0.7f;
             if (PawnsOnNode.Count == 0)
             {
                 return;
@@ -116,23 +117,37 @@ namespace _Scripts.Board
                 {
                     PawnsOnNode[0].transform.position = transform.position + new Vector3(-offset, 0, 0);
                     PawnsOnNode[1].transform.position = transform.position + new Vector3(offset, 0, 0);
+                    PawnsOnNode[0].transform.localScale = Vector3.one * changeScale;
+                    PawnsOnNode[1].transform.localScale = Vector3.one * changeScale;
                 }
                 else if (ArrangeType == PawnArrangeType.VERTICAL)
                 {
                     PawnsOnNode[0].transform.position = transform.position + new Vector3(0, -offset, 0);
                     PawnsOnNode[1].transform.position = transform.position + new Vector3(0, offset, 0);
+                    PawnsOnNode[0].transform.localScale = Vector3.one * changeScale;
+                    PawnsOnNode[1].transform.localScale = Vector3.one * changeScale;
                 }
-                
+                else
+                {
+                    PawnsOnNode[0].transform.position = transform.position + new Vector3(0, -offset, 0);
+                    PawnsOnNode[1].transform.position = transform.position + new Vector3(0, offset, 0);
+                    PawnsOnNode[0].transform.localScale = Vector3.one * changeScale;
+                    PawnsOnNode[1].transform.localScale = Vector3.one * changeScale;
+                }
             }
             else if (PawnsOnNode.Count == 1)
             {
                 PawnsOnNode[0].transform.position = transform.position;
+                PawnsOnNode[0].transform.localScale = Vector3.one;
             }
             else if (PawnsOnNode.Count == 3)
             {
                 PawnsOnNode[0].transform.position = transform.position + new Vector3(-offset, 0, 0);
                 PawnsOnNode[1].transform.position = transform.position + new Vector3(offset, 0, 0);
                 PawnsOnNode[2].transform.position = transform.position + new Vector3(0, offset, 0);
+                PawnsOnNode[0].transform.localScale = Vector3.one * changeScale;
+                PawnsOnNode[1].transform.localScale = Vector3.one * changeScale;
+                PawnsOnNode[2].transform.localScale = Vector3.one * changeScale;
             }
             else if (PawnsOnNode.Count == 4)
             {
@@ -140,6 +155,10 @@ namespace _Scripts.Board
                 PawnsOnNode[1].transform.position = transform.position + new Vector3(offset, 0, 0);
                 PawnsOnNode[2].transform.position = transform.position + new Vector3(0, offset, 0);
                 PawnsOnNode[3].transform.position = transform.position + new Vector3(0, -offset, 0);
+                PawnsOnNode[0].transform.localScale = Vector3.one * changeScale;
+                PawnsOnNode[1].transform.localScale = Vector3.one * changeScale;
+                PawnsOnNode[2].transform.localScale = Vector3.one * changeScale;
+                PawnsOnNode[3].transform.localScale = Vector3.one * changeScale;
             }
         }
 
