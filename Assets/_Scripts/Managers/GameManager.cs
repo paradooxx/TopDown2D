@@ -127,6 +127,7 @@ namespace _Scripts.Managers
                     {
                         p.DisableCollider();
                         p.HidePawnOption();
+                        p.AvailableMovesText.text = "";
                         p.IsPawnClicked = false;
                     }
                     ChangeTurn();
@@ -137,6 +138,8 @@ namespace _Scripts.Managers
                 Debug.Log("GM here");
                 if(CurrentPlayer._enteredPawns.Count > 1)
                     CurrentPlayer.MakePawnPlay(CurrentPlayer.PlayerDiceResults[0]);
+                else if (CurrentPlayer._enteredPawns.Count == 1)
+                    CurrentPlayer.MoveActivePawn(CurrentPlayer._enteredPawns[0], CurrentPlayer.PlayerDiceResults[0]);
             }
 
             foreach (Pawn p in CurrentPlayer._enteredPawns)

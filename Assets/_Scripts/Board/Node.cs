@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using _Scripts.Enums;
@@ -104,61 +105,64 @@ namespace _Scripts.Board
         
         public void PositionPawns()
         {
+            if (PawnsOnNode.Count == 0) return;
+
             float offset = 0.2f;
-            float changeScale = 0.7f;
-            if (PawnsOnNode.Count == 0)
+            float changeScale = 0.9f;
+            var positions = GetPawnPositions(PawnsOnNode.Count, offset);
+
+            // apply positions and scaling to all pawns
+            for (int i = 0; i < PawnsOnNode.Count; i++)
             {
-                return;
-            }
-            
-            if (PawnsOnNode.Count == 2)
-            {
-                if (ArrangeType == PawnArrangeType.HORIZONTAL)
+                PawnsOnNode[i].transform.position = transform.position + positions[i];
+                PawnsOnNode[i].transform.localScale = Vector3.one * (i == 0 && PawnsOnNode.Count == 1 ? 1f : changeScale);
+                
+                SpriteRenderer spriteRenderer = PawnsOnNode[i].PawnMainSprite;
+
+                if (spriteRenderer)
                 {
-                    PawnsOnNode[0].transform.position = transform.position + new Vector3(-offset, 0, 0);
-                    PawnsOnNode[1].transform.position = transform.position + new Vector3(offset, 0, 0);
-                    PawnsOnNode[0].transform.localScale = Vector3.one * changeScale;
-                    PawnsOnNode[1].transform.localScale = Vector3.one * changeScale;
-                }
-                else if (ArrangeType == PawnArrangeType.VERTICAL)
-                {
-                    PawnsOnNode[0].transform.position = transform.position + new Vector3(0, -offset, 0);
-                    PawnsOnNode[1].transform.position = transform.position + new Vector3(0, offset, 0);
-                    PawnsOnNode[0].transform.localScale = Vector3.one * changeScale;
-                    PawnsOnNode[1].transform.localScale = Vector3.one * changeScale;
-                }
-                else
-                {
-                    PawnsOnNode[0].transform.position = transform.position + new Vector3(0, -offset, 0);
-                    PawnsOnNode[1].transform.position = transform.position + new Vector3(0, offset, 0);
-                    PawnsOnNode[0].transform.localScale = Vector3.one * changeScale;
-                    PawnsOnNode[1].transform.localScale = Vector3.one * changeScale;
+                    spriteRenderer.sortingOrder = PawnsOnNode.Count == 1 ? 10 : 10 + i;
                 }
             }
-            else if (PawnsOnNode.Count == 1)
+        }
+
+        private Vector3[] GetPawnPositions(int pawnCount, float offset)
+        {
+            switch (pawnCount)
             {
-                PawnsOnNode[0].transform.position = transform.position;
-                PawnsOnNode[0].transform.localScale = Vector3.one;
-            }
-            else if (PawnsOnNode.Count == 3)
-            {
-                PawnsOnNode[0].transform.position = transform.position + new Vector3(-offset, 0, 0);
-                PawnsOnNode[1].transform.position = transform.position + new Vector3(offset, 0, 0);
-                PawnsOnNode[2].transform.position = transform.position + new Vector3(0, offset, 0);
-                PawnsOnNode[0].transform.localScale = Vector3.one * changeScale;
-                PawnsOnNode[1].transform.localScale = Vector3.one * changeScale;
-                PawnsOnNode[2].transform.localScale = Vector3.one * changeScale;
-            }
-            else if (PawnsOnNode.Count == 4)
-            {
-                PawnsOnNode[0].transform.position = transform.position + new Vector3(-offset, 0, 0);
-                PawnsOnNode[1].transform.position = transform.position + new Vector3(offset, 0, 0);
-                PawnsOnNode[2].transform.position = transform.position + new Vector3(0, offset, 0);
-                PawnsOnNode[3].transform.position = transform.position + new Vector3(0, -offset, 0);
-                PawnsOnNode[0].transform.localScale = Vector3.one * changeScale;
-                PawnsOnNode[1].transform.localScale = Vector3.one * changeScale;
-                PawnsOnNode[2].transform.localScale = Vector3.one * changeScale;
-                PawnsOnNode[3].transform.localScale = Vector3.one * changeScale;
+                case 1:
+                    return new[] { Vector3.zero };
+                
+                case 2:
+                    return ArrangeType switch
+                    {
+                        PawnArrangeType.HORIZONTAL => new[] {
+                            new Vector3(-offset, 0, 0),
+                            new Vector3(offset, 0, 0)
+                        },
+                        _ => new[] {
+                            new Vector3(0, -offset, 0),
+                            new Vector3(0, offset, 0)
+                        }
+                    };
+                
+                case 3:
+                    return new[] {
+                        new Vector3(-offset, 0, 0),
+                        new Vector3(offset, 0, 0),
+                        new Vector3(0, offset, 0)
+                    };
+                
+                case 4:
+                    return new[] {
+                        new Vector3(-offset, 0, 0),
+                        new Vector3(offset, 0, 0),
+                        new Vector3(0, offset, 0),
+                        new Vector3(0, -offset, 0)
+                    };
+                
+                default:
+                    return Array.Empty<Vector3>();
             }
         }
 
@@ -185,10 +189,7 @@ namespace _Scripts.Board
                     {
                         p.MainPlayer._pawnsInPlay--;
                     }
-                    // Debug.Log($"Pawn {p.name} eliminated by {pawn.name}.");
                 }
-                
-                // if(p.MainPlayer.PawnPath[0])
             }
         }
     }
