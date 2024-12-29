@@ -102,10 +102,10 @@ namespace _Scripts.Managers
                 ShouldChangeTurn = true;
             }
             
+            // makes sure a pawn enters when 5 is drawn if it is possible
             if (CurrentPlayer._enteredPawns.Count < 4)
             {
                 CurrentPlayer.MakePawnEnterBoard();
-                CurrentPlayer._pawnsInPlay = CurrentPlayer._enteredPawns.Count;
             }
             else
             {
@@ -135,11 +135,14 @@ namespace _Scripts.Managers
             }
             else if (CurrentPlayer.PlayerDiceResults.Count == 1)
             {
-                Debug.Log("GM here");
-                if(CurrentPlayer._enteredPawns.Count > 1)
-                    CurrentPlayer.MakePawnPlay(CurrentPlayer.PlayerDiceResults[0]);
+                if (CurrentPlayer._enteredPawns.Count > 1)
+                {
+                    CurrentPlayer.MakePawnPlay(CurrentPlayer.PlayerDiceResults[0]);   
+                }
                 else if (CurrentPlayer._enteredPawns.Count == 1)
+                {
                     CurrentPlayer.MoveActivePawn(CurrentPlayer._enteredPawns[0], CurrentPlayer.PlayerDiceResults[0]);
+                }
             }
 
             foreach (Pawn p in CurrentPlayer._enteredPawns)
@@ -188,6 +191,7 @@ namespace _Scripts.Managers
                     p.IsPawnMovable = false;
                 }
                 _currentPlayerIndex = (_currentPlayerIndex + 1) % StartingPlayers.Count;
+                CurrentPlayer.HasBonusMove = false;
                 ShouldChangeTurn = false;
             }
 
@@ -230,6 +234,5 @@ namespace _Scripts.Managers
                 SetDicePosition(CurrentPlayer);
             }
         }
-
     }
 }

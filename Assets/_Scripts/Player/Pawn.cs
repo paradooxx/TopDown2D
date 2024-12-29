@@ -149,11 +149,16 @@ namespace _Scripts.Player
                 CurrentPositionIndex = 0;
                 CurrentNode = startNode; 
                 transform.position = startNode.transform.position;
+                
+                // update main players pawn collection
+                // remove this pawn from original collection and add to entered pawns
+                MainPlayer._enteredPawns.Add(this);
+                MainPlayer._myPawns.Remove(this);
+                MainPlayer._pawnsInPlay = MainPlayer._enteredPawns.Count;
+                
                 StartCoroutine(PlayEnterBoardAnimation());
                 startNode.EliminatePawn(this);
             }
-            // OnPawnMoveCompleted?.Invoke();
-            
             OnPawnMoveCompleted?.Invoke();
         }
         
