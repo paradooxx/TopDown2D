@@ -46,10 +46,6 @@ namespace _Scripts.Board
                         {
                             return true;
                         }
-                        else
-                        {
-                            return false;
-                        }
                     }
                     
                     if (p.MainPlayer == pawn.MainPlayer)
@@ -172,6 +168,11 @@ namespace _Scripts.Board
             
             foreach(Pawn p in new List<Pawn>(PawnsOnNode))
             {
+                if (IsStartNode && p.MainPlayer == StartNodePlayer)
+                {
+                    return;
+                }
+
                 if(p.MainPlayer != pawn.MainPlayer)
                 {
                     p.ResetToHomePosition();

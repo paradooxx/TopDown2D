@@ -10,8 +10,7 @@ namespace _Scripts.Player
 {
     public class Pawn : MonoBehaviour
     {
-        [Header("Pawn Sprite Components")] 
-        public SpriteRenderer PawnMainSprite;
+        [Header("Pawn Sprite Components")] public SpriteRenderer PawnMainSprite;
         public GameObject PawnBaseSprite;
 
         public Node CurrentNode;
@@ -21,24 +20,27 @@ namespace _Scripts.Player
 
         public int CurrentPositionIndex = -1;
         public bool IsInPlay => CurrentPositionIndex >= 0;
-        
+
         public bool IsPawnClicked;
         public bool IsPawnMovable;
 
         public Transform HomePosition;
         public static event Action OnPawnMoveCompleted;
         private Collider2D _pawnCollider2D;
-        
-        [Header("Pawn Canvas")]
-        [SerializeField] private GameObject PawnCanvas;
+
+        [Header("Pawn Canvas")] [SerializeField]
+        private GameObject PawnCanvas;
+
         [SerializeField] private Image DiceImage1;
         [SerializeField] private Image DiceImage2;
         [SerializeField] private Button DiceMoveStepButton1;
         [SerializeField] private Button DiceMoveStepButton2;
-        
+
         public TMP_Text AvailableMovesText;
-        
+
         [SerializeField] private int MovePawnToThisIndex;
+        public bool isHome;
+
         private void Start()
         {
             _pawnCollider2D = GetComponent<Collider2D>();
@@ -77,19 +79,18 @@ namespace _Scripts.Player
                     MainPlayer.PlayerDiceResults.Clear();
                     MovePawn(remMove);
                     HidePawnOption();
-                    
                 }
                 else if (MainPlayer.HasBonusMove)
                 {
-                    GameManager.INSTANCE.ShouldChangeTurn = true;
                     MovePawn(MainPlayer.BonusMove);
                     MainPlayer.HasBonusMove = false;
                     MainPlayer.BonusMove = 0;
                 }
+
                 IsPawnClicked = true;
             }
         }
-        
+
         // enables pawn indicator
         public void ShowPawnOption()
         {
@@ -101,11 +102,10 @@ namespace _Scripts.Player
         {
             PawnBaseSprite.SetActive(false);
         }
-        
+
         // assigned in pawn dice click option buttons
         private void PawnClicked(int index)
         {
-            
             MovePawn(MainPlayer.PlayerDiceResults[index]);
             // MainPlayer.PlayerDiceResults.RemoveAt(index);
             PawnCanvas.SetActive(false);
@@ -144,27 +144,28 @@ namespace _Scripts.Player
         {
             Node startNode = MainPlayer.PawnPath[0];
             if (!IsInPlay && startNode.CanPawnEnter(this))
-            {   
+            {
                 startNode.AddPawn(this);
                 CurrentPositionIndex = 0;
-                CurrentNode = startNode; 
+                CurrentNode = startNode;
                 transform.position = startNode.transform.position;
-                
+
                 // update main players pawn collection
                 // remove this pawn from original collection and add to entered pawns
                 MainPlayer._enteredPawns.Add(this);
                 MainPlayer._myPawns.Remove(this);
                 MainPlayer._pawnsInPlay = MainPlayer._enteredPawns.Count;
-                
+
                 StartCoroutine(PlayEnterBoardAnimation());
                 startNode.EliminatePawn(this);
             }
-            OnPawnMoveCompleted?.Invoke();
+
+            MainPlayer.OnPawnMoveComplete();
         }
-        
+
         public void MovePawn(int moveSteps)
         {
-            if(!IsInPlay) return;
+            if (!IsInPlay) return;
             StartCoroutine(MovePawn(moveSteps, 0.2f));
         }
 
@@ -175,8 +176,9 @@ namespace _Scripts.Player
             {
                 targetPositionIndex = MainPlayer.PawnPath.Count - 1;
             }
+
             Node lastNodeInMove = MainPlayer.PawnPath[targetPositionIndex];
-            
+
             foreach (Pawn p in MainPlayer._enteredPawns)
             {
                 p.DisableCollider();
@@ -184,10 +186,10 @@ namespace _Scripts.Player
                 p.AvailableMovesText.text = "";
                 p.IsPawnMovable = false;
             }
-            
+
             for (int i = 0; i < moveSteps; i++)
             {
-                Node nextNode = MainPlayer.GetNextNodeForPawn(this);
+                Node nextNode = GetNextNodeForPawn();
 
                 if (nextNode)
                 {
@@ -195,10 +197,11 @@ namespace _Scripts.Player
                     {
                         CurrentNode.RemovePawn(this);
                     }
+
                     nextNode.AddPawn(this);
                     CurrentPositionIndex++;
                     CurrentNode = nextNode;
-                    
+
                     Vector3 startPosition = transform.position;
                     Vector3 endPosition = nextNode.transform.position;
 
@@ -208,13 +211,13 @@ namespace _Scripts.Player
                     while (elapsedTime < moveDuration)
                     {
                         transform.position = Vector3.Lerp(startPosition, endPosition, elapsedTime / moveDuration);
-                        
+
                         elapsedTime += Time.deltaTime;
                         yield return null;
                     }
 
                     transform.position = endPosition;
-                    
+
                     nextNode.PositionPawns();
                 }
 
@@ -226,7 +229,7 @@ namespace _Scripts.Player
             }
 
             MainPlayer.PlayerDiceResults.Remove(moveSteps);
-            OnPawnMoveCompleted?.Invoke();
+            MainPlayer.OnPawnMoveComplete();
         }
 
         // call this in an ui button through editor
@@ -241,6 +244,7 @@ namespace _Scripts.Player
                     MainPlayer._myPawns.Remove(this);
                     MainPlayer._enteredPawns.Add(this);
                 }
+
                 if (CurrentPositionIndex != -1)
                 {
                     MainPlayer.PawnPath[CurrentPositionIndex].RemovePawn(this);
@@ -250,12 +254,12 @@ namespace _Scripts.Player
                     // do nothing
                 }
 
-                
+
                 transform.position = MainPlayer.PawnPath[MovePawnToThisIndex].transform.position;
                 CurrentPositionIndex = MovePawnToThisIndex;
-                
+
                 MainPlayer._pawnsInPlay = MainPlayer._enteredPawns.Count;
-                
+
                 MainPlayer.PawnPath[MovePawnToThisIndex].PositionPawns();
                 GameManager.INSTANCE.CheckForVictory();
             }
@@ -266,13 +270,23 @@ namespace _Scripts.Player
         {
             if (CurrentPositionIndex == -1)
                 CurrentPositionIndex = 0;
-            
+
             int targetIndex = CurrentPositionIndex + steps;
             int stepsToVictory = MainPlayer.PawnPath.Count - CurrentPositionIndex - 1;
-            
+
+            // ensuring the target index is within bounds
             if (targetIndex > MainPlayer.PawnPath.Count - 1) return false;
 
-            // check if each node in the path to the target index can be entered
+            // check if the target node is a StartNode or starNode
+            if (MainPlayer.PawnPath[targetIndex].IsStartNode && (MainPlayer.PawnPath[targetIndex].IsStarNode))
+            {
+                if(MainPlayer.PawnPath[targetIndex].CanPawnEnter(this))
+                    return true;
+                else
+                    return false;
+            }
+
+            // Check if each node in the path to the target index can be entered
             for (int i = CurrentPositionIndex + 1; i <= targetIndex; i++)
             {
                 if (!MainPlayer.PawnPath[i].CanPawnEnter(this))
@@ -281,11 +295,44 @@ namespace _Scripts.Player
                 }
             }
 
+            // Ensure steps do not exceed steps to victory
             if (steps > stepsToVictory) return false;
 
             return true;
         }
-        
+
+        private Node GetNextNodeForPawn()
+        {
+            int currentIndex = CurrentPositionIndex;
+
+            if (currentIndex + 1 < MainPlayer.PawnPath.Count)
+            {
+                Node nextNode = MainPlayer.PawnPath[currentIndex + 1];
+                return nextNode;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        // get previous node for the pawn
+        // used when pawn is killed and needs to return to home
+        private Node GetPreviousNodeForPawn()
+        {
+            int currentIndex = CurrentPositionIndex;
+
+            if (currentIndex - 1 > -1)
+            {
+                Node previousNode = MainPlayer.PawnPath[currentIndex - 1];
+                return previousNode;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         private IEnumerator PlayEnterBoardAnimation()
         {
             Vector3 originalScale = transform.localScale;
@@ -297,7 +344,8 @@ namespace _Scripts.Player
             //scaling up
             while (elapsedTime < animationDuration / 2)
             {
-                transform.localScale = Vector3.Lerp(originalScale, enlargedScale, elapsedTime / (animationDuration / 2));
+                transform.localScale =
+                    Vector3.Lerp(originalScale, enlargedScale, elapsedTime / (animationDuration / 2));
                 elapsedTime += Time.deltaTime;
                 yield return null;
             }
@@ -307,14 +355,15 @@ namespace _Scripts.Player
             //scaling down
             while (elapsedTime < animationDuration / 2)
             {
-                transform.localScale = Vector3.Lerp(enlargedScale, originalScale, elapsedTime / (animationDuration / 2));
+                transform.localScale =
+                    Vector3.Lerp(enlargedScale, originalScale, elapsedTime / (animationDuration / 2));
                 elapsedTime += Time.deltaTime;
                 yield return null;
             }
 
             transform.localScale = originalScale;
         }
-        
+
         public void EnableCollider()
         {
             _pawnCollider2D.enabled = true;
@@ -328,7 +377,7 @@ namespace _Scripts.Player
         public void ResetToHomePosition()
         {
             if (CurrentPositionIndex == -1) return;
-            
+
             CurrentPositionIndex = -1;
             CurrentNode?.RemovePawn(this);
             CurrentNode = null;
@@ -343,7 +392,7 @@ namespace _Scripts.Player
             int moveSteps = CurrentPositionIndex;
             for (int i = 0; i < moveSteps; i++)
             {
-                Node previousNode = MainPlayer.GetPreviousNodeForPawn(this);
+                Node previousNode = GetPreviousNodeForPawn();
                 if (previousNode)
                 {
                     if (CurrentNode)
@@ -354,14 +403,14 @@ namespace _Scripts.Player
                     previousNode.AddPawn(this);
                     CurrentNode = previousNode;
                     CurrentPositionIndex--;
-                    
+
                     Vector3 startPosition = transform.position;
                     Vector3 endPosition = previousNode.transform.position;
                     Vector3 originalScale = transform.localScale;
                     Vector3 enlargedScale = originalScale * 1.5f;
 
                     float elapsedTime = 0f;
-                    float moveDuration = 0.01f; 
+                    float moveDuration = 0.01f;
 
                     while (elapsedTime < moveDuration)
                     {
@@ -388,6 +437,7 @@ namespace _Scripts.Player
                 }
                 // transform.position = HomePosition.position;
             }
+
             MainPlayer._enteredPawns.Remove(this);
             MainPlayer._myPawns.Add(this);
             CurrentPositionIndex = -1;

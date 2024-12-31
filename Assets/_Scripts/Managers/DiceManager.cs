@@ -20,19 +20,19 @@ namespace _Scripts.Managers
 
         [SerializeField] private float TotalAnimationTime = 2.0f;
         [SerializeField] private float DiceSpriteChangeTime = 0.01f;
-        
+
         [SerializeField] private Collider2D DiceCollider;
         public UnityEvent OnDiceButtonClicked;
 
         public bool CustomDiceResult = true;
         public int CustomDice1Value = 5, CustomDice2Value = 2;
-        
+
         [SerializeField] private TMP_Text CustomDice1Text;
         [SerializeField] private TMP_Text CustomDice2Text;
 
         private void Start()
         {
-            ResetDice();
+            ResetDiceImage();
         }
 
         private void OnMouseDown()
@@ -44,7 +44,7 @@ namespace _Scripts.Managers
         {
             StartCoroutine(RollDiceTask(onDiceRolled));
 
-            return new int[] {Dice1Result, Dice2Result};
+            return new int[] { Dice1Result, Dice2Result };
         }
 
         // animating and deciding the dice roll result
@@ -83,6 +83,7 @@ namespace _Scripts.Managers
                 onDiceRolled?.Invoke(Dice1Result, Dice2Result);
             }
         }
+
         public void DisableDiceCollider()
         {
             DiceCollider.enabled = false;
@@ -93,13 +94,13 @@ namespace _Scripts.Managers
             DiceCollider.enabled = true;
         }
 
-        public void ResetDice(bool resetDice = true)
+        public void ResetDiceImage(bool resetDice = true)
         {
             if (resetDice)
             {
                 Dice1Sprite.sprite = ResetDiceSprite;
                 Dice2Sprite.sprite = ResetDiceSprite;
-                EnableDiceCollider(); 
+                EnableDiceCollider();
             }
         }
 
@@ -113,8 +114,37 @@ namespace _Scripts.Managers
         public void SetDice2Result(int value)
         {
             CustomDiceResult = true;
-            CustomDice2Value = value; 
+            CustomDice2Value = value;
             CustomDice2Text.text = CustomDice2Value.ToString();
+        }
+
+        private bool _canRoll;
+
+        public void EnableDiceTouch()
+        {
+            _canRoll = true;
+            DiceCollider.enabled = true;
+        }
+
+        public void DisableDiceTouch()
+        {
+            _canRoll = false;
+            DiceCollider.enabled = false;
+        }
+
+        public void ActivateDice()
+        {
+            gameObject.SetActive(true);
+            Dice1Sprite.gameObject.SetActive(true);
+            Dice2Sprite.gameObject.SetActive(true);
+        }
+
+        public void DeactivateDice()
+        {
+            DisableDiceTouch();
+            gameObject.SetActive(false);
+            Dice1Sprite.gameObject.SetActive(false);
+            Dice2Sprite.gameObject.SetActive(false);
         }
     }
 }
