@@ -42,7 +42,14 @@ namespace _Scripts.Managers
 
         public int[] RollDice(Action<int, int> onDiceRolled)
         {
-            StartCoroutine(RollDiceTask(onDiceRolled));
+            if (gameObject.activeInHierarchy)
+            {
+                StartCoroutine(RollDiceTask(onDiceRolled));
+            }
+            else
+            {
+                onDiceRolled?.Invoke(3, 5);
+            }
 
             return new int[] { Dice1Result, Dice2Result };
         }

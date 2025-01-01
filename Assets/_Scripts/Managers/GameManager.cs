@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using _Scripts.Enums;
 using _Scripts.Player;
+using _Scripts.UI;
 using UnityEngine;
 
 namespace _Scripts.Managers
@@ -35,8 +36,6 @@ namespace _Scripts.Managers
             InitializeGame();
         }
 
-    
-
         // selects how many players will be in game
         // called in UI button
         public void InitializeNumOfPlayers(int numberOfPlayers)
@@ -45,6 +44,7 @@ namespace _Scripts.Managers
             {
                 numberOfPlayers = 2;
             }
+            
             switch (numberOfPlayers)
             {
                 case 2:
@@ -79,6 +79,8 @@ namespace _Scripts.Managers
             _currentPlayerIndex = _selectedPlayerIndex;
             CurrentPlayer = StartingPlayers[_currentPlayerIndex];
             SetDicePosition(CurrentPlayer);
+            
+            GameStateManager.Instance.SetState(GameState.MAIN_GAME);
         }
         
         // finding which player's place will be empty based on selected player by player
@@ -139,9 +141,13 @@ namespace _Scripts.Managers
 
         // initialize board rotations based on the color of player selected by player
         // call in UI button
-        public void InitializeBoardPositions(int? selectedPlayerIndex)
+        public void InitializeBoardPositions(int selectedPlayerIndex)
         {
-            _selectedPlayerIndex = selectedPlayerIndex ?? 0;
+            if (_selectedPlayerIndex <= 0)
+            {
+                _selectedPlayerIndex = 0;
+            }
+            
             switch (_selectedPlayerIndex)
             {
                 case 0:
@@ -168,6 +174,7 @@ namespace _Scripts.Managers
 
             for (int i = 0; i < Players.Length; i++)
             {
+                Players[i].MyIndex = i;
                 if (Players[i].PlayerType == PlayerType.PLAYER || Players[i].PlayerType == PlayerType.BOT)
                 {
                     StartingPlayers.Add(Players[i]);
@@ -189,6 +196,12 @@ namespace _Scripts.Managers
             CurrentPlayer = StartingPlayers[_currentPlayerIndex];
             CurrentPlayer.ActivateDice();
             SetDicePosition(CurrentPlayer);
+            
+            if (CurrentPlayer.PlayerType == PlayerType.BOT)
+            {
+                CurrentPlayer.DiceManager.DisableDiceCollider();
+                CurrentPlayer.StartRollDice();
+            }
         }
         
         // setting position of the dice based on current player
@@ -225,6 +238,8 @@ namespace _Scripts.Managers
         {
             yield return new WaitForSeconds(TurnChangeTime);
             // checking for victory
+            CheckForVictory();
+            
             Player.Player oldPlayer = CurrentPlayer;
             // changing the current player
             if (CurrentPlayer.ShouldChangeTurn)
@@ -251,7 +266,11 @@ namespace _Scripts.Managers
             CurrentPlayer.ActivateTurnUI();
             CurrentPlayer.ActivateDice();
 
-            CurrentPlayer.StartRollDice();
+            if (CurrentPlayer.PlayerType == PlayerType.BOT)
+            {
+                CurrentPlayer.DiceManager.DisableDiceCollider();
+                CurrentPlayer.StartRollDice();
+            }
         }
 
         public void CheckForVictory()

@@ -4,6 +4,7 @@ using _Scripts.Managers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 namespace _Scripts.UI
 {
@@ -15,6 +16,8 @@ namespace _Scripts.UI
         [SerializeField] private GameObject GameFinishedPanel;
 
         [SerializeField] private GameObject MainBg;
+        
+        [SerializeField] private List<Button> PlayerSelectButtons;
 
         [SerializeField] private TMP_Text WinText;
 
@@ -30,6 +33,15 @@ namespace _Scripts.UI
             _unactivePanels = new List<GameObject> { MainMenuPanel, NumOfPlayersSelectPanel, PlayerColorSelectPanel, GameFinishedPanel };
             HideAllPanels();
             MainBg.SetActive(true);
+        }
+
+        private void Start()
+        {
+            foreach (var button in PlayerSelectButtons)
+            {
+                button.onClick.AddListener(() => HighlightButton(button));
+            }
+            HighlightButton(PlayerSelectButtons[0]);
         }
 
         private void ManagePanels(GameState state)
@@ -92,6 +104,16 @@ namespace _Scripts.UI
         public void CloseButton()
         {
             SetActivePanel(MainMenuPanel);
+        }
+        
+        private void HighlightButton(Button clickedButton)
+        {
+            foreach (var button in PlayerSelectButtons)
+            {
+                button.image.color = button.colors.normalColor;
+            }
+            // Highlight the clicked button with the unique color
+            clickedButton.image.color = Color.yellow;
         }
     }
 }

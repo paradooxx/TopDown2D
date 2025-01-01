@@ -5,6 +5,7 @@ using _Scripts.Managers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 namespace _Scripts.Player
 {
@@ -25,7 +26,6 @@ namespace _Scripts.Player
         public bool IsPawnMovable;
 
         public Transform HomePosition;
-        public static event Action OnPawnMoveCompleted;
         private Collider2D _pawnCollider2D;
 
         [Header("Pawn Canvas")] [SerializeField]
@@ -38,8 +38,12 @@ namespace _Scripts.Player
 
         public TMP_Text AvailableMovesText;
 
-        [SerializeField] private int MovePawnToThisIndex;
         public bool isHome;
+
+        [Header("Bot Move Score")] public int BotMove1Score;
+        public int BotMove2Score;
+        public int BotMove1and2Score;
+        [SerializeField] private int MovePawnToThisIndex;
 
         private void Start()
         {
@@ -145,21 +149,46 @@ namespace _Scripts.Player
             Node startNode = MainPlayer.PawnPath[0];
             if (!IsInPlay && startNode.CanPawnEnter(this))
             {
+                // Store the home position before moving
+                Vector3 homePosition = transform.position;
+
+                // Setup the initial state
                 startNode.AddPawn(this);
                 CurrentPositionIndex = 0;
                 CurrentNode = startNode;
-                transform.position = startNode.transform.position;
 
-                // update main players pawn collection
-                // remove this pawn from original collection and add to entered pawns
+                // Update main player's pawn collections
                 MainPlayer._enteredPawns.Add(this);
                 MainPlayer._myPawns.Remove(this);
-                MainPlayer._pawnsInPlay = MainPlayer._enteredPawns.Count;
+                MainPlayer.PawnsInPlay = MainPlayer._enteredPawns.Count;
 
-                StartCoroutine(PlayEnterBoardAnimation());
-                startNode.EliminatePawn(this);
+                // Create a sequence for the entire animation
+                Sequence enterSequence = DOTween.Sequence();
+
+                // First move from home position to start node
+                enterSequence.Append(
+                    transform.DOMove(startNode.transform.position, 0.1f)
+                        .SetEase(Ease.OutQuad)
+                );
+
+                // Then do the pop animation
+                enterSequence.Append(
+                    transform.DOScale(transform.localScale * 1.5f, 0.01f)
+                        .SetEase(Ease.OutQuad)
+                );
+
+                enterSequence.Append(
+                    transform.DOScale(transform.localScale, 0.01f)
+                        .SetEase(Ease.InQuad)
+                );
+
+                // Handle completion
+                enterSequence.OnComplete(() => { startNode.EliminatePawn(this); });
+
+                // Play the sequence
+                enterSequence.Play();
             }
-
+            MainPlayer.PlayerDiceResults.Remove(5);
             MainPlayer.OnPawnMoveComplete();
         }
 
@@ -179,6 +208,7 @@ namespace _Scripts.Player
 
             Node lastNodeInMove = MainPlayer.PawnPath[targetPositionIndex];
 
+            // disable all pawns during movement
             foreach (Pawn p in MainPlayer._enteredPawns)
             {
                 p.DisableCollider();
@@ -202,29 +232,22 @@ namespace _Scripts.Player
                     CurrentPositionIndex++;
                     CurrentNode = nextNode;
 
-                    Vector3 startPosition = transform.position;
                     Vector3 endPosition = nextNode.transform.position;
 
-                    float elapsedTime = 0f;
-                    // float moveDuration = 1f; 
+                    yield return transform.DOMove(endPosition, moveDuration)
+                        .SetEase(Ease.OutQuad) // Add smooth easing
+                        .OnComplete(() =>
+                        {
+                            transform.position = endPosition;
+                            nextNode.PositionPawns();
+                        })
+                        .WaitForCompletion();
 
-                    while (elapsedTime < moveDuration)
+                    // Check if this is the last node for elimination
+                    if (nextNode == lastNodeInMove)
                     {
-                        transform.position = Vector3.Lerp(startPosition, endPosition, elapsedTime / moveDuration);
-
-                        elapsedTime += Time.deltaTime;
-                        yield return null;
+                        lastNodeInMove.EliminatePawn(this);
                     }
-
-                    transform.position = endPosition;
-
-                    nextNode.PositionPawns();
-                }
-
-                if (nextNode == lastNodeInMove)
-                {
-                    // try to kill other pawn in the node if it is present
-                    lastNodeInMove.EliminatePawn(this);
                 }
             }
 
@@ -258,7 +281,7 @@ namespace _Scripts.Player
                 transform.position = MainPlayer.PawnPath[MovePawnToThisIndex].transform.position;
                 CurrentPositionIndex = MovePawnToThisIndex;
 
-                MainPlayer._pawnsInPlay = MainPlayer._enteredPawns.Count;
+                MainPlayer.PawnsInPlay = MainPlayer._enteredPawns.Count;
 
                 MainPlayer.PawnPath[MovePawnToThisIndex].PositionPawns();
                 GameManager.INSTANCE.CheckForVictory();
@@ -274,19 +297,9 @@ namespace _Scripts.Player
             int targetIndex = CurrentPositionIndex + steps;
             int stepsToVictory = MainPlayer.PawnPath.Count - CurrentPositionIndex - 1;
 
-            // ensuring the target index is within bounds
             if (targetIndex > MainPlayer.PawnPath.Count - 1) return false;
 
-            // check if the target node is a StartNode or starNode
-            if (MainPlayer.PawnPath[targetIndex].IsStartNode && (MainPlayer.PawnPath[targetIndex].IsStarNode))
-            {
-                if(MainPlayer.PawnPath[targetIndex].CanPawnEnter(this))
-                    return true;
-                else
-                    return false;
-            }
-
-            // Check if each node in the path to the target index can be entered
+            // check if each node in the path to the target index can be entered
             for (int i = CurrentPositionIndex + 1; i <= targetIndex; i++)
             {
                 if (!MainPlayer.PawnPath[i].CanPawnEnter(this))
@@ -295,7 +308,6 @@ namespace _Scripts.Player
                 }
             }
 
-            // Ensure steps do not exceed steps to victory
             if (steps > stepsToVictory) return false;
 
             return true;
@@ -333,37 +345,6 @@ namespace _Scripts.Player
             }
         }
 
-        private IEnumerator PlayEnterBoardAnimation()
-        {
-            Vector3 originalScale = transform.localScale;
-            Vector3 enlargedScale = originalScale * 1.5f;
-
-            float animationDuration = 0.3f;
-            float elapsedTime = 0f;
-
-            //scaling up
-            while (elapsedTime < animationDuration / 2)
-            {
-                transform.localScale =
-                    Vector3.Lerp(originalScale, enlargedScale, elapsedTime / (animationDuration / 2));
-                elapsedTime += Time.deltaTime;
-                yield return null;
-            }
-
-            elapsedTime = 0f;
-
-            //scaling down
-            while (elapsedTime < animationDuration / 2)
-            {
-                transform.localScale =
-                    Vector3.Lerp(enlargedScale, originalScale, elapsedTime / (animationDuration / 2));
-                elapsedTime += Time.deltaTime;
-                yield return null;
-            }
-
-            transform.localScale = originalScale;
-        }
-
         public void EnableCollider()
         {
             _pawnCollider2D.enabled = true;
@@ -374,22 +355,24 @@ namespace _Scripts.Player
             _pawnCollider2D.enabled = false;
         }
 
+        // public void ResetToHomePosition()
+        // {
+        //     if (CurrentPositionIndex == -1) return;
+        //
+        //     CurrentPositionIndex = -1;
+        //     CurrentNode?.RemovePawn(this);
+        //     CurrentNode = null;
+        //     MainPlayer._enteredPawns.Remove(this);
+        //     MainPlayer._myPawns.Add(this);
+        //     transform.position = HomePosition.position;
+        //     StartCoroutine(PlayEnterBoardAnimation());
+        // }
+
         public void ResetToHomePosition()
         {
-            if (CurrentPositionIndex == -1) return;
-
-            CurrentPositionIndex = -1;
-            CurrentNode?.RemovePawn(this);
-            CurrentNode = null;
-            MainPlayer._enteredPawns.Remove(this);
-            MainPlayer._myPawns.Add(this);
-            transform.position = HomePosition.position;
-            StartCoroutine(PlayEnterBoardAnimation());
-        }
-
-        private IEnumerator ResetToHomePositionCo()
-        {
             int moveSteps = CurrentPositionIndex;
+            Sequence resetSequence = DOTween.Sequence();
+
             for (int i = 0; i < moveSteps; i++)
             {
                 Node previousNode = GetPreviousNodeForPawn();
@@ -397,7 +380,7 @@ namespace _Scripts.Player
                 {
                     if (CurrentNode)
                     {
-                        CurrentNode?.RemovePawn(this);
+                        CurrentNode.RemovePawn(this);
                     }
 
                     previousNode.AddPawn(this);
@@ -409,40 +392,42 @@ namespace _Scripts.Player
                     Vector3 originalScale = transform.localScale;
                     Vector3 enlargedScale = originalScale * 1.5f;
 
-                    float elapsedTime = 0f;
-                    float moveDuration = 0.01f;
+                    float moveDuration = 0.01f; // Duration per step
 
-                    while (elapsedTime < moveDuration)
-                    {
-                        float t = elapsedTime / moveDuration; // normalized time for scaling and movement
+                    // Add movement and scaling to the sequence
+                    resetSequence.Append(transform.DOMove(endPosition, moveDuration).SetEase(Ease.Linear));
 
-                        // moving pawn
-                        transform.position = Vector3.Lerp(startPosition, endPosition, t);
-                        if (t < 0.5f)
-                        {
-                            transform.localScale = Vector3.Lerp(originalScale, enlargedScale, t / 0.5f);
-                        }
-                        else
-                        {
-                            transform.localScale = Vector3.Lerp(enlargedScale, originalScale, (t - 0.5f) / 0.5f);
-                        }
+                    resetSequence.Join(DOTween.Sequence()
+                        .Append(transform.DOScale(enlargedScale, moveDuration / 2))
+                        .Append(transform.DOScale(originalScale, moveDuration / 2)));
 
-                        elapsedTime += Time.deltaTime;
-                        yield return null;
-                    }
-
-                    transform.position = endPosition;
-                    transform.localScale = originalScale;
-                    previousNode.PositionPawns();
+                    // Add callback to ensure pawns are positioned after each step
+                    resetSequence.AppendCallback(() => previousNode.PositionPawns());
                 }
-                // transform.position = HomePosition.position;
             }
 
-            MainPlayer._enteredPawns.Remove(this);
-            MainPlayer._myPawns.Add(this);
-            CurrentPositionIndex = -1;
-            // StartCoroutine(PlayEnterBoardAnimation());
-            CurrentNode = null;
+            // Add final movement to the home position
+            Vector3 homePosition = HomePosition.position;
+            resetSequence.Append(transform.DOMove(homePosition, 0.05f).SetEase(Ease.OutQuad));
+
+            // Add pop animation at the home position
+            resetSequence.Append(transform.DOScale(transform.localScale * 1.5f, 0.01f).SetEase(Ease.OutQuad));
+            resetSequence.Append(transform.DOScale(transform.localScale, 0.01f).SetEase(Ease.InQuad));
+
+            // Final cleanup and updates after animation
+            resetSequence.OnComplete(() =>
+            {
+                MainPlayer._enteredPawns.Remove(this);
+                MainPlayer._myPawns.Add(this);
+                CurrentPositionIndex = -1;
+                CurrentNode = null;
+            });
+
+            // Play the sequence
+            resetSequence.Play();
+
+            // Notify the player that the move is complete
+            MainPlayer.OnPawnMoveComplete();
         }
     }
 }

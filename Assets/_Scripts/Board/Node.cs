@@ -18,10 +18,19 @@ namespace _Scripts.Board
         private const int MaxPlayersPerNormalNode = 2;
 
         private int MaxPawnsAllowed => IsFinishNode ? 4 : MaxPlayersPerNormalNode;
-    
+
         public List<Pawn> PawnsOnNode = new List<Pawn>();
-        
+
         [SerializeField] private PawnArrangeType ArrangeType;
+
+        public int MyIndex;
+
+        [ContextMenu("Add my index")]
+        private void AddIndex()
+        {
+            string s = gameObject.name.Split("(")[1].Replace(")","");
+            MyIndex = Int16.Parse(s);
+        }
 
         // checking if the pawn can enter a given node / path
         public bool CanPawnEnter(Pawn pawn)
@@ -30,14 +39,14 @@ namespace _Scripts.Board
             {
                 return false;
             }
-            
+
             if (PawnsOnNode.Count < MaxPawnsAllowed)
             {
                 if (IsStartNode && StartNodePlayer == pawn.MainPlayer)
                 {
                     return true;
                 }
-                
+
                 foreach (Pawn p in PawnsOnNode)
                 {
                     if (IsStartNode && StartNodePlayer != pawn.MainPlayer)
@@ -46,22 +55,29 @@ namespace _Scripts.Board
                         {
                             return true;
                         }
+                        else
+                        {
+                            return false;
+                        }
                     }
-                    
+
                     if (p.MainPlayer == pawn.MainPlayer)
                     {
                         return true;
                     }
+
                     if (IsStarNode && p.MainPlayer != pawn.MainPlayer)
                     {
                         return false;
                     }
+
                     if (IsStarNode && p.MainPlayer != pawn.MainPlayer)
                     {
                         return true;
                     }
                 }
             }
+
             return true;
         }
 
@@ -72,6 +88,7 @@ namespace _Scripts.Board
             {
                 return;
             }
+
             PawnsOnNode.Add(pawn);
             pawn.CurrentNode = this;
             StartCoroutine(PositionPawnsCo());
@@ -90,15 +107,16 @@ namespace _Scripts.Board
             {
                 PawnsOnNode.Remove(pawn);
             }
+
             PositionPawns();
         }
-        
+
         private IEnumerator PositionPawnsCo()
         {
-            yield return new WaitForSeconds(0.01f);
+            yield return new WaitForSeconds(0.1f);
             PositionPawns();
         }
-        
+
         public void PositionPawns()
         {
             if (PawnsOnNode.Count == 0) return;
@@ -111,8 +129,9 @@ namespace _Scripts.Board
             for (int i = 0; i < PawnsOnNode.Count; i++)
             {
                 PawnsOnNode[i].transform.position = transform.position + positions[i];
-                PawnsOnNode[i].transform.localScale = Vector3.one * (i == 0 && PawnsOnNode.Count == 1 ? 1f : changeScale);
-                
+                PawnsOnNode[i].transform.localScale =
+                    Vector3.one * (i == 0 && PawnsOnNode.Count == 1 ? 1f : changeScale);
+
                 SpriteRenderer spriteRenderer = PawnsOnNode[i].PawnMainSprite;
 
                 if (spriteRenderer)
@@ -128,35 +147,39 @@ namespace _Scripts.Board
             {
                 case 1:
                     return new[] { Vector3.zero };
-                
+
                 case 2:
                     return ArrangeType switch
                     {
-                        PawnArrangeType.HORIZONTAL => new[] {
+                        PawnArrangeType.HORIZONTAL => new[]
+                        {
                             new Vector3(-offset, 0, 0),
                             new Vector3(offset, 0, 0)
                         },
-                        _ => new[] {
+                        _ => new[]
+                        {
                             new Vector3(0, -offset, 0),
                             new Vector3(0, offset, 0)
                         }
                     };
-                
+
                 case 3:
-                    return new[] {
+                    return new[]
+                    {
                         new Vector3(-offset, 0, 0),
                         new Vector3(offset, 0, 0),
                         new Vector3(0, offset, 0)
                     };
-                
+
                 case 4:
-                    return new[] {
+                    return new[]
+                    {
                         new Vector3(-offset, 0, 0),
                         new Vector3(offset, 0, 0),
                         new Vector3(0, offset, 0),
                         new Vector3(0, -offset, 0)
                     };
-                
+
                 default:
                     return Array.Empty<Vector3>();
             }
@@ -164,16 +187,11 @@ namespace _Scripts.Board
 
         public void EliminatePawn(Pawn pawn)
         {
-            if(IsStarNode) return;
-            
-            foreach(Pawn p in new List<Pawn>(PawnsOnNode))
-            {
-                if (IsStartNode && p.MainPlayer == StartNodePlayer)
-                {
-                    return;
-                }
+            if (IsStarNode) return;
 
-                if(p.MainPlayer != pawn.MainPlayer)
+            foreach (Pawn p in new List<Pawn>(PawnsOnNode))
+            {
+                if (p.MainPlayer != pawn.MainPlayer)
                 {
                     p.ResetToHomePosition();
                     pawn.MainPlayer.OtherPawnKillCount++;
@@ -182,13 +200,14 @@ namespace _Scripts.Board
                         pawn.MainPlayer.HasBonusMove = true;
                         pawn.MainPlayer.BonusMove = 20;
                     }
-                    if (p.MainPlayer._pawnsInPlay < 0)
+
+                    if (p.MainPlayer.PawnsInPlay < 0)
                     {
-                        p.MainPlayer._pawnsInPlay = 0;
+                        p.MainPlayer.PawnsInPlay = 0;
                     }
                     else
                     {
-                        p.MainPlayer._pawnsInPlay--;
+                        p.MainPlayer.PawnsInPlay--;
                     }
                 }
             }

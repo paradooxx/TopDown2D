@@ -241,6 +241,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 7
 --- !u!1 &16894313
 GameObject:
   m_ObjectHideFlags: 0
@@ -291,6 +292,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 79
 --- !u!1 &24162409
 GameObject:
   m_ObjectHideFlags: 0
@@ -341,6 +343,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 32
 --- !u!1 &44898547
 GameObject:
   m_ObjectHideFlags: 0
@@ -424,7 +427,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1407091617}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.81333333
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -696,7 +699,7 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: 74e38602d8688431ea54eb4e080fb2ce, type: 3}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: PlayerType
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: DiceManager
@@ -1309,6 +1312,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 80
 --- !u!1 &87192540
 GameObject:
   m_ObjectHideFlags: 0
@@ -1493,6 +1497,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 155141966}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 17
 --- !u!1 &108543038
 GameObject:
   m_ObjectHideFlags: 0
@@ -1609,6 +1614,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 73
 --- !u!1 &121353821
 GameObject:
   m_ObjectHideFlags: 0
@@ -1793,6 +1799,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 33
 --- !u!1 &131874588
 GameObject:
   m_ObjectHideFlags: 0
@@ -1843,6 +1850,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 63
 --- !u!1 &147617465
 GameObject:
   m_ObjectHideFlags: 0
@@ -1893,6 +1901,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 89
 --- !u!114 &155141966 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
@@ -1986,6 +1995,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 24
 --- !u!1 &169744878
 GameObject:
   m_ObjectHideFlags: 0
@@ -2512,6 +2522,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 64
 --- !u!1 &242417666
 GameObject:
   m_ObjectHideFlags: 0
@@ -2696,6 +2707,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 3
 --- !u!1 &247223604
 GameObject:
   m_ObjectHideFlags: 0
@@ -2746,6 +2758,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 23
 --- !u!1 &253723594
 GameObject:
   m_ObjectHideFlags: 0
@@ -2930,6 +2943,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 59
 --- !u!1 &272735701
 GameObject:
   m_ObjectHideFlags: 0
@@ -3055,6 +3069,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 36
 --- !u!1 &290667870
 GameObject:
   m_ObjectHideFlags: 0
@@ -3105,6 +3120,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 4
 --- !u!1 &299818807
 GameObject:
   m_ObjectHideFlags: 0
@@ -3155,6 +3171,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 86
 --- !u!1 &320662512
 GameObject:
   m_ObjectHideFlags: 0
@@ -3205,6 +3222,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 39
 --- !u!1 &335270695
 GameObject:
   m_ObjectHideFlags: 0
@@ -3287,7 +3305,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 335270698}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1329256233}
+        m_TargetAssemblyTypeName: _Scripts.Managers.GameManager, Assembly-CSharp
+        m_MethodName: InitializeBoardPositions
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &335270698
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3376,6 +3406,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 50
 --- !u!1 &352700432
 GameObject:
   m_ObjectHideFlags: 0
@@ -3458,7 +3489,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 352700435}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1329256233}
+        m_TargetAssemblyTypeName: _Scripts.Managers.GameManager, Assembly-CSharp
+        m_MethodName: InitializeBoardPositions
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &352700435
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3527,6 +3570,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1329256232}
+  - {fileID: 1364887330}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &388556859
@@ -3579,6 +3623,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 76
 --- !u!1 &402771314
 GameObject:
   m_ObjectHideFlags: 0
@@ -3763,6 +3808,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 75
 --- !u!1 &448875299
 GameObject:
   m_ObjectHideFlags: 0
@@ -4079,6 +4125,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 57
 --- !u!114 &485914428 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 9170691443041714032, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
@@ -4151,6 +4198,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 8
 --- !u!1 &507506150
 GameObject:
   m_ObjectHideFlags: 0
@@ -4332,6 +4380,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 92
 --- !u!1 &512509313
 GameObject:
   m_ObjectHideFlags: 0
@@ -4382,6 +4431,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 62
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -4854,7 +4904,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 539572129}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1329256233}
+        m_TargetAssemblyTypeName: _Scripts.Managers.GameManager, Assembly-CSharp
+        m_MethodName: InitializeBoardPositions
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 3
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &539572129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4943,6 +5005,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 52
 --- !u!1 &549042673
 GameObject:
   m_ObjectHideFlags: 0
@@ -5127,6 +5190,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 0
 --- !u!1 &559483029
 GameObject:
   m_ObjectHideFlags: 0
@@ -5266,6 +5330,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 10
 --- !u!1 &581442933
 GameObject:
   m_ObjectHideFlags: 0
@@ -5410,7 +5475,7 @@ GameObject:
   - component: {fileID: 583749941}
   - component: {fileID: 583749942}
   m_Layer: 0
-  m_Name: bluefinishPosition
+  m_Name: bluefinishPosition (99)
   m_TagString: Untagged
   m_Icon: {fileID: 8418204508859773708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -5445,10 +5510,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsStarNode: 0
   IsStartNode: 0
-  IsFinishNode: 0
+  IsFinishNode: 1
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 2
+  MyIndex: 99
 --- !u!1 &584459097
 GameObject:
   m_ObjectHideFlags: 0
@@ -5574,6 +5640,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 94
 --- !u!1 &629611015
 GameObject:
   m_ObjectHideFlags: 0
@@ -5624,6 +5691,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 15
 --- !u!1 &631069943
 GameObject:
   m_ObjectHideFlags: 0
@@ -5674,6 +5742,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 41
 --- !u!1 &635413551
 GameObject:
   m_ObjectHideFlags: 0
@@ -5857,6 +5926,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 83
 --- !u!1 &645239933
 GameObject:
   m_ObjectHideFlags: 0
@@ -5907,6 +5977,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 0
 --- !u!1 &651582183
 GameObject:
   m_ObjectHideFlags: 0
@@ -5957,6 +6028,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 16
 --- !u!1 &652655832
 GameObject:
   m_ObjectHideFlags: 0
@@ -6043,6 +6115,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 0
 --- !u!1 &666500110
 GameObject:
   m_ObjectHideFlags: 0
@@ -6093,6 +6166,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 71
 --- !u!1 &698154668
 GameObject:
   m_ObjectHideFlags: 0
@@ -6143,6 +6217,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 77
 --- !u!1 &707515847
 GameObject:
   m_ObjectHideFlags: 0
@@ -6193,6 +6268,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 5
 --- !u!1 &719687454
 GameObject:
   m_ObjectHideFlags: 0
@@ -6274,6 +6350,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 0
 --- !u!1 &741458284
 GameObject:
   m_ObjectHideFlags: 0
@@ -6324,6 +6401,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 49
 --- !u!1 &768193820
 GameObject:
   m_ObjectHideFlags: 0
@@ -6374,6 +6452,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 56
 --- !u!1 &774150824
 GameObject:
   m_ObjectHideFlags: 0
@@ -6491,7 +6570,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 813011370}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1329256233}
+        m_TargetAssemblyTypeName: _Scripts.Managers.GameManager, Assembly-CSharp
+        m_MethodName: InitializeBoardPositions
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &813011370
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6648,6 +6739,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 38
 --- !u!1001 &832801313
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6668,6 +6760,10 @@ PrefabInstance:
       propertyPath: PawnSprite
       value: 
       objectReference: {fileID: 21300000, guid: 9dfa5fbac143b401db9d69a0a681f980, type: 3}
+    - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
+      propertyPath: PlayerType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: DiceManager
       value: 
@@ -7210,6 +7306,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 44
 --- !u!1 &849223544
 GameObject:
   m_ObjectHideFlags: 0
@@ -7260,6 +7357,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 14
 --- !u!1 &851831401
 GameObject:
   m_ObjectHideFlags: 0
@@ -7310,6 +7408,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 88
 --- !u!1 &852875076
 GameObject:
   m_ObjectHideFlags: 0
@@ -7395,6 +7494,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 87
 --- !u!1 &867137609
 GameObject:
   m_ObjectHideFlags: 0
@@ -7614,7 +7714,7 @@ GameObject:
   - component: {fileID: 899529517}
   - component: {fileID: 899529518}
   m_Layer: 0
-  m_Name: redfinishPosition
+  m_Name: redfinishPosition (98)
   m_TagString: Untagged
   m_Icon: {fileID: 8418204508859773708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -7649,10 +7749,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsStarNode: 0
   IsStartNode: 0
-  IsFinishNode: 0
+  IsFinishNode: 1
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 2
+  MyIndex: 98
 --- !u!1 &905893152
 GameObject:
   m_ObjectHideFlags: 0
@@ -7703,6 +7804,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 26
 --- !u!1 &915800817
 GameObject:
   m_ObjectHideFlags: 0
@@ -7878,7 +7980,7 @@ GameObject:
   - component: {fileID: 929632202}
   - component: {fileID: 929632203}
   m_Layer: 0
-  m_Name: Node
+  m_Name: Node (0)
   m_TagString: Untagged
   m_Icon: {fileID: 8418204508859773708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -7917,6 +8019,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 158193457}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 0
 --- !u!1 &930357072
 GameObject:
   m_ObjectHideFlags: 0
@@ -7967,6 +8070,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 18
 --- !u!1 &934860842
 GameObject:
   m_ObjectHideFlags: 0
@@ -8017,6 +8121,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 47
 --- !u!1 &959640486
 GameObject:
   m_ObjectHideFlags: 0
@@ -8642,6 +8747,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 19
 --- !u!1 &1018555241
 GameObject:
   m_ObjectHideFlags: 0
@@ -8692,6 +8798,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 2
 --- !u!1 &1050839153
 GameObject:
   m_ObjectHideFlags: 0
@@ -8906,6 +9013,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 65
 --- !u!1 &1076771846
 GameObject:
   m_ObjectHideFlags: 0
@@ -8956,6 +9064,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 21
 --- !u!1 &1091837508
 GameObject:
   m_ObjectHideFlags: 0
@@ -9006,6 +9115,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 82
 --- !u!1 &1097295785
 GameObject:
   m_ObjectHideFlags: 0
@@ -9091,6 +9201,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 25
 --- !u!1 &1117276966
 GameObject:
   m_ObjectHideFlags: 0
@@ -9274,6 +9385,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 43
 --- !u!1 &1149944007
 GameObject:
   m_ObjectHideFlags: 0
@@ -9665,6 +9777,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 1
 --- !u!1 &1219634305
 GameObject:
   m_ObjectHideFlags: 0
@@ -9715,6 +9828,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 74
 --- !u!1 &1237141453
 GameObject:
   m_ObjectHideFlags: 0
@@ -9765,6 +9879,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 90
 --- !u!1 &1237408114
 GameObject:
   m_ObjectHideFlags: 0
@@ -10026,6 +10141,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 29
 --- !u!1 &1255982987
 GameObject:
   m_ObjectHideFlags: 0
@@ -10076,6 +10192,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 31
 --- !u!1 &1292753846
 GameObject:
   m_ObjectHideFlags: 0
@@ -10260,6 +10377,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 22
 --- !u!1 &1308591051
 GameObject:
   m_ObjectHideFlags: 0
@@ -10346,6 +10464,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 9
 --- !u!1 &1316016723
 GameObject:
   m_ObjectHideFlags: 0
@@ -10396,6 +10515,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 28
 --- !u!1 &1317279622
 GameObject:
   m_ObjectHideFlags: 0
@@ -10407,7 +10527,7 @@ GameObject:
   - component: {fileID: 1317279623}
   - component: {fileID: 1317279624}
   m_Layer: 0
-  m_Name: yellowfinishPosition
+  m_Name: yellowfinishPosition (96)
   m_TagString: Untagged
   m_Icon: {fileID: 8418204508859773708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -10446,6 +10566,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 2
+  MyIndex: 96
 --- !u!1 &1324216953
 GameObject:
   m_ObjectHideFlags: 0
@@ -10950,6 +11071,72 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 20
+--- !u!1 &1364887329
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1364887330}
+  - component: {fileID: 1364887332}
+  - component: {fileID: 1364887331}
+  m_Layer: 0
+  m_Name: UIManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1364887330
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1364887329}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 361406280}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1364887331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1364887329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3a0110396afe485aacfcc4680277e78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultGameState: 0
+--- !u!114 &1364887332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1364887329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a969ed49dc764358a80f1562b71475c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MainMenuPanel: {fileID: 1237408114}
+  NumOfPlayersSelectPanel: {fileID: 0}
+  PlayerColorSelectPanel: {fileID: 0}
+  GameFinishedPanel: {fileID: 0}
+  MainBg: {fileID: 0}
+  PlayerSelectButtons: []
+  WinText: {fileID: 0}
 --- !u!114 &1374442117 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 9170691443041714032, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
@@ -11128,7 +11315,7 @@ RectTransform:
   m_Father: {fileID: 652655833}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 0.81333333}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -11488,6 +11675,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 55
 --- !u!1 &1444868061
 GameObject:
   m_ObjectHideFlags: 0
@@ -11538,6 +11726,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 69
 --- !u!1 &1448864907
 GameObject:
   m_ObjectHideFlags: 0
@@ -11709,6 +11898,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 72
 --- !u!1 &1506286384
 GameObject:
   m_ObjectHideFlags: 0
@@ -11790,6 +11980,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 30
 --- !u!1 &1508542248
 GameObject:
   m_ObjectHideFlags: 0
@@ -12277,6 +12468,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 81
 --- !u!1 &1531295724
 GameObject:
   m_ObjectHideFlags: 0
@@ -12414,6 +12606,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 91
 --- !u!1 &1546509313
 GameObject:
   m_ObjectHideFlags: 0
@@ -12597,6 +12790,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 1873879754}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 51
 --- !u!1 &1559082745
 GameObject:
   m_ObjectHideFlags: 0
@@ -12647,6 +12841,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 67
 --- !u!1 &1560274612
 GameObject:
   m_ObjectHideFlags: 0
@@ -12697,6 +12892,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 46
 --- !u!1 &1572893526
 GameObject:
   m_ObjectHideFlags: 0
@@ -12971,6 +13167,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 40
 --- !u!1 &1601300326
 GameObject:
   m_ObjectHideFlags: 0
@@ -13052,6 +13249,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 78
 --- !u!1 &1619543622
 GameObject:
   m_ObjectHideFlags: 0
@@ -13102,6 +13300,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 42
 --- !u!1 &1631781113
 GameObject:
   m_ObjectHideFlags: 0
@@ -13152,6 +13351,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 66
 --- !u!1 &1633315488
 GameObject:
   m_ObjectHideFlags: 0
@@ -13202,6 +13402,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 6
 --- !u!1 &1649368239
 GameObject:
   m_ObjectHideFlags: 0
@@ -13283,6 +13484,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 27
 --- !u!1 &1665061562
 GameObject:
   m_ObjectHideFlags: 0
@@ -13364,6 +13566,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 11
 --- !u!1 &1679530699
 GameObject:
   m_ObjectHideFlags: 0
@@ -13445,6 +13648,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 68
 --- !u!1 &1692786764
 GameObject:
   m_ObjectHideFlags: 0
@@ -13495,6 +13699,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 35
 --- !u!1 &1741107593
 GameObject:
   m_ObjectHideFlags: 0
@@ -13545,6 +13750,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 84
 --- !u!1 &1744182990
 GameObject:
   m_ObjectHideFlags: 0
@@ -13595,6 +13801,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 61
 --- !u!1 &1766165995
 GameObject:
   m_ObjectHideFlags: 0
@@ -13645,6 +13852,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 95
 --- !u!1 &1766872402
 GameObject:
   m_ObjectHideFlags: 0
@@ -13829,6 +14037,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 13
 --- !u!114 &1789760138 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 130889670643526658, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
@@ -13953,6 +14162,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 60
 --- !u!1 &1888950872
 GameObject:
   m_ObjectHideFlags: 0
@@ -14003,6 +14213,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 54
 --- !u!114 &1908728610 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 9170691443041714032, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
@@ -14064,6 +14275,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 1789760138}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 34
 --- !u!1 &1970147744
 GameObject:
   m_ObjectHideFlags: 0
@@ -14277,6 +14489,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 93
 --- !u!1 &2009723377
 GameObject:
   m_ObjectHideFlags: 0
@@ -14327,6 +14540,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 53
 --- !u!114 &2014026504 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 9170691443041714032, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
@@ -14349,7 +14563,7 @@ GameObject:
   - component: {fileID: 2028480837}
   - component: {fileID: 2028480838}
   m_Layer: 0
-  m_Name: greenfinishPosition
+  m_Name: greenfinishPosition (97)
   m_TagString: Untagged
   m_Icon: {fileID: 8418204508859773708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -14384,10 +14598,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsStarNode: 0
   IsStartNode: 0
-  IsFinishNode: 0
+  IsFinishNode: 1
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 2
+  MyIndex: 97
 --- !u!1 &2029422211
 GameObject:
   m_ObjectHideFlags: 0
@@ -14438,6 +14653,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 48
 --- !u!1 &2036632701
 GameObject:
   m_ObjectHideFlags: 0
@@ -14593,6 +14809,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 85
 --- !u!1 &2056627343
 GameObject:
   m_ObjectHideFlags: 0
@@ -14911,6 +15128,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 58
 --- !u!1 &2096731606
 GameObject:
   m_ObjectHideFlags: 0
@@ -15240,6 +15458,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 12
 --- !u!1 &2117188992
 GameObject:
   m_ObjectHideFlags: 0
@@ -15290,6 +15509,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 37
 --- !u!1 &2119476145
 GameObject:
   m_ObjectHideFlags: 0
@@ -15375,6 +15595,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 1
+  MyIndex: 45
 --- !u!1 &2130072148
 GameObject:
   m_ObjectHideFlags: 0
@@ -15425,6 +15646,7 @@ MonoBehaviour:
   StartNodePlayer: {fileID: 0}
   PawnsOnNode: []
   ArrangeType: 0
+  MyIndex: 70
 --- !u!1 &2146618306
 GameObject:
   m_ObjectHideFlags: 0
