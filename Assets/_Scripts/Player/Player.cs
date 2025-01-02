@@ -63,7 +63,6 @@ namespace _Scripts.Player
                 _myPawnsColliders[i].enabled = false;
             }
         }
-
  
         #region PawnEnterRegion
 
@@ -120,12 +119,12 @@ namespace _Scripts.Player
             else if (PlayerDiceResults[0] == PlayerDiceResults[1])
             {
                 PlayerDiceResults.Clear();
-                GameManager.INSTANCE.ChangeTurn();
+                GameManager.GetInstance().ChangeTurn();
             }
             else
             {
                 PlayerDiceResults.Clear();
-                GameManager.INSTANCE.ChangeTurn();
+                GameManager.GetInstance().ChangeTurn();
             }
         }
 
@@ -323,7 +322,7 @@ namespace _Scripts.Player
             if (!anyPawnCanMove)
             {
                 Debug.Log("1");
-                GameManager.INSTANCE.ChangeTurn();
+                GameManager.GetInstance().ChangeTurn();
                 return;
             }
 
@@ -377,7 +376,7 @@ namespace _Scripts.Player
             if (movablePawnCount == 0)
             {
                 Debug.Log("2");
-                GameManager.INSTANCE.ChangeTurn();
+                GameManager.GetInstance().ChangeTurn();
                 return;
             }
 
@@ -502,7 +501,7 @@ namespace _Scripts.Player
             {
                 // no pawns can move, just change turn
                 Debug.Log("3");
-                GameManager.INSTANCE.ChangeTurn();
+                GameManager.GetInstance().ChangeTurn();
                 HasBonusMove = false;
                 BonusMove = 0;
             }
@@ -623,7 +622,7 @@ namespace _Scripts.Player
                     }
 
                     Debug.Log("4");
-                    GameManager.INSTANCE.ChangeTurn();
+                    GameManager.GetInstance().ChangeTurn();
                 }
             }
             else if (PlayerDiceResults.Count == 1)

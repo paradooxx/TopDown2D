@@ -111,7 +111,17 @@ namespace _Scripts.Player
         private void PawnClicked(int index)
         {
             MovePawn(MainPlayer.PlayerDiceResults[index]);
-            // MainPlayer.PlayerDiceResults.RemoveAt(index);
+            if (index == 0)
+            {
+                MainPlayer.DiceManager.DimDice1Sprite();
+                Debug.Log("Dimmed Dice 1 Sprite");
+            }
+            else
+            {
+                MainPlayer.DiceManager.DimDice2Sprite();
+                Debug.Log("Dimmed Dice 2 Sprite");
+            }
+                
             PawnCanvas.SetActive(false);
         }
 
@@ -284,7 +294,7 @@ namespace _Scripts.Player
                 MainPlayer.PawnsInPlay = MainPlayer._enteredPawns.Count;
 
                 MainPlayer.PawnPath[MovePawnToThisIndex].PositionPawns();
-                GameManager.INSTANCE.CheckForVictory();
+                GameManager.GetInstance().CheckForVictory();
             }
         }
 

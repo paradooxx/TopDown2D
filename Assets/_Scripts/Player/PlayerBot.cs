@@ -29,8 +29,8 @@ namespace _Scripts.Player
         public void MakeBotPlayTwoSteps(int moveStep1, int moveStep2)
         {
             Pawn bestPawn = null;
-            int bestMove = 0;
-            int bestScore = int.MinValue;
+            int bestMove = 1;
+            int bestScore;
 
             foreach (Pawn p in MyPlayer._enteredPawns)
             {
@@ -43,14 +43,9 @@ namespace _Scripts.Player
                     p.BotMove1and2Score = CheckForKill(p, moveStep1 + moveStep2) + CheckBeforeToRun(p) +
                                           CheckAheadForSafePosition(p, moveStep1 + moveStep2) + CheckForVictory(p);
 
-                    // Find the best move and pawn
-                    if (p.BotMove1Score > bestScore)
-                    {
-                        bestPawn = p;
-                        bestMove = 1;
-                        bestScore = p.BotMove1Score;
-                    }
-                    else if (p.BotMove2Score > bestScore)
+                    bestScore = p.BotMove1Score;
+                    // find the best move and pawn
+                    if (p.BotMove2Score > bestScore)
                     {
                         bestPawn = p;
                         bestMove = 2;
@@ -66,11 +61,7 @@ namespace _Scripts.Player
             }
 
             // Perform the best move
-            if (bestMove == 1)
-            {
-                bestPawn.MovePawn(moveStep1);
-            }
-            else if (bestMove == 2)
+            if (bestMove == 2)
             {
                 bestPawn.MovePawn(moveStep2);
             }
@@ -79,12 +70,6 @@ namespace _Scripts.Player
                 MyPlayer.PlayerDiceResults.Clear();
                 bestPawn.MovePawn(moveStep1 + moveStep2);
             }
-        }
-
-
-        public void BotBonusMovePlay(int bonusMoveStep)
-        {
-            BestPawn(bonusMoveStep).MovePawn(bonusMoveStep);
         }
 
         // best pawn to move for a given move
@@ -120,6 +105,7 @@ namespace _Scripts.Player
         // checks moves ahead of current position
         public int CheckForKill(Pawn p, int step)
         {
+            int score;
             int nearestKillDistance = p.CurrentPositionIndex + 1;
             int targetIndex = p.CurrentPositionIndex + step;
             for (int i = p.CurrentPositionIndex + 1;
@@ -129,7 +115,18 @@ namespace _Scripts.Player
                 if (p.MainPlayer.PawnPath[i].PawnsOnNode.Count == 1 &&
                     p.MainPlayer != MyPlayer.PawnPath[i].PawnsOnNode[0].MainPlayer)
                 {
-                    nearestKillDistance = Math.Max(nearestKillDistance, i);
+                    nearestKillDistance = Math.Max(nearestKillDistance, i - p.CurrentPositionIndex);
+                }
+            }
+
+            score = 1;
+
+            for (int i = targetIndex; i <= targetIndex + 12 && i <= 71; i++)
+            {
+                if (p.MainPlayer.PawnPath[i].PawnsOnNode.Count == 1 &&
+                    p.MainPlayer != MyPlayer.PawnPath[i].PawnsOnNode[0].MainPlayer)
+                {
+                    
                 }
             }
 
@@ -174,5 +171,55 @@ namespace _Scripts.Player
             int victoryDistance = 71 - p.CurrentPositionIndex;
             return VictoryWeight * (71 - victoryDistance) / 71;
         }
+
+        public int FindPreviousPathsNearestEnemy(Pawn p)
+        {
+            int nearestPlayerDistance = p.CurrentPositionIndex - 1;
+            for (int i = p.CurrentPositionIndex - 1; i >= 0 ; i--)
+            {
+                if (p.MainPlayer.PawnPath[i].PawnsOnNode.Count == 1 &&
+                    p.MainPlayer != MyPlayer.PawnPath[i].PawnsOnNode[0].MainPlayer)
+                {
+                    nearestPlayerDistance = p.CurrentPositionIndex - i ;
+                    break;
+                }
+            }
+            return nearestPlayerDistance;
+        }
+
+        public int FindNearestEnemy(Pawn p)
+        {
+            int nearestPlayerDistance = 71 - p.CurrentPositionIndex;
+            for (int i = p.CurrentPositionIndex + 1; i <= 71; i++)
+            {
+                if (p.MainPlayer.PawnPath[i].PawnsOnNode.Count == 1 &&
+                    p.MainPlayer != MyPlayer.PawnPath[i].PawnsOnNode[0].MainPlayer)
+                {
+                    nearestPlayerDistance = i - p.CurrentPositionIndex;
+                    break;
+                }
+                
+            }
+            return nearestPlayerDistance;
+        }
+
+        public int FindNearestSafePosition(Pawn p)
+        {
+            int nearestSafePositionDistance = 63 - p.CurrentPositionIndex;
+            for (int i = p.CurrentPositionIndex + 1; i <= 63; i++)
+            {
+                if (MyPlayer.PawnPath[i].IsStarNode ||
+                    (p.MainPlayer.PawnPath[i].IsStartNode &&
+                     p.MainPlayer.PawnPath[i].StartNodePlayer ==
+                     p.MainPlayer))
+                {
+                    nearestSafePositionDistance = i - p.CurrentPositionIndex;
+                    break;
+                }
+                
+            }
+            return nearestSafePositionDistance;
+        }
+        
     }
 }

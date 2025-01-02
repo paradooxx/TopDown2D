@@ -42,14 +42,7 @@ namespace _Scripts.Managers
 
         public int[] RollDice(Action<int, int> onDiceRolled)
         {
-            if (gameObject.activeInHierarchy)
-            {
-                StartCoroutine(RollDiceTask(onDiceRolled));
-            }
-            else
-            {
-                onDiceRolled?.Invoke(3, 5);
-            }
+            StartCoroutine(RollDiceTask(onDiceRolled));
 
             return new int[] { Dice1Result, Dice2Result };
         }
@@ -152,6 +145,22 @@ namespace _Scripts.Managers
             gameObject.SetActive(false);
             Dice1Sprite.gameObject.SetActive(false);
             Dice2Sprite.gameObject.SetActive(false);
+        }
+
+        public void DimDice1Sprite()
+        {
+            Dice1Sprite.color = new Color(0.29f, 0.29f, 0.29f);
+        }
+
+        public void DimDice2Sprite()
+        {
+            Dice2Sprite.color = new Color(0.29f, 0.29f, 0.29f);
+        }
+
+        public void ResetDiceImage()
+        {
+            Dice1Sprite.color = Color.white;
+            Dice1Sprite.color = Color.white;
         }
     }
 }

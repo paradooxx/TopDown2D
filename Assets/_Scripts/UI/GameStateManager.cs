@@ -1,12 +1,13 @@
 using _Scripts.Enums;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace _Scripts.UI
 {
     public class GameStateManager : MonoBehaviour
     {
-        [SerializeField] private GameState defaultGameState;
+        [SerializeField] private GameState DefaultGameState;
 
         public static GameStateManager Instance { get; private set; }
         public static GameState CurrentGameState { get; private set; }
@@ -23,11 +24,12 @@ namespace _Scripts.UI
             {
                 Destroy(gameObject);
             }
+            Application.targetFrameRate = 60;
         }
 
         private void Start()
         {
-            SetState(defaultGameState);
+            SetState(DefaultGameState);
         }
 
         public void SetState(GameState gameState)

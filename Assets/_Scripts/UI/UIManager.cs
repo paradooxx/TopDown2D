@@ -3,6 +3,7 @@ using _Scripts.Enums;
 using _Scripts.Managers;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
@@ -16,10 +17,10 @@ namespace _Scripts.UI
         [SerializeField] private GameObject GameFinishedPanel;
 
         [SerializeField] private GameObject MainBg;
-        
-        [SerializeField] private List<Button> PlayerSelectButtons;
 
         [SerializeField] private TMP_Text WinText;
+
+        [SerializeField] private Player.Player[] Players;
 
         private GameObject _activePanel;
         private List<GameObject> _unactivePanels;
@@ -30,18 +31,9 @@ namespace _Scripts.UI
 
         private void Awake()
         {
-            _unactivePanels = new List<GameObject> { MainMenuPanel, NumOfPlayersSelectPanel, PlayerColorSelectPanel, GameFinishedPanel };
+            _unactivePanels = new List<GameObject> { MainMenuPanel };
             HideAllPanels();
-            MainBg.SetActive(true);
-        }
-
-        private void Start()
-        {
-            foreach (var button in PlayerSelectButtons)
-            {
-                button.onClick.AddListener(() => HighlightButton(button));
-            }
-            HighlightButton(PlayerSelectButtons[0]);
+            // MainBg.SetActive(true);
         }
 
         private void ManagePanels(GameState state)
@@ -51,12 +43,12 @@ namespace _Scripts.UI
                 case GameState.MAIN_MENU:
                     SetActivePanel(MainMenuPanel);
                     break;
-                case GameState.PLAYER_SELECT_MENU:
-                    SetActivePanel(PlayerColorSelectPanel);
-                    break;
+                // case GameState.PLAYER_SELECT_MENU:
+                //     SetActivePanel(PlayerColorSelectPanel);
+                //     break;
                 case GameState.GAME_FINISHED:
-                    SetActivePanel(GameFinishedPanel);
-                    WinText.text = "Winner: " + GameManager.INSTANCE.CurrentPlayer.ToString();
+                    // SetActivePanel(GameFinishedPanel);
+                    // WinText.text = "Winner: " + GameManager.INSTANCE.CurrentPlayer.ToString();
                     break;
                 case GameState.MAIN_GAME:
                     HideAllPanels();
@@ -106,14 +98,21 @@ namespace _Scripts.UI
             SetActivePanel(MainMenuPanel);
         }
         
-        private void HighlightButton(Button clickedButton)
+        // private void HighlightButton(Button clickedButton)
+        // {
+        //     foreach (var button in PlayerSelectButtons)
+        //     {
+        //         button.image.color = new Color32(130, 130, 130, 255);
+        //     }
+        //     // Highlight the clicked button with the unique color
+        //     clickedButton.image.color = Color.black;
+        // }
+
+        public void ReloadScene()
         {
-            foreach (var button in PlayerSelectButtons)
-            {
-                button.image.color = button.colors.normalColor;
-            }
-            // Highlight the clicked button with the unique color
-            clickedButton.image.color = Color.yellow;
+            SceneManager.LoadScene(0);
         }
+        
+        
     }
 }

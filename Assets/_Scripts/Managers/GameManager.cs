@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using _Scripts.Enums;
 using _Scripts.Player;
 using _Scripts.UI;
@@ -10,7 +11,12 @@ namespace _Scripts.Managers
     public class GameManager : MonoBehaviour
     {
         [SerializeField] private GameObject MainGameBoard;
-        public static GameManager INSTANCE;
+        private static GameManager _instance;
+
+        public static GameManager GetInstance()
+        {
+            return _instance == null ? FindObjectOfType<GameManager>() : _instance;
+        }
         
         //yellow, green, red, blue in this order
         public Player.Player[] Players;
@@ -25,9 +31,9 @@ namespace _Scripts.Managers
 
         private void Awake()
         {
-            if(INSTANCE == null)
+            if(_instance == null)
             {
-                INSTANCE = this;
+                _instance = this;
             }
             else
             {
@@ -35,36 +41,18 @@ namespace _Scripts.Managers
             }
             InitializeGame();
         }
-
-        // selects how many players will be in game
-        // called in UI button
-        public void InitializeNumOfPlayers(int numberOfPlayers)
-        {
-            if (numberOfPlayers <= 0)
-            {
-                numberOfPlayers = 2;
-            }
-            
-            switch (numberOfPlayers)
-            {
-                case 2:
-                    OnNumOfPlayersTwo();
-                    break;
-                case 3:
-                    OnNumOfPlayersThree();
-                    break;
-                case 4:
-                    Players[0].PlayerType = PlayerType.PLAYER;
-                    Players[1].PlayerType = PlayerType.PLAYER;
-                    Players[2].PlayerType = PlayerType.PLAYER;
-                    Players[3].PlayerType = PlayerType.PLAYER;
-                    break;
-            }
-        }
+        
         public void StartGame()
         {
             for (int i = 0; i < Players.Length; i++)
             {
+                Players[i].PlayerType = Util.GetPlayerEnumFromId(StaticDatas.PLAYERS_DATA_TYPES.playerDataList[i].TypeId);
+                Debug.Log(Players[i].PlayerType);
+            }
+            
+            for (int i = 0; i < Players.Length; i++)
+            {
+                Players[i].MyIndex = i;
                 if (Players[i].PlayerType == PlayerType.PLAYER || Players[i].PlayerType == PlayerType.BOT)
                 {
                     StartingPlayers.Add(Players[i]);
@@ -75,94 +63,63 @@ namespace _Scripts.Managers
             {
                 StartingPlayers[i].IsMyTurn = i == _currentPlayerIndex;
                 StartingPlayers[i].gameObject.SetActive(true);
+
+                if (StartingPlayers[i].PlayerType == PlayerType.BOT)
+                {
+                    StartingPlayers[i].DiceManager.DisableDiceCollider();
+                    StartingPlayers[i].DisableMyPawns();
+                }
             }
-            _currentPlayerIndex = _selectedPlayerIndex;
+            
+            _currentPlayerIndex = 0;
             CurrentPlayer = StartingPlayers[_currentPlayerIndex];
+            CurrentPlayer.ActivateDice();
             SetDicePosition(CurrentPlayer);
+            
+            if (CurrentPlayer.PlayerType == PlayerType.BOT)
+            {
+                CurrentPlayer.DiceManager.DisableDiceCollider();
+                CurrentPlayer.StartRollDice();
+            }
             
             GameStateManager.Instance.SetState(GameState.MAIN_GAME);
         }
-        
-        // finding which player's place will be empty based on selected player by player
-        // called when 2 players are in game
-        private void OnNumOfPlayersTwo()
-        {
-            switch (_selectedPlayerIndex)
-            {
-                case 0: // yellow selected
-                case 2: // red selected
-                    Players[0].PlayerType = PlayerType.PLAYER;
-                    Players[1].PlayerType = PlayerType.NONE;
-                    Players[2].PlayerType = PlayerType.PLAYER;
-                    Players[3].PlayerType = PlayerType.NONE;
-                    break;
-                case 1: // green selected
-                case 3: // blue selected
-                    Players[0].PlayerType = PlayerType.NONE;
-                    Players[1].PlayerType = PlayerType.PLAYER;
-                    Players[2].PlayerType = PlayerType.NONE;
-                    Players[3].PlayerType = PlayerType.PLAYER;
-                    break;
-            }
-        }
 
-        // finding which player's place will be empty based on selected player by player
-        // called when 3 players are in game
-        private void OnNumOfPlayersThree()
-        {
-            switch (_selectedPlayerIndex)
-            {
-                case 0: // yellow seleted
-                    Players[0].PlayerType = PlayerType.PLAYER;
-                    Players[1].PlayerType = PlayerType.PLAYER;
-                    Players[2].PlayerType = PlayerType.PLAYER;
-                    Players[3].PlayerType = PlayerType.NONE;
-                    break;
-                case 1: // green selected
-                    Players[0].PlayerType = PlayerType.NONE;
-                    Players[1].PlayerType = PlayerType.PLAYER;
-                    Players[2].PlayerType = PlayerType.PLAYER;
-                    Players[3].PlayerType = PlayerType.PLAYER;
-                    break;
-                case 2: // red selected
-                    Players[0].PlayerType = PlayerType.PLAYER;
-                    Players[1].PlayerType = PlayerType.NONE;
-                    Players[2].PlayerType = PlayerType.PLAYER;
-                    Players[3].PlayerType = PlayerType.PLAYER;
-                    break;
-                case 3: // blue selected
-                    Players[0].PlayerType = PlayerType.PLAYER;
-                    Players[1].PlayerType = PlayerType.PLAYER;
-                    Players[2].PlayerType = PlayerType.NONE;
-                    Players[3].PlayerType = PlayerType.PLAYER;
-                    break;
-            }
-        }
-
-        // initialize board rotations based on the color of player selected by player
-        // call in UI button
         public void InitializeBoardPositions(int selectedPlayerIndex)
         {
-            if (_selectedPlayerIndex <= 0)
+            Quaternion originalRotation = MainGameBoard.transform.rotation;
+            
+            if (selectedPlayerIndex < 0)
             {
-                _selectedPlayerIndex = 0;
+                selectedPlayerIndex = 0;
             }
             
-            switch (_selectedPlayerIndex)
+            _selectedPlayerIndex = selectedPlayerIndex;
+            Debug.Log(_selectedPlayerIndex);
+    
+            Debug.Log($"Rotating board for player {selectedPlayerIndex}");
+    
+            switch (selectedPlayerIndex)
             {
                 case 0:
-                    MainGameBoard.transform.rotation = Quaternion.identity;
+                    MainGameBoard.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+                    _currentPlayerIndex = StartingPlayers.Count - 1;
                     break;
                 case 1:
                     MainGameBoard.transform.rotation = Quaternion.Euler(0f, 0f, 90f);
+                    _currentPlayerIndex = StartingPlayers.Count - 1;
                     break;
                 case 2:
                     MainGameBoard.transform.rotation = Quaternion.Euler(0f, 0f, 180f);
+                    _currentPlayerIndex = StartingPlayers.Count - 1;
                     break;
                 case 3:
                     MainGameBoard.transform.rotation = Quaternion.Euler(0f, 0f, -90f);
+                    _currentPlayerIndex = StartingPlayers.Count - 1;
                     break;
             }
+    
+            Debug.Log($"Rotation changed from {originalRotation.eulerAngles} to {MainGameBoard.transform.rotation.eulerAngles}");
         }
 
         // initializing game
