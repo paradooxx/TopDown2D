@@ -40,9 +40,11 @@ namespace _Scripts.Player
 
         public bool isHome;
 
-        [Header("Bot Move Score")] public int BotMove1Score;
-        public int BotMove2Score;
-        public int BotMove1and2Score;
+        [Header("Bot Move Score")] 
+        public int BotMoveScore;
+        public int BotTwoMovesScore;
+        public int TakeStep1;
+        public int TakeStep2;
         [SerializeField] private int MovePawnToThisIndex;
 
         private void Start()
@@ -111,17 +113,7 @@ namespace _Scripts.Player
         private void PawnClicked(int index)
         {
             MovePawn(MainPlayer.PlayerDiceResults[index]);
-            if (index == 0)
-            {
-                MainPlayer.DiceManager.DimDice1Sprite();
-                Debug.Log("Dimmed Dice 1 Sprite");
-            }
-            else
-            {
-                MainPlayer.DiceManager.DimDice2Sprite();
-                Debug.Log("Dimmed Dice 2 Sprite");
-            }
-                
+            // MainPlayer.PlayerDiceResults.RemoveAt(index);
             PawnCanvas.SetActive(false);
         }
 
@@ -199,6 +191,12 @@ namespace _Scripts.Player
                 enterSequence.Play();
             }
             MainPlayer.PlayerDiceResults.Remove(5);
+            StartCoroutine(OnPawnMoveCompleteCo());
+        }
+
+        private IEnumerator OnPawnMoveCompleteCo()
+        {
+            yield return new WaitForSeconds(0.25f);
             MainPlayer.OnPawnMoveComplete();
         }
 
@@ -238,7 +236,7 @@ namespace _Scripts.Player
                         CurrentNode.RemovePawn(this);
                     }
 
-                    nextNode.AddPawn(this);
+                    // nextNode.AddPawn(this);
                     CurrentPositionIndex++;
                     CurrentNode = nextNode;
 
@@ -257,12 +255,13 @@ namespace _Scripts.Player
                     if (nextNode == lastNodeInMove)
                     {
                         lastNodeInMove.EliminatePawn(this);
+                        lastNodeInMove.AddPawn(this);
                     }
                 }
             }
 
             MainPlayer.PlayerDiceResults.Remove(moveSteps);
-            MainPlayer.OnPawnMoveComplete();
+            StartCoroutine(OnPawnMoveCompleteCo());
         }
 
         // call this in an ui button through editor
@@ -393,7 +392,7 @@ namespace _Scripts.Player
                         CurrentNode.RemovePawn(this);
                     }
 
-                    previousNode.AddPawn(this);
+                    // previousNode.AddPawn(this);
                     CurrentNode = previousNode;
                     CurrentPositionIndex--;
 
@@ -437,7 +436,7 @@ namespace _Scripts.Player
             resetSequence.Play();
 
             // Notify the player that the move is complete
-            MainPlayer.OnPawnMoveComplete();
+            // MainPlayer.OnPawnMoveComplete();
         }
     }
 }

@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using _Scripts.Enums;
 using _Scripts.Player;
 using _Scripts.UI;
@@ -33,13 +32,14 @@ namespace _Scripts.Managers
         {
             if(_instance == null)
             {
+                
                 _instance = this;
             }
             else
             {
                 Destroy(gameObject);
             }
-            InitializeGame();
+            // InitializeGame();
         }
         
         public void StartGame()
@@ -170,17 +170,6 @@ namespace _Scripts.Managers
             }
         }
 
-        public void ResetDice()
-        {
-            StartCoroutine(ResetDiceCo());
-        }
-        
-        private IEnumerator ResetDiceCo()
-        {
-            yield return new WaitForSeconds(TurnChangeTime);
-            CurrentPlayer.DiceManager.ResetDiceImage();
-        }
-
         public void UIButtonChangeTurn()
         {
             ChangeTurn();
@@ -246,6 +235,13 @@ namespace _Scripts.Managers
                 }
 
                 // update turn for remaining players
+
+                if (StartingPlayers.Count == 1)
+                {
+                    Debug.Log("Game Finished");
+                    // return to home
+                    // show end screen
+                }
                 _currentPlayerIndex = _currentPlayerIndex % StartingPlayers.Count;
                 CurrentPlayer = StartingPlayers[_currentPlayerIndex];
 

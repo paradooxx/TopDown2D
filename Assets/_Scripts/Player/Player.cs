@@ -63,6 +63,7 @@ namespace _Scripts.Player
                 _myPawnsColliders[i].enabled = false;
             }
         }
+
  
         #region PawnEnterRegion
 
@@ -500,7 +501,7 @@ namespace _Scripts.Player
             if (movablePawnCount == 0)
             {
                 // no pawns can move, just change turn
-                Debug.Log("3");
+                Debug.Log("No Pawns can move : bonus move");
                 GameManager.GetInstance().ChangeTurn();
                 HasBonusMove = false;
                 BonusMove = 0;
@@ -521,7 +522,9 @@ namespace _Scripts.Player
                     {
                         if (PlayerType == PlayerType.BOT)
                         {
+                            HasBonusMove = false;
                             MyPlayerBot.MakeBotPlay(bonusMoveStep);
+                            BonusMove = 0;
                             return;
                         }
                         p.EnableCollider();

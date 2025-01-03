@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
-using TMPro;
+using System.Linq;
+using _Scripts.Utils;
 using UnityEngine;
 using UnityEngine.Events;
 using Random = UnityEngine.Random;
@@ -27,9 +28,6 @@ namespace _Scripts.Managers
         public bool CustomDiceResult = true;
         public int CustomDice1Value = 5, CustomDice2Value = 2;
 
-        [SerializeField] private TMP_Text CustomDice1Text;
-        [SerializeField] private TMP_Text CustomDice2Text;
-
         private void Start()
         {
             ResetDiceImage();
@@ -46,18 +44,20 @@ namespace _Scripts.Managers
 
             return new int[] { Dice1Result, Dice2Result };
         }
+        
+        public SerializableQueue previousSums = new SerializableQueue();
 
-        // animating and deciding the dice roll result
         private IEnumerator RollDiceTask(Action<int, int> onDiceRolled)
         {
             float elapsedTime = 0.0f;
 
+            // Animation loop
             while (elapsedTime < TotalAnimationTime)
             {
                 Dice1Sprite.sprite = DiceAnimationSprites[Random.Range(0, DiceAnimationSprites.Length)];
                 Dice2Sprite.sprite = DiceAnimationSprites[Random.Range(0, DiceAnimationSprites.Length)];
 
-                yield return new WaitForSeconds(DiceSpriteChangeTime); // Task.Delay takes milliseconds
+                yield return new WaitForSeconds(DiceSpriteChangeTime);
 
                 elapsedTime += DiceSpriteChangeTime;
             }
@@ -66,22 +66,36 @@ namespace _Scripts.Managers
             {
                 Dice1Result = CustomDice1Value;
                 Dice2Result = CustomDice2Value;
-
-                Dice1Sprite.sprite = DiceAnimationSprites[Dice1Result - 1];
-                Dice2Sprite.sprite = DiceAnimationSprites[Dice2Result - 1];
-
-                onDiceRolled?.Invoke(Dice1Result, Dice2Result);
             }
             else
             {
-                Dice1Result = Random.Range(1, 7);
-                Dice2Result = Random.Range(1, 7);
+                do
+                {
+                    Dice1Result = Random.Range(1, 7);
+                    Dice2Result = Random.Range(1, 7);
+                } while (IsThirdConsecutiveSum(Dice1Result + Dice2Result));
 
-                Dice1Sprite.sprite = DiceAnimationSprites[Dice1Result - 1];
-                Dice2Sprite.sprite = DiceAnimationSprites[Dice2Result - 1];
-
-                onDiceRolled?.Invoke(Dice1Result, Dice2Result);
+                // Update sum history
+                previousSums.Enqueue(Dice1Result + Dice2Result);
+                if (previousSums.Count > 3)
+                {
+                    previousSums.Dequeue();
+                }
             }
+
+            // Update sprites and invoke callback
+            Dice1Sprite.sprite = DiceAnimationSprites[Dice1Result - 1];
+            Dice2Sprite.sprite = DiceAnimationSprites[Dice2Result - 1];
+
+            onDiceRolled?.Invoke(Dice1Result, Dice2Result);
+        }
+
+        private bool IsThirdConsecutiveSum(int currentSum)
+        {
+            if (previousSums.Count < 2) 
+                return false;
+        
+            return previousSums.Queue.All(sum => sum == currentSum);
         }
 
         public void DisableDiceCollider()
@@ -108,14 +122,12 @@ namespace _Scripts.Managers
         {
             CustomDiceResult = true;
             CustomDice1Value = value;
-            CustomDice1Text.text = CustomDice1Value.ToString();
         }
 
         public void SetDice2Result(int value)
         {
             CustomDiceResult = true;
             CustomDice2Value = value;
-            CustomDice2Text.text = CustomDice2Value.ToString();
         }
 
         private bool _canRoll;
@@ -145,22 +157,6 @@ namespace _Scripts.Managers
             gameObject.SetActive(false);
             Dice1Sprite.gameObject.SetActive(false);
             Dice2Sprite.gameObject.SetActive(false);
-        }
-
-        public void DimDice1Sprite()
-        {
-            Dice1Sprite.color = new Color(0.29f, 0.29f, 0.29f);
-        }
-
-        public void DimDice2Sprite()
-        {
-            Dice2Sprite.color = new Color(0.29f, 0.29f, 0.29f);
-        }
-
-        public void ResetDiceImage()
-        {
-            Dice1Sprite.color = Color.white;
-            Dice1Sprite.color = Color.white;
         }
     }
 }
