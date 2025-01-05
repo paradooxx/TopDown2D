@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using _Scripts.Board;
 using _Scripts.Enums;
 using _Scripts.Player;
 using _Scripts.UI;
@@ -16,23 +18,22 @@ namespace _Scripts.Managers
         {
             return _instance == null ? FindObjectOfType<GameManager>() : _instance;
         }
-        
+
         //yellow, green, red, blue in this order
-        public Player.Player[] Players;
+        public List<Player.Player> Players;
         public Player.Player CurrentPlayer;
         [SerializeField] private List<Player.Player> StartingPlayers;
 
-        private int _currentPlayerIndex;
-        
+        public int _currentPlayerIndex;
+
         private int _selectedPlayerIndex = 0;
 
         [SerializeField] private float TurnChangeTime = 1.5f;
 
         private void Awake()
         {
-            if(_instance == null)
+            if (_instance == null)
             {
-                
                 _instance = this;
             }
             else
@@ -41,24 +42,29 @@ namespace _Scripts.Managers
             }
             // InitializeGame();
         }
-        
+
+        private void Start()
+        {
+            // LoadSaveGame();
+        }
+
         public void StartGame()
         {
-            for (int i = 0; i < Players.Length; i++)
+            for (int i = 0; i < Players.Count; i++)
             {
-                Players[i].PlayerType = Util.GetPlayerEnumFromId(StaticDatas.PLAYERS_DATA_TYPES.playerDataList[i].TypeId);
+                Players[i].PlayerType =
+                    Util.GetPlayerEnumFromId(StaticDatas.PLAYERS_DATA_TYPES.playerDataList[i].TypeId);
                 Debug.Log(Players[i].PlayerType);
             }
-            
-            for (int i = 0; i < Players.Length; i++)
+
+            for (int i = 0; i < Players.Count; i++)
             {
-                Players[i].MyIndex = i;
                 if (Players[i].PlayerType == PlayerType.PLAYER || Players[i].PlayerType == PlayerType.BOT)
                 {
                     StartingPlayers.Add(Players[i]);
                 }
             }
-            
+
             for (int i = 0; i < StartingPlayers.Count; i++)
             {
                 StartingPlayers[i].IsMyTurn = i == _currentPlayerIndex;
@@ -69,36 +75,39 @@ namespace _Scripts.Managers
                     StartingPlayers[i].DiceManager.DisableDiceCollider();
                     StartingPlayers[i].DisableMyPawns();
                 }
+                // StartingPlayers[i].StartGame();
+                StartingPlayers[i].PlayerStateManager.LoadDefaultBoardState(StartingPlayers, StartingPlayers[i].DiceManager, this);
+                StartingPlayers[i].NewGameStart();
             }
-            
-            _currentPlayerIndex = 0;
+
+            // _currentPlayerIndex = 0;
             CurrentPlayer = StartingPlayers[_currentPlayerIndex];
             CurrentPlayer.ActivateDice();
-            SetDicePosition(CurrentPlayer);
+            // SetDicePosition(CurrentPlayer);
             
             if (CurrentPlayer.PlayerType == PlayerType.BOT)
             {
                 CurrentPlayer.DiceManager.DisableDiceCollider();
                 CurrentPlayer.StartRollDice();
             }
-            
+
             GameStateManager.Instance.SetState(GameState.MAIN_GAME);
         }
 
         public void InitializeBoardPositions(int selectedPlayerIndex)
         {
             Quaternion originalRotation = MainGameBoard.transform.rotation;
-            
+
             if (selectedPlayerIndex < 0)
             {
                 selectedPlayerIndex = 0;
             }
-            
+
             _selectedPlayerIndex = selectedPlayerIndex;
             Debug.Log(_selectedPlayerIndex);
-    
+
             Debug.Log($"Rotating board for player {selectedPlayerIndex}");
-    
+
             switch (selectedPlayerIndex)
             {
                 case 0:
@@ -118,8 +127,9 @@ namespace _Scripts.Managers
                     _currentPlayerIndex = StartingPlayers.Count - 1;
                     break;
             }
-    
-            Debug.Log($"Rotation changed from {originalRotation.eulerAngles} to {MainGameBoard.transform.rotation.eulerAngles}");
+
+            Debug.Log(
+                $"Rotation changed from {originalRotation.eulerAngles} to {MainGameBoard.transform.rotation.eulerAngles}");
         }
 
         // initializing game
@@ -129,9 +139,8 @@ namespace _Scripts.Managers
             _currentPlayerIndex = 0;
             StartingPlayers = new List<Player.Player>();
 
-            for (int i = 0; i < Players.Length; i++)
+            for (int i = 0; i < Players.Count; i++)
             {
-                Players[i].MyIndex = i;
                 if (Players[i].PlayerType == PlayerType.PLAYER || Players[i].PlayerType == PlayerType.BOT)
                 {
                     StartingPlayers.Add(Players[i]);
@@ -149,18 +158,18 @@ namespace _Scripts.Managers
                     StartingPlayers[i].DisableMyPawns();
                 }
             }
-            
+
             CurrentPlayer = StartingPlayers[_currentPlayerIndex];
             CurrentPlayer.ActivateDice();
-            SetDicePosition(CurrentPlayer);
-            
+            // SetDicePosition(CurrentPlayer);
+
             if (CurrentPlayer.PlayerType == PlayerType.BOT)
             {
                 CurrentPlayer.DiceManager.DisableDiceCollider();
                 CurrentPlayer.StartRollDice();
             }
         }
-        
+
         // setting position of the dice based on current player
         private void SetDicePosition(Player.Player currentPlayer)
         {
@@ -172,20 +181,23 @@ namespace _Scripts.Managers
 
         public void UIButtonChangeTurn()
         {
+            CurrentPlayer.ShouldChangeTurn = true;
+            Debug.Log("Invoked: " + CurrentPlayer.ShouldChangeTurn);
             ChangeTurn();
+            CurrentPlayer.ShouldChangeTurn = false;
         }
-        
+
         public void ChangeTurn()
         {
             StartCoroutine(ChangeTurnCoroutine());
         }
-        
+
         private IEnumerator ChangeTurnCoroutine()
         {
             yield return new WaitForSeconds(TurnChangeTime);
             // checking for victory
             CheckForVictory();
-            
+
             Player.Player oldPlayer = CurrentPlayer;
             // changing the current player
             if (CurrentPlayer.ShouldChangeTurn)
@@ -197,11 +209,12 @@ namespace _Scripts.Managers
                     p.DisableCollider();
                     p.IsPawnMovable = false;
                 }
+
                 _currentPlayerIndex = (_currentPlayerIndex + 1) % StartingPlayers.Count;
             }
 
             CurrentPlayer = StartingPlayers[_currentPlayerIndex];
-            
+
             for (int i = 0; i < StartingPlayers.Count; i++)
             {
                 StartingPlayers[i].IsMyTurn = i == _currentPlayerIndex;
@@ -227,7 +240,7 @@ namespace _Scripts.Managers
                 CurrentPlayer.DisableMyPawns();
                 StartingPlayers.Remove(CurrentPlayer);
 
-                // checking if the game should end
+                // checking if the game should end-
                 if (StartingPlayers.Count == 1)
                 {
                     // game over logic
@@ -242,16 +255,50 @@ namespace _Scripts.Managers
                     // return to home
                     // show end screen
                 }
-                _currentPlayerIndex = _currentPlayerIndex % StartingPlayers.Count;
-                CurrentPlayer = StartingPlayers[_currentPlayerIndex];
-
-                for (int i = 0; i < StartingPlayers.Count; i++)
-                {
-                    StartingPlayers[i].IsMyTurn = i == _currentPlayerIndex;
-                }
-
-                SetDicePosition(CurrentPlayer);
             }
+        }
+
+        public void LoadSaveGame()
+        {
+            for (int i = 0; i < Players.Count; i++)
+            {
+                Players[i].PlayerType =
+                    Util.GetPlayerEnumFromId(StaticDatas.PLAYERS_DATA_TYPES.playerDataList[i].TypeId);
+                Debug.Log(Players[i].PlayerType);
+                
+                if (Players[i].PlayerType == PlayerType.PLAYER || Players[i].PlayerType == PlayerType.BOT)
+                {
+                    StartingPlayers.Add(Players[i]);
+                }
+            }
+
+            for (int i = 0; i < StartingPlayers.Count; i++)
+            {
+                StartingPlayers[i].IsMyTurn = i == _currentPlayerIndex;
+                StartingPlayers[i].gameObject.SetActive(true);
+
+                if (StartingPlayers[i].PlayerType == PlayerType.BOT)
+                {
+                    StartingPlayers[i].DiceManager.DisableDiceCollider();
+                    StartingPlayers[i].DisableMyPawns();
+                }
+                StartingPlayers[i].StartGame();
+                // StartingPlayers[i].PlayerStateManager.LoadDefaultBoardState(StartingPlayers, StartingPlayers[i].DiceManager, this);
+                // StartingPlayers[i].NewGameStart();
+            }
+
+            // _currentPlayerIndex = 0;
+            CurrentPlayer = StartingPlayers[_currentPlayerIndex];
+            CurrentPlayer.ActivateDice();
+            // SetDicePosition(CurrentPlayer);
+            
+            if (CurrentPlayer.PlayerType == PlayerType.BOT)
+            {
+                CurrentPlayer.DiceManager.DisableDiceCollider();
+                CurrentPlayer.StartRollDice();
+            }
+
+            GameStateManager.Instance.SetState(GameState.MAIN_GAME);
         }
     }
 }

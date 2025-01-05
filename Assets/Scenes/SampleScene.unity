@@ -1441,7 +1441,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0079b8b3c9d804ac286ab84a41631fed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsStarNode: 0
+  IsStarNode: 1
   IsStartNode: 0
   IsFinishNode: 0
   StartNodePlayer: {fileID: 0}
@@ -5765,7 +5765,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1329256233}
         m_TargetAssemblyTypeName: _Scripts.Managers.GameManager, Assembly-CSharp
-        m_MethodName: ChangeTurn
+        m_MethodName: UIButtonChangeTurn
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7136,6 +7136,14 @@ PrefabInstance:
     - target: {fileID: 2909854219327136773, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3119081592233217227, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3119081592233217227, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -3
       objectReference: {fileID: 0}
     - target: {fileID: 5532785415314455892, guid: b1f25218c32d8424a908ea4bb9a04f9b, type: 3}
       propertyPath: m_LocalPosition.y
@@ -10334,7 +10342,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0079b8b3c9d804ac286ab84a41631fed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsStarNode: 0
+  IsStarNode: 1
   IsStartNode: 0
   IsFinishNode: 0
   StartNodePlayer: {fileID: 0}
@@ -10863,6 +10871,7 @@ MonoBehaviour:
   - {fileID: 155141966}
   CurrentPlayer: {fileID: 0}
   StartingPlayers: []
+  _currentPlayerIndex: 0
   TurnChangeTime: 1
 --- !u!1 &1350009753
 GameObject:
@@ -12841,7 +12850,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0079b8b3c9d804ac286ab84a41631fed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsStarNode: 0
+  IsStarNode: 1
   IsStartNode: 0
   IsFinishNode: 0
   StartNodePlayer: {fileID: 0}
@@ -15253,7 +15262,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0079b8b3c9d804ac286ab84a41631fed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsStarNode: 0
+  IsStarNode: 1
   IsStartNode: 0
   IsFinishNode: 0
   StartNodePlayer: {fileID: 0}

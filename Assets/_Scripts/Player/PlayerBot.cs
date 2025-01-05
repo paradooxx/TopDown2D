@@ -36,7 +36,7 @@ namespace _Scripts.Player
                 if (p.CanPawnMove(moveStep1) && p.CanPawnMove(moveStep2))
                 {
                     p.BotMoveScore = TotalScore(p, moveStep1, moveStep2);
-                    
+
                     if (p.CanPawnMove(moveStep1 + moveStep2))
                     {
                         p.BotTwoMovesScore = TotalScore(p, moveStep1 + moveStep2);
@@ -49,6 +49,7 @@ namespace _Scripts.Player
                         bestMove = 1;
                         bestScore = p.BotMoveScore;
                     }
+
                     if (p.BotTwoMovesScore > bestScore)
                     {
                         bestPawn = p;
@@ -65,7 +66,7 @@ namespace _Scripts.Player
                 Debug.Log("Best Pawn Move 2 : " + bestPawn.TakeStep2);
                 if (bestPawn.TakeStep1 > bestPawn.TakeStep2)
                 {
-                    bestPawn.MovePawn(moveStep1);  
+                    bestPawn.MovePawn(moveStep1);
                 }
                 else if (bestPawn.TakeStep1 > bestPawn.TakeStep2)
                 {
@@ -124,7 +125,7 @@ namespace _Scripts.Player
 
             return bestPawn;
         }
-        
+
         public int FindPreviousPathsNearestEnemy(Pawn p, int startIndex)
         {
             int nearestPlayerDistance = p.CurrentPositionIndex - startIndex;
@@ -132,7 +133,8 @@ namespace _Scripts.Player
             {
                 return 71;
             }
-            for (int i = nearestPlayerDistance; i > 0 ; i--)
+
+            for (int i = nearestPlayerDistance; i > 0; i--)
             {
                 if (p.MainPlayer.PawnPath[i].PawnsOnNode.Count == 1 &&
                     p.MainPlayer != MyPlayer.PawnPath[i].PawnsOnNode[0].MainPlayer)
@@ -141,6 +143,7 @@ namespace _Scripts.Player
                     break;
                 }
             }
+
             return nearestPlayerDistance <= 0 ? 71 : nearestPlayerDistance;
         }
 
@@ -155,8 +158,8 @@ namespace _Scripts.Player
                     nearestPlayerDistance = i - p.CurrentPositionIndex;
                     break;
                 }
-                
             }
+
             return nearestPlayerDistance <= 0 ? 71 : nearestPlayerDistance;
         }
 
@@ -173,8 +176,8 @@ namespace _Scripts.Player
                     nearestSafePositionDistance = i - p.CurrentPositionIndex + 1;
                     break;
                 }
-                
             }
+
             return nearestSafePositionDistance <= 0 ? 1 : nearestSafePositionDistance;
         }
 
@@ -188,19 +191,19 @@ namespace _Scripts.Player
             int killScore1 = 0;
             int killScore2 = 0;
             int nearestEnemyAheadFromCurrentPos = FindNearestEnemy(p, 1);
-            
+
             if (step2 == 0)
             {
                 killScore1 = SafePlaceWeight * step1 / nearestEnemyAheadFromCurrentPos;
                 return killScore1;
             }
-            
+
             int firstMoveToPlay;
             int nextMoveToPlay;
             int nextNearestEnemyDistance;
             int nearestEnemyAheadWhenMovedStep1 = FindNearestEnemy(p, step1);
             int nearestEnemyAheadWhenMovedStep2 = FindNearestEnemy(p, step2);
-            
+
             {
                 firstMoveToPlay = step1;
                 nextMoveToPlay = step2;
@@ -208,8 +211,13 @@ namespace _Scripts.Player
                 killScore1 += KillPawnWeight * (nearestEnemyAheadFromCurrentPos - nearestEnemyAheadWhenMovedStep1) / nearestEnemyAheadFromCurrentPos;
                 killScore1 += KillPawnWeight * firstMoveToPlay / nearestEnemyAheadFromCurrentPos;
                 killScore1 += KillPawnWeight * (nextNearestEnemyDistance - nextMoveToPlay) / nextNearestEnemyDistance;
+                if (nearestEnemyAheadFromCurrentPos == firstMoveToPlay)
+                {
+                    killScore1 += KillPawnWeight * KillPawnWeight;
+                    p.TakeStep1++;
+                }
             }
-            
+
             {
                 firstMoveToPlay = step2;
                 nextMoveToPlay = step1;
@@ -217,11 +225,16 @@ namespace _Scripts.Player
                 killScore1 += KillPawnWeight * (nearestEnemyAheadFromCurrentPos - nearestEnemyAheadWhenMovedStep2) / nearestEnemyAheadFromCurrentPos;
                 killScore2 += KillPawnWeight * firstMoveToPlay / nearestEnemyAheadFromCurrentPos;
                 killScore2 += KillPawnWeight * (nextNearestEnemyDistance - nextMoveToPlay) / nextNearestEnemyDistance;
+                if (nearestEnemyAheadFromCurrentPos == firstMoveToPlay)
+                {
+                    killScore2 += KillPawnWeight * KillPawnWeight;
+                    p.TakeStep2++;
+                }
             }
-            
+
             if (killScore1 > killScore2) p.TakeStep1++;
             else p.TakeStep2++;
-            
+
             return killScore1 > killScore2 ? killScore1 : killScore2;
         }
 
@@ -229,7 +242,7 @@ namespace _Scripts.Player
         {
             int safeScore1 = 0;
             int safeScore2 = 0;
-            
+
             int nearestSafePlaceFromCurrentPos = FindNearestSafePosition(p, 1);
 
             // single step case
@@ -239,13 +252,13 @@ namespace _Scripts.Player
                 safeScore1 = SafePlaceWeight * step1 / nearestSafePlaceFromCurrentPos;
                 return safeScore1;
             }
-            
+
             int firstMoveToPlay;
             int nextMoveToPlay;
             int nextNearestSafePlace;
             int nearestSafePlaceOnStep1 = FindNearestSafePosition(p, step1);
             int nearestSafePlaceOnStep2 = FindNearestSafePosition(p, step2);
-            
+
             {
                 firstMoveToPlay = step1;
                 nextMoveToPlay = step2;
@@ -253,8 +266,13 @@ namespace _Scripts.Player
                 safeScore1 += SafePlaceWeight * (nearestSafePlaceFromCurrentPos - nearestSafePlaceOnStep1) / nearestSafePlaceFromCurrentPos;
                 safeScore1 += SafePlaceWeight * (nearestSafePlaceFromCurrentPos - firstMoveToPlay) / nearestSafePlaceFromCurrentPos;
                 safeScore1 += SafePlaceWeight * (nextNearestSafePlace - nextMoveToPlay) / nextNearestSafePlace;
+                if (nearestSafePlaceFromCurrentPos == firstMoveToPlay)
+                {
+                    safeScore1 += SafePlaceWeight * SafePlaceWeight;
+                    p.TakeStep1++;
+                }
             }
-            
+
             {
                 firstMoveToPlay = step2;
                 nextMoveToPlay = step1;
@@ -262,11 +280,16 @@ namespace _Scripts.Player
                 safeScore1 += SafePlaceWeight * (nearestSafePlaceFromCurrentPos - nearestSafePlaceOnStep2) / nearestSafePlaceFromCurrentPos;
                 safeScore2 += SafePlaceWeight * (nearestSafePlaceFromCurrentPos - firstMoveToPlay) / nearestSafePlaceFromCurrentPos;
                 safeScore2 += SafePlaceWeight * (nextNearestSafePlace - nextMoveToPlay) / nextNearestSafePlace;
+                if (nearestSafePlaceFromCurrentPos == firstMoveToPlay)
+                {
+                    safeScore2 += SafePlaceWeight * SafePlaceWeight;
+                    p.TakeStep2++;
+                }
             }
 
             if (safeScore1 > safeScore2) p.TakeStep1++;
             else p.TakeStep2++;
-            
+
             return safeScore1 > safeScore2 ? safeScore1 : safeScore2;
         }
 
@@ -275,7 +298,7 @@ namespace _Scripts.Player
             int runScore1 = 0;
             int runScore2 = 0;
             int nearestEnemyPosOnPreviousPath = FindPreviousPathsNearestEnemy(p, 1);
-            
+
             // single step case
             // when (moving step1 + step2)
             if (step2 == 0)
@@ -283,13 +306,13 @@ namespace _Scripts.Player
                 runScore1 = SafePlaceWeight * (nearestEnemyPosOnPreviousPath + step1) / nearestEnemyPosOnPreviousPath;
                 return runScore1;
             }
-            
+
             int firstMoveToPlay;
             int nextMoveToPlay;
             int nextNearestEnemyOnPreviousPath;
             int nearestEnemyOnPreviousPathOnMovedStep1 = FindPreviousPathsNearestEnemy(p, step1);
             int nearestEnemyOnPreviousPathOnMovedStep2 = FindPreviousPathsNearestEnemy(p, step2);
-            
+
             {
                 firstMoveToPlay = step1;
                 nextMoveToPlay = step2;
@@ -298,7 +321,7 @@ namespace _Scripts.Player
                 runScore1 += RunFromPawnWeight * firstMoveToPlay / nearestEnemyPosOnPreviousPath;
                 runScore1 += RunFromPawnWeight * (nextMoveToPlay - nextNearestEnemyOnPreviousPath) / nextMoveToPlay;
             }
-            
+
             {
                 firstMoveToPlay = step2;
                 nextMoveToPlay = step1;
@@ -307,10 +330,10 @@ namespace _Scripts.Player
                 runScore2 += RunFromPawnWeight * firstMoveToPlay / nearestEnemyPosOnPreviousPath;
                 runScore2 += RunFromPawnWeight * (nextMoveToPlay - nextNearestEnemyOnPreviousPath) / nextMoveToPlay;
             }
-            
+
             if (runScore1 > runScore2) p.TakeStep1++;
             else p.TakeStep2++;
-            
+
             return runScore1 > runScore2 ? runScore1 : runScore2;
         }
 
@@ -319,35 +342,45 @@ namespace _Scripts.Player
             int victoryScore1 = 0;
             int victoryScore2 = 0;
             int finishDistanceFromCurrentPos = FindVictoryDistance(p, 0);
-            
+
             if (step2 == 0)
             {
                 victoryScore1 = SafePlaceWeight * step1 / finishDistanceFromCurrentPos;
                 return victoryScore1;
             }
-            
+
             int firstNearestDistance;
             int nextNearestDistance;
             int finishDistanceWhenMovedStep1 = FindVictoryDistance(p, step1);
             int finishDistanceWhenMovedStep2 = FindVictoryDistance(p, step2);
-            
+
             {
                 firstNearestDistance = finishDistanceWhenMovedStep1;
                 nextNearestDistance = finishDistanceWhenMovedStep2;
                 victoryScore1 += VictoryWeight * firstNearestDistance / finishDistanceFromCurrentPos;
                 victoryScore1 += VictoryWeight * (firstNearestDistance - nextNearestDistance) / firstNearestDistance;
+                if (finishDistanceFromCurrentPos == step1)
+                {
+                    victoryScore1 += VictoryWeight * VictoryWeight;
+                    p.TakeStep1++;
+                }
             }
-            
+
             {
                 firstNearestDistance = finishDistanceWhenMovedStep2;
                 nextNearestDistance = finishDistanceWhenMovedStep1;
                 victoryScore2 += VictoryWeight * firstNearestDistance / finishDistanceFromCurrentPos;
                 victoryScore2 += VictoryWeight * (firstNearestDistance - nextNearestDistance) / firstNearestDistance;
+                if (finishDistanceFromCurrentPos == step2)
+                {
+                    victoryScore2 += VictoryWeight * VictoryWeight;
+                    p.TakeStep2++;
+                }
             }
-            
+
             if (victoryScore1 > victoryScore2) p.TakeStep1++;
             else p.TakeStep2++;
-            
+
             return victoryScore1 > victoryScore2 ? victoryScore1 : victoryScore2;
         }
 
@@ -357,11 +390,13 @@ namespace _Scripts.Player
 
             if (step2 == 0)
             {
-                totalScore = PawnRunScore(p, step1) + VictoryScore(p, step1) + PawnSafeScore(p, step2) + PawnKillScore(p, step1);
+                totalScore = PawnRunScore(p, step1) + VictoryScore(p, step1) + PawnSafeScore(p, step2) +
+                             PawnKillScore(p, step1);
                 return totalScore;
             }
-            
-            totalScore = PawnRunScore(p, step1, step2) + VictoryScore(p, step1, step2) + PawnSafeScore(p, step2, step1) + PawnKillScore(p, step1, step2);
+
+            totalScore = PawnRunScore(p, step1, step2) + VictoryScore(p, step1, step2) +
+                         PawnSafeScore(p, step2, step1) + PawnKillScore(p, step1, step2);
             return totalScore;
         }
     }

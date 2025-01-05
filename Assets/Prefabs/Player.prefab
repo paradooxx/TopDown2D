@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 130889670643526658}
   - component: {fileID: 2698176524787547049}
   - component: {fileID: 5103752684421240182}
+  - component: {fileID: 3888506134332482319}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -26,6 +27,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1824771519130246411}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -8.93, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -35,7 +37,6 @@ Transform:
   - {fileID: 5532785415314455892}
   - {fileID: 3119081592233217227}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &130889670643526658
 MonoBehaviour:
@@ -52,22 +53,26 @@ MonoBehaviour:
   PlayerType: 0
   PawnPath: []
   HomePosition: []
+  _allPawns: []
   _myPawns: []
   _enteredPawns: []
   _myPawnsColliders: []
   PawnPrefab: {fileID: 0}
   PawnSprite: {fileID: 0}
   DiceResultSprites: []
-  MyPawnManager: {fileID: 0}
+  PawnManager: {fileID: 0}
   DiceManager: {fileID: 9170691443041714032}
   MyDicePosition: {fileID: 5532785415314455892}
   PlayerDiceResults: 
   IsMyTurn: 0
   HasBonusMove: 0
-  _pawnsInPlay: 0
+  PawnsInPlay: 0
   OtherPawnKillCount: 0
   BonusMove: 0
   MyPlayerBot: {fileID: 5103752684421240182}
+  MyIndex: 0
+  WinPosition: 0
+  PlayerStateManager: {fileID: 3888506134332482319}
   ShouldChangeTurn: 0
 --- !u!114 &2698176524787547049
 MonoBehaviour:
@@ -96,6 +101,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MyPlayer: {fileID: 130889670643526658}
+  SafePlaceWeight: 20
+  KillPawnWeight: 40
+  RunFromPawnWeight: 40
+  VictoryWeight: 20
+--- !u!114 &3888506134332482319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1824771519130246411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1a36ec892450435a97d190d600f6af2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2314839651437843130
 GameObject:
   m_ObjectHideFlags: 0
@@ -120,13 +141,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2314839651437843130}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.8, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3119081592233217227}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8131681362119373182
 SpriteRenderer:
@@ -205,6 +226,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2909854219327136773}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -4.05, y: 2.3300004, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -213,7 +235,6 @@ Transform:
   - {fileID: 7271016306667530653}
   - {fileID: 8473083824898240067}
   m_Father: {fileID: 1067725320249785416}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &2144889303561304196
 BoxCollider2D:
@@ -225,6 +246,25 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -304,10 +344,11 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   CustomDiceResult: 0
+  DiceStates: []
   CustomDice1Value: 5
   CustomDice2Value: 2
-  CustomDice1Text: {fileID: 0}
-  CustomDice2Text: {fileID: 0}
+  previousSums:
+    queueList: 
 --- !u!1 &5058761896704187504
 GameObject:
   m_ObjectHideFlags: 0
@@ -331,13 +372,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5058761896704187504}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1067725320249785416}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5132022829525868737
 GameObject:
@@ -371,7 +412,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1067725320249785416}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -395,7 +435,9 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 1
   m_TargetDisplay: 0
@@ -463,13 +505,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5990940233858863326}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.8, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3119081592233217227}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &4749451032832253519
 SpriteRenderer:

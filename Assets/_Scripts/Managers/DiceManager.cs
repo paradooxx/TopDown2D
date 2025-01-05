@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using _Scripts.Board;
 using _Scripts.Utils;
 using UnityEngine;
 using UnityEngine.Events;
@@ -26,7 +28,10 @@ namespace _Scripts.Managers
         public UnityEvent OnDiceButtonClicked;
 
         public bool CustomDiceResult = true;
+        public List<DiceState> DiceStates = new List<DiceState>();
         public int CustomDice1Value = 5, CustomDice2Value = 2;
+        
+        
 
         private void Start()
         {
@@ -38,13 +43,12 @@ namespace _Scripts.Managers
             OnDiceButtonClicked?.Invoke();
         }
 
-        public int[] RollDice(Action<int, int> onDiceRolled)
+        public void RollDice(Action<int, int> onDiceRolled)
         {
             StartCoroutine(RollDiceTask(onDiceRolled));
-
-            return new int[] { Dice1Result, Dice2Result };
         }
-        
+
+        // animating and deciding the dice roll result
         public SerializableQueue previousSums = new SerializableQueue();
 
         private IEnumerator RollDiceTask(Action<int, int> onDiceRolled)
@@ -87,16 +91,34 @@ namespace _Scripts.Managers
             Dice1Sprite.sprite = DiceAnimationSprites[Dice1Result - 1];
             Dice2Sprite.sprite = DiceAnimationSprites[Dice2Result - 1];
 
+            // DiceStates.Clear();
+            // AddDiceState(new DiceState(Dice1Result, true));
+            // AddDiceState(new DiceState(Dice2Result, true));
+
+
             onDiceRolled?.Invoke(Dice1Result, Dice2Result);
         }
 
+        public void AddDiceState(DiceState diceState)
+        {
+            DiceStates.Add(diceState);
+        }
+
+        public void DisableDiceState(int result)
+        {
+            var find = DiceStates.Find(x => x.DiceResult == result);
+            if (find != null) find.diceState = false;
+        }
+
+
         private bool IsThirdConsecutiveSum(int currentSum)
         {
-            if (previousSums.Count < 2) 
+            if (previousSums.Count < 2)
                 return false;
-        
+
             return previousSums.Queue.All(sum => sum == currentSum);
         }
+
 
         public void DisableDiceCollider()
         {
@@ -129,18 +151,13 @@ namespace _Scripts.Managers
             CustomDiceResult = true;
             CustomDice2Value = value;
         }
-
-        private bool _canRoll;
-
         public void EnableDiceTouch()
         {
-            _canRoll = true;
             DiceCollider.enabled = true;
         }
 
         public void DisableDiceTouch()
         {
-            _canRoll = false;
             DiceCollider.enabled = false;
         }
 

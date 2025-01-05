@@ -9,8 +9,7 @@ using UnityEngine.UI;
 public class PlayerDataType
 {
     public int TypeId;
-
-
+    
     public PlayerDataType(int id)
     {
         this.TypeId = id;

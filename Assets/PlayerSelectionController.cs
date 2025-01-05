@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using _Scripts;
+using _Scripts.Board;
 using _Scripts.Enums;
 using _Scripts.Managers;
 using _Scripts.Player;
@@ -16,6 +17,8 @@ public class PlayerSelectionController : MonoBehaviour
     [SerializeField] private GameManager GameManager;
     [SerializeField] private Player[] Player;
     [SerializeField] private Button[] PlayerSelectButtons;
+    
+    [SerializeField] private GameObject LoadGameButton;
 
     public static PlayerSelectionController GetInstance()
     {
@@ -48,9 +51,14 @@ public class PlayerSelectionController : MonoBehaviour
         }
     }
 
-    public void StartGame()
+    public void Start()
     {
-        SavePlayerDataInput();
+        // SavePlayerDataInput();
+
+        if (BoardStateManager.HasSavedState())
+        {
+            LoadGameButton.SetActive(true);
+        }
     }
 
     public void SavePlayerDataInput()

@@ -14,6 +14,9 @@ namespace _Scripts.UI
             AdjustCameraSize();
         }
 
+        // adjust orthographic camera size for different screen sizes
+        // takes iphone 13 pro max screen size as a reference
+        // sets orthographic camera size and limits it size to minimum value of 10.4f (tested value)
         private void AdjustCameraSize()
         {
             float currentAspect = (float)Screen.width / Screen.height;

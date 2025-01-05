@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace _Scripts.Player
 {
@@ -14,6 +13,12 @@ namespace _Scripts.Player
             AdjustPanelPosition();
         }
 
+        /*
+         when pawn has two moves to play and player needs to select the moves,
+         player needs to tap the pawn to enable move select panel,
+         the panel goes out of screen bounds when the pawn is at left most or right most side of the screen,
+         the function handles the panel position when it moves out of screen bounds and brings the panel inside screen bounds
+         */
         private void AdjustPanelPosition()
         {
             if (Camera.main != null)

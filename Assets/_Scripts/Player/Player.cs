@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using _Scripts.Board;
 using _Scripts.Enums;
 using _Scripts.Managers;
+using UnityEditor;
 using UnityEngine;
 
 namespace _Scripts.Player
@@ -13,6 +14,7 @@ namespace _Scripts.Player
         public List<Transform> HomePosition; // home position's for this player's pawns
         private readonly GameObject[] _instantiatedPawns = new GameObject[4]; // list of this player's pawn
 
+        public List<Pawn> _allPawns = new List<Pawn>();
         public List<Pawn> _myPawns = new List<Pawn>();
         public List<Pawn> _enteredPawns = new List<Pawn>();
         public List<Collider2D> _myPawnsColliders = new List<Collider2D>();
@@ -37,14 +39,31 @@ namespace _Scripts.Player
         public PlayerBot MyPlayerBot;
 
         public int MyIndex;
+        
+        public int WinPosition;
+        
+        public PlayerStateManager PlayerStateManager;
+        public bool ShouldChangeTurn;
 
         [ContextMenu("Add Pawn Reference")]
         void AddPawnReference()
         {
             PawnManager = GetComponent<PawnManager>();
         }
+
+        [ContextMenu("Add PlayerStateManager Reference")]
+        private void AddPlayerStateManagerReference()
+        {
+            PlayerStateManager = GetComponent<PlayerStateManager>();
+        }
         
-        private void Start()
+        public void StartGame()
+        {
+            InitializeMyPawns();
+            PlayerStateManager.LoadGameState(this, DiceManager);
+        }
+
+        public void NewGameStart()
         {
             InitializeMyPawns();
         }
@@ -55,12 +74,14 @@ namespace _Scripts.Player
             for (int i = 0; i < 4; i++)
             {
                 _instantiatedPawns[i] = Instantiate(PawnPrefab, HomePosition[i].position, Quaternion.identity);
+                _allPawns.Add(_instantiatedPawns[i].GetComponent<Pawn>());
                 _myPawns.Add(_instantiatedPawns[i].GetComponent<Pawn>());
                 _myPawns[i].HomePosition = HomePosition[i];
                 _myPawns[i].PawnMainSprite.sprite = PawnSprite;
                 _myPawns[i].MainPlayer = this;
                 _myPawnsColliders.Add(_myPawns[i].GetComponent<Collider2D>());
                 _myPawnsColliders[i].enabled = false;
+                
             }
         }
 
@@ -117,11 +138,6 @@ namespace _Scripts.Player
                 PlayerDiceResults.Remove(5);
                 EnterPawnOnBoard(1);
             }
-            else if (PlayerDiceResults[0] == PlayerDiceResults[1])
-            {
-                PlayerDiceResults.Clear();
-                GameManager.GetInstance().ChangeTurn();
-            }
             else
             {
                 PlayerDiceResults.Clear();
@@ -156,10 +172,6 @@ namespace _Scripts.Player
             {
                 PlayerDiceResults.Clear();
                 EnterPawnOnBoard(1);
-            }
-            else if (PlayerDiceResults[0] == PlayerDiceResults[1])
-            {
-                MakePawnPlayTwoSteps(PlayerDiceResults[0], PlayerDiceResults[1]);
             }
             else
             {
@@ -220,10 +232,6 @@ namespace _Scripts.Player
                 {
                     MakePawnPlayTwoSteps(PlayerDiceResults[0], PlayerDiceResults[1]);
                 }
-            }
-            else if (PlayerDiceResults[0] == PlayerDiceResults[1])
-            {
-                MakePawnPlayTwoSteps(PlayerDiceResults[0], PlayerDiceResults[1]);
             }
             else
             {
@@ -286,10 +294,6 @@ namespace _Scripts.Player
                     MakePawnPlayTwoSteps(PlayerDiceResults[0], PlayerDiceResults[1]);
                 }
             }
-            else if (PlayerDiceResults[0] == PlayerDiceResults[1])
-            {
-                MakePawnPlayTwoSteps(PlayerDiceResults[0], PlayerDiceResults[1]);
-            }
             else
             {
                 MakePawnPlayTwoSteps(PlayerDiceResults[0], PlayerDiceResults[1]);
@@ -322,7 +326,6 @@ namespace _Scripts.Player
             // if no pawn can move change turn and exit
             if (!anyPawnCanMove)
             {
-                Debug.Log("1");
                 GameManager.GetInstance().ChangeTurn();
                 return;
             }
@@ -331,11 +334,9 @@ namespace _Scripts.Player
             if (movablePawnCount == 1)
             {
                 firstMovablePawn?.MovePawn(moveStep);
-                Debug.Log("here");
             }
             else
             {
-                Debug.Log("here");
                 // Show options for all movable pawns
                 foreach (Pawn pawn in _enteredPawns)
                 {
@@ -354,6 +355,7 @@ namespace _Scripts.Player
             }
         }
 
+        // when two moves are available, use this to determine how to move the pawns
         public void MakePawnPlayTwoSteps(int moveStep1, int moveStep2)
         {
             Pawn firstMovablePawn = null;
@@ -373,10 +375,11 @@ namespace _Scripts.Player
                 }
             }
 
-            // Handle no movable pawns
+            // handling no movable pawns
+            
+            
             if (movablePawnCount == 0)
             {
-                Debug.Log("2");
                 GameManager.GetInstance().ChangeTurn();
                 return;
             }
@@ -410,7 +413,7 @@ namespace _Scripts.Player
                 return;
             }
 
-            // Handle multiple movable pawns
+            // handling multiple movable pawns
             foreach (Pawn pawn in _enteredPawns)
             {
                 if (PlayerType == PlayerType.BOT)
@@ -450,6 +453,7 @@ namespace _Scripts.Player
             }
         }
 
+        // mostly used in pawn entry cases to move a pawn directly
         public void MoveActivePawn(Pawn pawn, int steps)
         {
             if (pawn.CanPawnMove(steps))
@@ -466,10 +470,6 @@ namespace _Scripts.Player
         //enters the pawn into entered pawns list and removes it from my pawns(initial) list
         private void EnterPawnOnBoard(int numberOfPawns)
         {
-            // List<Pawn> notStartedPawns = new List<Pawn>(PawnManager.GetNotStartedPawns());
-            // if (numberOfPawns > notStartedPawns.Count) numberOfPawns = notStartedPawns.Count;
-            // Debug.Log(numberOfPawns);
-
             while (numberOfPawns > 0)
             {
                 numberOfPawns--;
@@ -477,9 +477,6 @@ namespace _Scripts.Player
                 _myPawns[numberOfPawns].EnterBoard();
             }
         }
-
-        // get next location to move for this player's pawns
-
 
         public void BonusMovePlay(int bonusMoveStep)
         {
@@ -596,6 +593,8 @@ namespace _Scripts.Player
             // makes sure a pawn enters when 5
             // is drawn if it is possible
             Debug.Log("change player enabled to play");
+            // if possible pawn must enter the board always
+            // if there is a move to enter the pawn on board, it will be used to take a pawn into game
             if (_enteredPawns.Count < 4)
             {
                 MakePawnEnterBoard();
@@ -623,14 +622,11 @@ namespace _Scripts.Player
                         p.AvailableMovesText.text = "";
                         p.IsPawnClicked = false;
                     }
-
-                    Debug.Log("4");
                     GameManager.GetInstance().ChangeTurn();
                 }
             }
             else if (PlayerDiceResults.Count == 1)
             {
-                Debug.Log("5");
                 if (_enteredPawns.Count > 1)
                 {
                     MakePawnPlay(PlayerDiceResults[0]);
@@ -645,14 +641,7 @@ namespace _Scripts.Player
             {
                 p.IsPawnClicked = false;
             }
+            PlayerStateManager.SaveGameState(GameManager.GetInstance().Players, DiceManager, GameManager.GetInstance());
         }
-
-        public bool ShouldChangeTurn;
-
-        // void SetTurnToggle(bool toggle)
-        // {
-        //     Debug.Log("Change turn changed to "+toggle);
-        //     ShouldChangeTurn = toggle;
-        // }
     }
 }

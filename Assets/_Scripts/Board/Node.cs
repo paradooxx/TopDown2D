@@ -89,6 +89,11 @@ namespace _Scripts.Board
                 return;
             }
 
+            if (PawnsOnNode.Contains(pawn))
+            {
+                return;
+            }
+
             PawnsOnNode.Add(pawn);
             pawn.CurrentNode = this;
             StartCoroutine(PositionPawnsCo());
@@ -182,34 +187,6 @@ namespace _Scripts.Board
 
                 default:
                     return Array.Empty<Vector3>();
-            }
-        }
-
-        public void EliminatePawn(Pawn pawn)
-        {
-            if (IsStarNode) return;
-
-            foreach (Pawn p in new List<Pawn>(PawnsOnNode))
-            {
-                if (p.MainPlayer != pawn.MainPlayer)
-                {
-                    p.ResetToHomePosition();
-                    pawn.MainPlayer.OtherPawnKillCount++;
-                    if (pawn.MainPlayer.OtherPawnKillCount > 0)
-                    {
-                        pawn.MainPlayer.HasBonusMove = true;
-                        pawn.MainPlayer.BonusMove = 20;
-                    }
-
-                    if (p.MainPlayer.PawnsInPlay < 0)
-                    {
-                        p.MainPlayer.PawnsInPlay = 0;
-                    }
-                    else
-                    {
-                        p.MainPlayer.PawnsInPlay--;
-                    }
-                }
             }
         }
     }

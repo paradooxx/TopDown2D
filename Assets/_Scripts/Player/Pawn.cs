@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using _Scripts.Board;
 using _Scripts.Managers;
 using TMPro;
@@ -21,6 +22,7 @@ namespace _Scripts.Player
 
         public int CurrentPositionIndex = -1;
         public bool IsInPlay => CurrentPositionIndex >= 0;
+        public bool IsHome => CurrentPositionIndex == 71;
 
         public bool IsPawnClicked;
         public bool IsPawnMovable;
@@ -38,10 +40,7 @@ namespace _Scripts.Player
 
         public TMP_Text AvailableMovesText;
 
-        public bool isHome;
-
-        [Header("Bot Move Score")] 
-        public int BotMoveScore;
+        [Header("Bot Move Score")] public int BotMoveScore;
         public int BotTwoMovesScore;
         public int TakeStep1;
         public int TakeStep2;
@@ -159,7 +158,7 @@ namespace _Scripts.Player
                 CurrentPositionIndex = 0;
                 CurrentNode = startNode;
 
-                // Update main player's pawn collections
+                // updating main player's pawn collections
                 MainPlayer._enteredPawns.Add(this);
                 MainPlayer._myPawns.Remove(this);
                 MainPlayer.PawnsInPlay = MainPlayer._enteredPawns.Count;
@@ -185,29 +184,20 @@ namespace _Scripts.Player
                 );
 
                 // Handle completion
-                enterSequence.OnComplete(() => { startNode.EliminatePawn(this); });
+                enterSequence.OnComplete(() => { EliminatePawn(startNode); });
 
                 // Play the sequence
                 enterSequence.Play();
             }
-            MainPlayer.PlayerDiceResults.Remove(5);
-            StartCoroutine(OnPawnMoveCompleteCo());
-        }
 
-        private IEnumerator OnPawnMoveCompleteCo()
-        {
-            yield return new WaitForSeconds(0.25f);
+            MainPlayer.PlayerDiceResults.Remove(5);
             MainPlayer.OnPawnMoveComplete();
         }
 
         public void MovePawn(int moveSteps)
         {
             if (!IsInPlay) return;
-            StartCoroutine(MovePawn(moveSteps, 0.2f));
-        }
-
-        private IEnumerator MovePawn(int moveSteps, float moveDuration)
-        {
+            float moveDuration = 0.2f;
             int targetPositionIndex = CurrentPositionIndex + moveSteps;
             if (targetPositionIndex >= MainPlayer.PawnPath.Count)
             {
@@ -225,6 +215,9 @@ namespace _Scripts.Player
                 p.IsPawnMovable = false;
             }
 
+            Sequence moveSequence = DOTween.Sequence();
+            int currentStep = 0;
+            PawnMainSprite.sortingOrder = 15;
             for (int i = 0; i < moveSteps; i++)
             {
                 Node nextNode = GetNextNodeForPawn();
@@ -236,35 +229,48 @@ namespace _Scripts.Player
                         CurrentNode.RemovePawn(this);
                     }
 
-                    // nextNode.AddPawn(this);
                     CurrentPositionIndex++;
                     CurrentNode = nextNode;
-
                     Vector3 endPosition = nextNode.transform.position;
 
-                    yield return transform.DOMove(endPosition, moveDuration)
-                        .SetEase(Ease.OutQuad) // Add smooth easing
-                        .OnComplete(() =>
-                        {
-                            transform.position = endPosition;
-                            nextNode.PositionPawns();
-                        })
-                        .WaitForCompletion();
+                    // Create scaling and movement sequence for each step
+                    moveSequence
+                        .Append(transform.DOScale(Vector3.one * 1.2f, moveDuration * 0.25f)) // scaling the pawn
+                        .Join(transform.DOMove(endPosition, moveDuration * 0.5f)
+                            .SetEase(Ease.InOutQuad)) // moving while scaling
+                        .Append(transform.DOScale(Vector3.one, moveDuration * 0.25f)); // scaling pawn back down
 
-                    // Check if this is the last node for elimination
-                    if (nextNode == lastNodeInMove)
+                    // Add callback for positioning pawns after each move
+                    int stepCopy = currentStep;
+                    moveSequence.AppendCallback(() =>
                     {
-                        lastNodeInMove.EliminatePawn(this);
-                        lastNodeInMove.AddPawn(this);
-                    }
+                        transform.position = endPosition;
+                        nextNode.PositionPawns();
+
+                        // checking if this is the last node for given move steps
+                        if (stepCopy == moveSteps - 1)
+                        {
+                            EliminatePawn(lastNodeInMove);
+                            lastNodeInMove.AddPawn(this);
+                        }
+                    });
+
+                    currentStep++;
                 }
             }
 
-            MainPlayer.PlayerDiceResults.Remove(moveSteps);
-            StartCoroutine(OnPawnMoveCompleteCo());
+            // final callback for movement completion
+            moveSequence.OnComplete(() =>
+            {
+                PawnMainSprite.sortingOrder = 10;
+                MainPlayer.PlayerDiceResults.Remove(moveSteps);
+                MainPlayer.OnPawnMoveComplete();
+            });
+
+            moveSequence.Play();
         }
 
-        // call this in an ui button through editor
+        // calling this in an ui button through editor
         public void MovePawnToIndex()
         {
             if (CurrentPositionIndex == MovePawnToThisIndex) return;
@@ -281,11 +287,6 @@ namespace _Scripts.Player
                 {
                     MainPlayer.PawnPath[CurrentPositionIndex].RemovePawn(this);
                 }
-                else
-                {
-                    // do nothing
-                }
-
 
                 transform.position = MainPlayer.PawnPath[MovePawnToThisIndex].transform.position;
                 CurrentPositionIndex = MovePawnToThisIndex;
@@ -322,6 +323,7 @@ namespace _Scripts.Player
             return true;
         }
 
+        // gets next node for pawn to move
         private Node GetNextNodeForPawn()
         {
             int currentIndex = CurrentPositionIndex;
@@ -351,6 +353,34 @@ namespace _Scripts.Player
             else
             {
                 return null;
+            }
+        }
+
+        public void EliminatePawn(Node node)
+        {
+            if (node.IsStarNode) return;
+
+            foreach (Pawn p in new List<Pawn>(node.PawnsOnNode))
+            {
+                if (p.MainPlayer != MainPlayer)
+                {
+                    p.ResetToHomePosition();
+                    MainPlayer.OtherPawnKillCount++;
+                    if (MainPlayer.OtherPawnKillCount > 0)
+                    {
+                        MainPlayer.HasBonusMove = true;
+                        MainPlayer.BonusMove = 20;
+                    }
+
+                    if (p.MainPlayer.PawnsInPlay < 0)
+                    {
+                        p.MainPlayer.PawnsInPlay = 0;
+                    }
+                    else
+                    {
+                        p.MainPlayer.PawnsInPlay--;
+                    }
+                }
             }
         }
 
@@ -392,7 +422,7 @@ namespace _Scripts.Player
                         CurrentNode.RemovePawn(this);
                     }
 
-                    // previousNode.AddPawn(this);
+                    previousNode.AddPawn(this);
                     CurrentNode = previousNode;
                     CurrentPositionIndex--;
 
@@ -401,9 +431,9 @@ namespace _Scripts.Player
                     Vector3 originalScale = transform.localScale;
                     Vector3 enlargedScale = originalScale * 1.5f;
 
-                    float moveDuration = 0.01f; // Duration per step
+                    float moveDuration = 0.01f;
 
-                    // Add movement and scaling to the sequence
+                    // add movement and scaling to the sequence
                     resetSequence.Append(transform.DOMove(endPosition, moveDuration).SetEase(Ease.Linear));
 
                     resetSequence.Join(DOTween.Sequence()
@@ -415,15 +445,15 @@ namespace _Scripts.Player
                 }
             }
 
-            // Add final movement to the home position
+            // final home position movement
             Vector3 homePosition = HomePosition.position;
             resetSequence.Append(transform.DOMove(homePosition, 0.05f).SetEase(Ease.OutQuad));
 
-            // Add pop animation at the home position
+            // pop animation
             resetSequence.Append(transform.DOScale(transform.localScale * 1.5f, 0.01f).SetEase(Ease.OutQuad));
             resetSequence.Append(transform.DOScale(transform.localScale, 0.01f).SetEase(Ease.InQuad));
 
-            // Final cleanup and updates after animation
+            // final cleanup and updates after animation
             resetSequence.OnComplete(() =>
             {
                 MainPlayer._enteredPawns.Remove(this);
@@ -432,11 +462,7 @@ namespace _Scripts.Player
                 CurrentNode = null;
             });
 
-            // Play the sequence
             resetSequence.Play();
-
-            // Notify the player that the move is complete
-            // MainPlayer.OnPawnMoveComplete();
         }
     }
 }
