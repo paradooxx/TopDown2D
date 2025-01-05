@@ -182,7 +182,8 @@ namespace _Scripts.Player
                     transform.DOScale(transform.localScale, 0.01f)
                         .SetEase(Ease.InQuad)
                 );
-
+                // pause
+                enterSequence.AppendInterval(0.05f);
                 // Handle completion
                 enterSequence.OnComplete(() => { EliminatePawn(startNode); });
 

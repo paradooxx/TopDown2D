@@ -76,7 +76,7 @@ namespace _Scripts.Managers
                     StartingPlayers[i].DisableMyPawns();
                 }
                 // StartingPlayers[i].StartGame();
-                StartingPlayers[i].PlayerStateManager.LoadDefaultBoardState(StartingPlayers, StartingPlayers[i].DiceManager, this);
+                StartingPlayers[i].PlayerStateManager.LoadDefaultBoardState(StartingPlayers, this);
                 StartingPlayers[i].NewGameStart();
             }
 
@@ -92,44 +92,6 @@ namespace _Scripts.Managers
             }
 
             GameStateManager.Instance.SetState(GameState.MAIN_GAME);
-        }
-
-        public void InitializeBoardPositions(int selectedPlayerIndex)
-        {
-            Quaternion originalRotation = MainGameBoard.transform.rotation;
-
-            if (selectedPlayerIndex < 0)
-            {
-                selectedPlayerIndex = 0;
-            }
-
-            _selectedPlayerIndex = selectedPlayerIndex;
-            Debug.Log(_selectedPlayerIndex);
-
-            Debug.Log($"Rotating board for player {selectedPlayerIndex}");
-
-            switch (selectedPlayerIndex)
-            {
-                case 0:
-                    MainGameBoard.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-                    _currentPlayerIndex = StartingPlayers.Count - 1;
-                    break;
-                case 1:
-                    MainGameBoard.transform.rotation = Quaternion.Euler(0f, 0f, 90f);
-                    _currentPlayerIndex = StartingPlayers.Count - 1;
-                    break;
-                case 2:
-                    MainGameBoard.transform.rotation = Quaternion.Euler(0f, 0f, 180f);
-                    _currentPlayerIndex = StartingPlayers.Count - 1;
-                    break;
-                case 3:
-                    MainGameBoard.transform.rotation = Quaternion.Euler(0f, 0f, -90f);
-                    _currentPlayerIndex = StartingPlayers.Count - 1;
-                    break;
-            }
-
-            Debug.Log(
-                $"Rotation changed from {originalRotation.eulerAngles} to {MainGameBoard.transform.rotation.eulerAngles}");
         }
 
         // initializing game
@@ -299,6 +261,7 @@ namespace _Scripts.Managers
             }
 
             GameStateManager.Instance.SetState(GameState.MAIN_GAME);
+            CurrentPlayer.OnPawnMoveComplete();
         }
     }
 }

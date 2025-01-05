@@ -19,7 +19,7 @@ namespace _Scripts.Player
         // call this when saving game state
         public void SaveGameState(List<Player> players, DiceManager diceManager, GameManager gameManager)
         {
-            _currentBoardState = new BoardState(players, diceManager, gameManager);
+            _currentBoardState = new BoardState(players, gameManager);
             _boardStateManager.SaveBoardState(_currentBoardState);
             Debug.Log("Game state saved!");
         }
@@ -35,13 +35,13 @@ namespace _Scripts.Player
             }
         }
 
-        public void LoadDefaultBoardState(List<Player> players, DiceManager diceManager, GameManager gameManager)
+        public void LoadDefaultBoardState(List<Player> players, GameManager gameManager)
         {
-            BoardState loadedState = _boardStateManager.LoadDefaultBoardState(players, diceManager, gameManager);
-            for(int i = 0 ; i < players.Count ; i++)
-            {
+            BoardState loadedState = _boardStateManager.LoadDefaultBoardState(players, gameManager);
+            for (int i = 0; i < players.Count; i++)
+            { 
                 // ApplyBoardState(loadedState, Player, diceManager);
-                for(int j = 0 ; i < players[i]._allPawns.Count; i++)
+                for (int j = 0; i < players[i]._allPawns.Count; i++)
                 {
                     players[i]._allPawns[j].CurrentPositionIndex = loadedState.PlayerStates[j].PawnStates[j].Position;
                 }
@@ -65,7 +65,7 @@ namespace _Scripts.Player
         private void ApplyPlayerState(Player player, PlayerState state)
         {
             Debug.Log("PawnStates: " + state.PawnStates.Count);
-            for(int i = 0 ; i < player._allPawns.Count; i++)
+            for (int i = 0; i < player._allPawns.Count; i++)
             {
                 if (state.PawnStates[i].Position != -1)
                 {
@@ -75,10 +75,21 @@ namespace _Scripts.Player
                         player._enteredPawns.Add(player._allPawns[i]);
                         player._myPawns.Remove(player._allPawns[i]);
                     }
+
                     player.PawnsInPlay = player._enteredPawns.Count;
                 }
+
                 player._allPawns[i].CurrentPositionIndex = state.PawnStates[i].Position;
             }
+
+            for (int i = 0; i < player.PlayerDiceResults.Count; i++)
+            {
+                if (state.DiceStates[i].DiceStates.TryGetValue(i, out bool isTrue))
+                {
+                    player.PlayerDiceResults[i] = isTrue ? i : 0;
+                }
+            }
+
             player.IsMyTurn = state.IsMyTurn;
             player.WinPosition = state.WinPosition;
             player.MyIndex = state.MyIndex;

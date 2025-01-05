@@ -24,10 +24,10 @@ namespace _Scripts.Board
         }
         
         // initializing the default board state
-        public BoardState LoadDefaultBoardState(List<Player.Player> players, DiceManager dices, GameManager gameManager)
+        public BoardState LoadDefaultBoardState(List<Player.Player> players, GameManager gameManager)
         {
             DeleteSavedState();
-            return new BoardState(players, dices, gameManager);
+            return new BoardState(players, gameManager);
         }
 
         public BoardState LoadBoardState()

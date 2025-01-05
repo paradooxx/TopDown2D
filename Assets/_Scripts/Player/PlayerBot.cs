@@ -16,7 +16,7 @@ namespace _Scripts.Player
 
         public IEnumerator BotRollDiceCo()
         {
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(1f);
             MyPlayer.RollDice();
         }
 

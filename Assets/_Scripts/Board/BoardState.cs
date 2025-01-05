@@ -12,7 +12,7 @@ namespace _Scripts.Board
         public List<PlayerState> PlayerStates { get; private set; }
         public int currentPlayerIndex;
 
-        public BoardState(List<Player.Player> players, DiceManager dices, GameManager gameManager)
+        public BoardState(List<Player.Player> players, GameManager gameManager)
         {
             PlayerStates = new List<PlayerState>();
             currentPlayerIndex = gameManager._currentPlayerIndex;
