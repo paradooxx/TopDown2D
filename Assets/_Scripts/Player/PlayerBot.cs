@@ -195,6 +195,10 @@ namespace _Scripts.Player
             if (step2 == 0)
             {
                 killScore1 = SafePlaceWeight * step1 / nearestEnemyAheadFromCurrentPos;
+                if (nearestEnemyAheadFromCurrentPos == step1)
+                {
+                    killScore1 += (int)Mathf.Pow(KillPawnWeight, 4);
+                }
                 return killScore1;
             }
 
@@ -213,7 +217,7 @@ namespace _Scripts.Player
                 killScore1 += KillPawnWeight * (nextNearestEnemyDistance - nextMoveToPlay) / nextNearestEnemyDistance;
                 if (nearestEnemyAheadFromCurrentPos == firstMoveToPlay)
                 {
-                    killScore1 += KillPawnWeight * KillPawnWeight;
+                    killScore1 += (int)Mathf.Pow(KillPawnWeight, 4);
                     p.TakeStep1++;
                 }
             }
@@ -227,7 +231,7 @@ namespace _Scripts.Player
                 killScore2 += KillPawnWeight * (nextNearestEnemyDistance - nextMoveToPlay) / nextNearestEnemyDistance;
                 if (nearestEnemyAheadFromCurrentPos == firstMoveToPlay)
                 {
-                    killScore2 += KillPawnWeight * KillPawnWeight;
+                    killScore2 += (int)Mathf.Pow(KillPawnWeight, 4);
                     p.TakeStep2++;
                 }
             }
@@ -346,6 +350,11 @@ namespace _Scripts.Player
             if (step2 == 0)
             {
                 victoryScore1 = SafePlaceWeight * step1 / finishDistanceFromCurrentPos;
+                if (finishDistanceFromCurrentPos == step1)
+                {
+                    victoryScore1 += (int)Mathf.Pow(VictoryWeight, 4);
+                    p.TakeStep1++;
+                }
                 return victoryScore1;
             }
 
@@ -361,7 +370,7 @@ namespace _Scripts.Player
                 victoryScore1 += VictoryWeight * (firstNearestDistance - nextNearestDistance) / firstNearestDistance;
                 if (finishDistanceFromCurrentPos == step1)
                 {
-                    victoryScore1 += VictoryWeight * VictoryWeight;
+                    victoryScore1 += (int)Mathf.Pow(VictoryWeight, 4);
                     p.TakeStep1++;
                 }
             }
@@ -373,7 +382,7 @@ namespace _Scripts.Player
                 victoryScore2 += VictoryWeight * (firstNearestDistance - nextNearestDistance) / firstNearestDistance;
                 if (finishDistanceFromCurrentPos == step2)
                 {
-                    victoryScore2 += VictoryWeight * VictoryWeight;
+                    victoryScore2 += (int)Mathf.Pow(VictoryWeight, 4);
                     p.TakeStep2++;
                 }
             }

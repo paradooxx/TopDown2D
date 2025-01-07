@@ -484,16 +484,17 @@ MonoBehaviour:
   IsPawnClicked: 0
   IsPawnMovable: 0
   HomePosition: {fileID: 0}
+  PawnCollider2D: {fileID: 235791860247326393}
   PawnCanvas: {fileID: 3396363593196377889}
   DiceImage1: {fileID: 3396363591946447320}
   DiceImage2: {fileID: 3396363591164034083}
   DiceMoveStepButton1: {fileID: 3396363591946447321}
   DiceMoveStepButton2: {fileID: 3396363591164034108}
   AvailableMovesText: {fileID: 8334365853109984074}
-  isHome: 0
-  BotMove1Score: 0
-  BotMove2Score: 0
-  BotMove1and2Score: 0
+  BotMoveScore: 0
+  BotTwoMovesScore: 0
+  TakeStep1: 0
+  TakeStep2: 0
   MovePawnToThisIndex: 0
 --- !u!58 &235791860247326393
 CircleCollider2D:
@@ -715,6 +716,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Panel: {fileID: 3396363593196377889}
   PanelRect: {fileID: 3396363593196377888}
+  ChangeThreshold: 0.1
 --- !u!1 &6680486701234238648
 GameObject:
   m_ObjectHideFlags: 0

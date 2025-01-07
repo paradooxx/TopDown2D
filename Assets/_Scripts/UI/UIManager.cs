@@ -4,8 +4,6 @@ using _Scripts.Managers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
-using UnityEngine.UI;
 
 namespace _Scripts.UI
 {
@@ -31,34 +29,36 @@ namespace _Scripts.UI
 
         private void Awake()
         {
-            _unactivePanels = new List<GameObject> { MainMenuPanel };
+            _unactivePanels = new List<GameObject> { MainMenuPanel, GameFinishedPanel };
             HideAllPanels();
             // MainBg.SetActive(true);
         }
 
         private void ManagePanels(GameState state)
         {
-            switch(state)
+            switch (state)
             {
                 case GameState.MAIN_MENU:
+                    Time.timeScale = 1;
                     SetActivePanel(MainMenuPanel);
                     break;
-                // case GameState.PLAYER_SELECT_MENU:
-                //     SetActivePanel(PlayerColorSelectPanel);
-                //     break;
                 case GameState.GAME_FINISHED:
-                    // SetActivePanel(GameFinishedPanel);
-                    // WinText.text = "Winner: " + GameManager.INSTANCE.CurrentPlayer.ToString();
+                    SetActivePanel(GameFinishedPanel);
+                    Time.timeScale = 0;
+                    WinText.text = "Winner: " + GameManager.GetInstance().FinishedPlayers[0];
                     break;
                 case GameState.MAIN_GAME:
                     HideAllPanels();
+                    break;
+                case GameState.CONTINUE_GAME:
+                    Time.timeScale = 0;
                     break;
             }
         }
 
         private void DisableActivePanel()
         {
-            if(_activePanel == null) return;
+            if (_activePanel == null) return;
             _unactivePanels.Add(_activePanel);
             _activePanel.SetActive(false);
             _activePanel = null;
@@ -81,23 +81,12 @@ namespace _Scripts.UI
             }
         }
 
-        public void SelectPlayerColor()
-        {
-            SetActivePanel(PlayerColorSelectPanel);
-        }
-
-        public void SelectNumberOfPlayers()
-        {
-            SetActivePanel(NumOfPlayersSelectPanel);
-        }
-
-
         //use in UI to get to main menu
         public void CloseButton()
         {
             SetActivePanel(MainMenuPanel);
         }
-        
+
         // private void HighlightButton(Button clickedButton)
         // {
         //     foreach (var button in PlayerSelectButtons)
@@ -112,7 +101,5 @@ namespace _Scripts.UI
         {
             SceneManager.LoadScene(0);
         }
-        
-        
     }
 }

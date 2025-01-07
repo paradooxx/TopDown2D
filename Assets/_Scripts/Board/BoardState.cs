@@ -19,13 +19,12 @@ namespace _Scripts.Board
             foreach (var player in players)
             {
                 PlayerState playerState = new PlayerState();
-                
-                
+
                 playerState.MyIndex = player.MyIndex;
                 playerState.IsMyTurn = player.IsMyTurn;
                 playerState.HasBonusMoves = player.HasBonusMove;
                 playerState.BonusMoves = player.BonusMove;
-                
+
                 foreach (var pawn in player._allPawns)
                 {
                     PawnState p = new PawnState();
@@ -33,21 +32,19 @@ namespace _Scripts.Board
                     playerState.PawnStates.Add(p);
                 }
 
-                foreach (var diceResult in player.PlayerDiceResults)
+                DiceState d = new DiceState
                 {
-                    DiceState d = new DiceState
-                    {
-                        DiceStates = new Dictionary<int, bool>()
-                    };
-                    d.DiceStates[diceResult] = true;
-                    playerState.DiceStates.Add(d);
-                }
-
+                    DiceResult1 = player.DiceManager.DiceResults[0],
+                    DiceResult2 = player.DiceManager.DiceResults[1],
+                    DiceState1 = true,
+                    DiceState2 = true
+                };
+                playerState.DiceStates = d;
                 PlayerStates.Add(playerState);
             }
         }
-        
-        
+
+
         public BoardState(SaveData saveData)
         {
             PlayerStates = saveData.PlayerStates;
@@ -55,7 +52,7 @@ namespace _Scripts.Board
         }
     }
 
-  
+
     [Serializable]
     public class PawnState
     {
@@ -66,7 +63,7 @@ namespace _Scripts.Board
     public class PlayerState
     {
         public List<PawnState> PawnStates = new List<PawnState>();
-        public List<DiceState> DiceStates = new List<DiceState>();
+        public DiceState DiceStates;
         public bool IsMyTurn;
         public int MyIndex;
         public int WinPosition;
@@ -74,21 +71,21 @@ namespace _Scripts.Board
         public bool HasBonusMoves;
         public int BonusMoves;
     }
-    
+
     [Serializable]
     public class DiceState
     {
-        public Dictionary<int, bool> DiceStates;
-        public int DiceResult;
-        public bool diceState;
-
+        public int DiceResult1;
+        public int DiceResult2;
+        public bool DiceState1;
+        public bool DiceState2;
         // public DiceState(int value, bool state)
         // {
         //     DiceResult = value;
         //     diceState = state;
         // }
     }
-    
+
     [Serializable]
     public class SaveData
     {

@@ -22,11 +22,12 @@ namespace _Scripts.Managers
         //yellow, green, red, blue in this order
         public List<Player.Player> Players;
         public Player.Player CurrentPlayer;
-        [SerializeField] private List<Player.Player> StartingPlayers;
+        public List<Player.Player> StartingPlayers;
+        public List<Player.Player> FinishedPlayers;
 
         public int _currentPlayerIndex;
 
-        private int _selectedPlayerIndex = 0;
+        // private int _selectedPlayerIndex = 0;
 
         [SerializeField] private float TurnChangeTime = 1.5f;
 
@@ -83,7 +84,6 @@ namespace _Scripts.Managers
             // _currentPlayerIndex = 0;
             CurrentPlayer = StartingPlayers[_currentPlayerIndex];
             CurrentPlayer.ActivateDice();
-            // SetDicePosition(CurrentPlayer);
             
             if (CurrentPlayer.PlayerType == PlayerType.BOT)
             {
@@ -92,53 +92,6 @@ namespace _Scripts.Managers
             }
 
             GameStateManager.Instance.SetState(GameState.MAIN_GAME);
-        }
-
-        // initializing game
-        // wont be used once UI is completed
-        private void InitializeGame()
-        {
-            _currentPlayerIndex = 0;
-            StartingPlayers = new List<Player.Player>();
-
-            for (int i = 0; i < Players.Count; i++)
-            {
-                if (Players[i].PlayerType == PlayerType.PLAYER || Players[i].PlayerType == PlayerType.BOT)
-                {
-                    StartingPlayers.Add(Players[i]);
-                }
-            }
-
-            for (int i = 0; i < StartingPlayers.Count; i++)
-            {
-                StartingPlayers[i].IsMyTurn = i == _currentPlayerIndex;
-                StartingPlayers[i].gameObject.SetActive(true);
-
-                if (StartingPlayers[i].PlayerType == PlayerType.BOT)
-                {
-                    StartingPlayers[i].DiceManager.DisableDiceCollider();
-                    StartingPlayers[i].DisableMyPawns();
-                }
-            }
-
-            CurrentPlayer = StartingPlayers[_currentPlayerIndex];
-            CurrentPlayer.ActivateDice();
-            // SetDicePosition(CurrentPlayer);
-
-            if (CurrentPlayer.PlayerType == PlayerType.BOT)
-            {
-                CurrentPlayer.DiceManager.DisableDiceCollider();
-                CurrentPlayer.StartRollDice();
-            }
-        }
-
-        // setting position of the dice based on current player
-        private void SetDicePosition(Player.Player currentPlayer)
-        {
-            if (currentPlayer == StartingPlayers[_currentPlayerIndex])
-            {
-                CurrentPlayer.DiceManager.gameObject.transform.position = currentPlayer.MyDicePosition.position;
-            }
         }
 
         public void UIButtonChangeTurn()
@@ -157,8 +110,6 @@ namespace _Scripts.Managers
         private IEnumerator ChangeTurnCoroutine()
         {
             yield return new WaitForSeconds(TurnChangeTime);
-            // checking for victory
-            CheckForVictory();
 
             Player.Player oldPlayer = CurrentPlayer;
             // changing the current player
@@ -174,9 +125,9 @@ namespace _Scripts.Managers
 
                 _currentPlayerIndex = (_currentPlayerIndex + 1) % StartingPlayers.Count;
             }
-
+            
             CurrentPlayer = StartingPlayers[_currentPlayerIndex];
-
+            CurrentPlayer.PlayerStateManager.SaveGameState(Players, this);
             for (int i = 0; i < StartingPlayers.Count; i++)
             {
                 StartingPlayers[i].IsMyTurn = i == _currentPlayerIndex;
@@ -193,31 +144,10 @@ namespace _Scripts.Managers
                 CurrentPlayer.StartRollDice();
             }
         }
-
-        public void CheckForVictory()
+        public void PlayerFinishedGame(Player.Player player)
         {
-            // check if the current player has completed all pawns
-            if (CurrentPlayer.PawnPath[^1].PawnsOnNode.Count == 4)
-            {
-                CurrentPlayer.DisableMyPawns();
-                StartingPlayers.Remove(CurrentPlayer);
-
-                // checking if the game should end-
-                if (StartingPlayers.Count == 1)
-                {
-                    // game over logic
-                    return;
-                }
-
-                // update turn for remaining players
-
-                if (StartingPlayers.Count == 1)
-                {
-                    Debug.Log("Game Finished");
-                    // return to home
-                    // show end screen
-                }
-            }
+            FinishedPlayers.Add(player);
+            StartingPlayers.Remove(player);
         }
 
         public void LoadSaveGame()
@@ -252,7 +182,8 @@ namespace _Scripts.Managers
             // _currentPlayerIndex = 0;
             CurrentPlayer = StartingPlayers[_currentPlayerIndex];
             CurrentPlayer.ActivateDice();
-            // SetDicePosition(CurrentPlayer);
+            Debug.Log("On Pawn Move Complete Called");
+            CurrentPlayer.OnPawnMoveComplete();
             
             if (CurrentPlayer.PlayerType == PlayerType.BOT)
             {
@@ -261,7 +192,6 @@ namespace _Scripts.Managers
             }
 
             GameStateManager.Instance.SetState(GameState.MAIN_GAME);
-            CurrentPlayer.OnPawnMoveComplete();
         }
     }
 }

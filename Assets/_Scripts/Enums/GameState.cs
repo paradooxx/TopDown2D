@@ -6,5 +6,6 @@ namespace _Scripts.Enums
         PLAYER_SELECT_MENU,
         MAIN_GAME,
         GAME_FINISHED,
+        CONTINUE_GAME,
     }
 }

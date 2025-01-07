@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using _Scripts.Board;
 using _Scripts.Enums;
 using _Scripts.Managers;
+using _Scripts.UI;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 
@@ -27,6 +29,8 @@ namespace _Scripts.Player
         public PawnManager PawnManager;
         public DiceManager DiceManager;
         public Transform MyDicePosition;
+        public GameManager GameManager;
+        public PlayerCanvaManager PlayerCanvaManager;
 
         public List<int> PlayerDiceResults = new List<int>(2);
         public bool IsMyTurn;
@@ -40,10 +44,13 @@ namespace _Scripts.Player
 
         public int MyIndex;
         
-        public int WinPosition;
-        
         public PlayerStateManager PlayerStateManager;
         public bool ShouldChangeTurn;
+        
+        public int WinPosition;
+        
+        [SerializeField] private GameObject WinScreen;
+        [SerializeField] private TMP_Text RankText;
 
         [ContextMenu("Add Pawn Reference")]
         void AddPawnReference()
@@ -60,7 +67,7 @@ namespace _Scripts.Player
         public void StartGame()
         {
             InitializeMyPawns();
-            PlayerStateManager.LoadGameState(this, DiceManager);
+            PlayerStateManager.LoadGameState(this);
         }
 
         public void NewGameStart()
@@ -81,8 +88,8 @@ namespace _Scripts.Player
                 _myPawns[i].MainPlayer = this;
                 _myPawnsColliders.Add(_myPawns[i].GetComponent<Collider2D>());
                 _myPawnsColliders[i].enabled = false;
-                
             }
+            PlayerCanvaManager.AddRemovePlayer();
         }
 
  
@@ -141,7 +148,7 @@ namespace _Scripts.Player
             else
             {
                 PlayerDiceResults.Clear();
-                GameManager.GetInstance().ChangeTurn();
+                GameManager.ChangeTurn();
             }
         }
 
@@ -326,7 +333,7 @@ namespace _Scripts.Player
             // if no pawn can move change turn and exit
             if (!anyPawnCanMove)
             {
-                GameManager.GetInstance().ChangeTurn();
+                GameManager.ChangeTurn();
                 return;
             }
 
@@ -380,7 +387,7 @@ namespace _Scripts.Player
             
             if (movablePawnCount == 0)
             {
-                GameManager.GetInstance().ChangeTurn();
+                GameManager.ChangeTurn();
                 return;
             }
 
@@ -389,25 +396,11 @@ namespace _Scripts.Player
                 // trying bigger step first
                 if (moveStep1 >= moveStep2)
                 {
-                    if (firstMovablePawn.CanPawnMove(moveStep1))
-                    {
-                        firstMovablePawn.MovePawn(moveStep1);
-                    }
-                    else
-                    {
-                        firstMovablePawn.MovePawn(moveStep2);
-                    }
+                    firstMovablePawn.MovePawn(firstMovablePawn.CanPawnMove(moveStep1) ? moveStep1 : moveStep2);
                 }
                 else
                 {
-                    if (firstMovablePawn.CanPawnMove(moveStep2))
-                    {
-                        firstMovablePawn.MovePawn(moveStep2);
-                    }
-                    else
-                    {
-                        firstMovablePawn.MovePawn(moveStep1);
-                    }
+                    firstMovablePawn.MovePawn(firstMovablePawn.CanPawnMove(moveStep2) ? moveStep2 : moveStep1);
                 }
 
                 return;
@@ -447,9 +440,9 @@ namespace _Scripts.Player
 
         public void DisableMyPawns()
         {
-            for (int i = 0; i < _enteredPawns.Count; i++)
+            foreach (var t in _enteredPawns)
             {
-                _enteredPawns[i].enabled = false;
+                t.enabled = false;
             }
         }
 
@@ -499,7 +492,7 @@ namespace _Scripts.Player
             {
                 // no pawns can move, just change turn
                 Debug.Log("No Pawns can move : bonus move");
-                GameManager.GetInstance().ChangeTurn();
+                GameManager.ChangeTurn();
                 HasBonusMove = false;
                 BonusMove = 0;
             }
@@ -548,13 +541,13 @@ namespace _Scripts.Player
 
         public void DeactivateTurnUI()
         {
-            //update ui for removing trun 
+            //update ui for removing turn 
             //deactivate dices
         }
 
         public void ActivateTurnUI()
         {
-            //upadte ui for gettting turn
+            //update ui for gettting turn
             //active dices 
         }
 
@@ -569,21 +562,14 @@ namespace _Scripts.Player
         // called when player's dice is clicked
         public void RollDice()
         {
-            // PlayerDiceResults.Clear();
+            PlayerDiceResults.Clear();
             DiceManager.RollDice((dice1Result, dice2Result) =>
             {
-                if (dice1Result == dice2Result)
-                {
-                    ShouldChangeTurn = false;
-                }
-                else
-                {
-                    ShouldChangeTurn = true;
-                }
+                ShouldChangeTurn = dice1Result != dice2Result;
 
                 PlayerDiceResults.Add(dice1Result);
                 PlayerDiceResults.Add(dice2Result);
-
+                PlayerStateManager.SaveGameState(GameManager.Players, GameManager);
                 EnablePlayerPlay();
             });
         }
@@ -607,6 +593,7 @@ namespace _Scripts.Player
 
         public void OnPawnMoveComplete()
         {
+            CheckForVictory();
             if (PlayerDiceResults.Count == 0)
             {
                 if (HasBonusMove)
@@ -622,7 +609,7 @@ namespace _Scripts.Player
                         p.AvailableMovesText.text = "";
                         p.IsPawnClicked = false;
                     }
-                    GameManager.GetInstance().ChangeTurn();
+                    GameManager.ChangeTurn();
                 }
             }
             else if (PlayerDiceResults.Count == 1)
@@ -636,12 +623,59 @@ namespace _Scripts.Player
                     MoveActivePawn(_enteredPawns[0], PlayerDiceResults[0]);
                 }
             }
+            
+            else if (PlayerDiceResults.Count == 2)
+            {
+                ShouldChangeTurn = PlayerDiceResults[0] != PlayerDiceResults[1];
+                MakePawnPlayTwoSteps(PlayerDiceResults[0], PlayerDiceResults[1]);
+            }
 
             foreach (Pawn p in _enteredPawns)
             {
                 p.IsPawnClicked = false;
             }
-            PlayerStateManager.SaveGameState(GameManager.GetInstance().Players, DiceManager, GameManager.GetInstance());
+            PlayerStateManager.SaveGameState(GameManager.Players, GameManager);
+        }
+
+        public void CheckForVictory()
+        {
+            if (PawnPath[^1].PawnsOnNode.Count == 4)
+            {
+                GameManager.PlayerFinishedGame(this);
+                int rank = GameManager.FinishedPlayers.Count;
+
+                if (rank == 1)
+                {
+                    GameStateManager.Instance.SetState(GameState.GAME_FINISHED);
+                }
+                VictoryScreen(rank);
+            }
+
+            if (GameManager.StartingPlayers.Count == 1)
+            {
+                // game finish
+                GameStateManager.Instance.SetState(GameState.GAME_FINISHED);
+            }
+        }
+
+        public void VictoryScreen(int rank)
+        {
+            WinScreen.SetActive(true);
+            switch (rank)
+            {
+                case 1:
+                    RankText.text = "1st";
+                    break;
+                case 2:
+                    RankText.text = "2nd";
+                    break;
+                case 3:
+                    RankText.text = "3rd";
+                    break;
+                default:
+                    RankText.text = "4th";
+                    break;
+            }
         }
     }
 }

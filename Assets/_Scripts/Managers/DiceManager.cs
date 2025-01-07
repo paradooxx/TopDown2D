@@ -30,7 +30,7 @@ namespace _Scripts.Managers
         public bool CustomDiceResult = true;
         public List<DiceState> DiceStates = new List<DiceState>();
         public int CustomDice1Value = 5, CustomDice2Value = 2;
-        
+        public List<int> DiceResults = new List<int>(2);
         
 
         private void Start()
@@ -91,6 +91,9 @@ namespace _Scripts.Managers
             Dice1Sprite.sprite = DiceAnimationSprites[Dice1Result - 1];
             Dice2Sprite.sprite = DiceAnimationSprites[Dice2Result - 1];
 
+            DiceResults[0] = Dice1Result;
+            DiceResults[1] = Dice2Result;
+            
             // DiceStates.Clear();
             // AddDiceState(new DiceState(Dice1Result, true));
             // AddDiceState(new DiceState(Dice2Result, true));
@@ -106,8 +109,8 @@ namespace _Scripts.Managers
 
         public void DisableDiceState(int result)
         {
-            var find = DiceStates.Find(x => x.DiceResult == result);
-            if (find != null) find.diceState = false;
+            var find = DiceStates.Find(x => x.DiceResult1 == result);
+            if (find != null) find.DiceState1 = false;
         }
 
 
@@ -174,6 +177,12 @@ namespace _Scripts.Managers
             gameObject.SetActive(false);
             Dice1Sprite.gameObject.SetActive(false);
             Dice2Sprite.gameObject.SetActive(false);
+        }
+
+        public void SetDiceSprite(int diceResult1, int diceResult2)
+        {
+            Dice1Sprite.sprite = DiceAnimationSprites[diceResult1];
+            Dice2Sprite.sprite = DiceAnimationSprites[diceResult2];
         }
     }
 }
