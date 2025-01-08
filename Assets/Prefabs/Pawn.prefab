@@ -486,10 +486,12 @@ MonoBehaviour:
   HomePosition: {fileID: 0}
   PawnCollider2D: {fileID: 235791860247326393}
   PawnCanvas: {fileID: 3396363593196377889}
-  DiceImage1: {fileID: 3396363591946447320}
-  DiceImage2: {fileID: 3396363591164034083}
-  DiceMoveStepButton1: {fileID: 3396363591946447321}
-  DiceMoveStepButton2: {fileID: 3396363591164034108}
+  DiceImage:
+  - {fileID: 3396363591946447320}
+  - {fileID: 3396363591164034083}
+  DiceButtons:
+  - {fileID: 3396363591946447321}
+  - {fileID: 3396363591164034108}
   AvailableMovesText: {fileID: 8334365853109984074}
   BotMoveScore: 0
   BotTwoMovesScore: 0

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using _Scripts.Board;
+using _Scripts.Enums;
 using _Scripts.Managers;
 using UnityEngine;
 
@@ -21,7 +22,6 @@ namespace _Scripts.Player
         {
             _currentBoardState = new BoardState(players, gameManager);
             _boardStateManager.SaveBoardState(_currentBoardState);
-            Debug.Log("Game state saved!");
         }
 
         // call this for loading a saved game state
@@ -31,7 +31,6 @@ namespace _Scripts.Player
             if (loadedState != null)
             {
                 ApplyBoardState(loadedState, players);
-                Debug.Log("Game state loaded and applied!");
             }
         }
 
@@ -42,9 +41,9 @@ namespace _Scripts.Player
             for (int i = 0; i < players.Count; i++)
             {
                 // ApplyBoardState(loadedState, Player, diceManager);
-                for (int j = 0; j < players[i]._allPawns.Count; j++)
+                for (int j = 0; j < players[i].AllPawns.Count; j++)
                 {
-                    players[i]._allPawns[j].CurrentPositionIndex = loadedState.PlayerStates[i].PawnStates[j].Position;
+                    players[i].AllPawns[j].CurrentPositionIndex = loadedState.PlayerStates[i].PawnStates[j].Position;
                 }
 
                 players[i].IsMyTurn = loadedState.PlayerStates[i].IsMyTurn;
@@ -52,6 +51,7 @@ namespace _Scripts.Player
                 players[i].WinPosition = loadedState.PlayerStates[i].WinPosition;
                 players[i].HasBonusMove = loadedState.PlayerStates[i].HasBonusMoves;
                 players[i].BonusMove = loadedState.PlayerStates[i].BonusMoves;
+                players[i].PlayerType = Util.GetPlayerEnumFromId(StaticDatas.PLAYERS_DATA_TYPES.playerDataList[i].TypeId);
             }
 
             _boardStateManager.SaveBoardState(loadedState);
@@ -59,56 +59,50 @@ namespace _Scripts.Player
 
         private void ApplyBoardState(BoardState state, Player players)
         {
+            if (players.MyIndex > state.PlayerStates.Count)
+            {
+                return;
+            }
+            
             ApplyPlayerState(players, state.PlayerStates[players.MyIndex]);
             Debug.Log("Current Player Index: " + state.currentPlayerIndex);
-            GameManager.GetInstance()._currentPlayerIndex = state.currentPlayerIndex;
+            GameManager.GetInstance().CurrentPlayerIndex = state.currentPlayerIndex;
             // players.PlayerDiceResults = state.DiceStates.DiceResults;
-        }
-
-        public void DisableDiceState(Player player, int value)
-        {
-            BoardState boardState = _boardStateManager.LoadBoardState();
-            PlayerState playerState = boardState.PlayerStates[player.MyIndex];
-
-            int diceResult1 = playerState.DiceStates.DiceResult1;
-            int diceResult2 = playerState.DiceStates.DiceResult2;
-
-            if (diceResult1 == value)
-            {
-                Debug.Log("Called 1");
-                playerState.DiceStates.DiceState1 = false;
-            }
-            else if (diceResult2 == value)
-            {
-                Debug.Log("Called 2");
-                playerState.DiceStates.DiceState2 = false;
-            }
-
-            _boardStateManager.SaveBoardState(boardState);
         }
 
         public void AddNewPlayer(Player player, int index)
         {
             BoardState state = _boardStateManager.LoadBoardState();
 
-            GameManager.GetInstance().StartingPlayers.Insert(index, player);
-            player.StartGame();
+            if (index > GameManager.GetInstance().StartingPlayers.Count)
+            {
+                index--;
+            }
 
+            GameManager.GetInstance().StartingPlayers.Insert(index, player);
+            StaticDatas.PLAYERS_DATA_TYPES.playerDataList[player.MyIndex].TypeId = Util.GetPlayerIdFromEnum(player.PlayerType);
+            player.PlayerType = Util.GetPlayerEnumFromId(StaticDatas.PLAYERS_DATA_TYPES.playerDataList[player.MyIndex].TypeId);
+            PlayerSelectionController.GetInstance().SavePlayerDataInput();
+            
+            player.StartGame();
             _boardStateManager.SaveBoardState(state);
+            Debug.Log("New Player Added: " + player);
         }
 
         public void RemovePlayer(Player player)
         {
             BoardState state = _boardStateManager.LoadBoardState();
-            foreach (Pawn p in player._allPawns)
+            foreach (Pawn p in player.AllPawns)
             {
                 Destroy(p.gameObject);
             }
 
-            player._myPawns.Clear();
-            player._allPawns.Clear();
-            player._enteredPawns.Clear();
-            player._myPawnsColliders.Clear();
+            player.HomePawns.Clear();
+            player.AllPawns.Clear();
+            player.EnteredPawns.Clear();
+            player.HomePawnsColliders.Clear();
+            
+            state.PlayerStates[player.MyIndex].PawnStates.Clear();
             GameManager.GetInstance().StartingPlayers.Remove(player);
             _boardStateManager.SaveBoardState(state);
         }
@@ -116,49 +110,78 @@ namespace _Scripts.Player
         private void ApplyPlayerState(Player player, PlayerState state)
         {
             Debug.Log("PawnStates: " + state.PawnStates.Count);
-            if (state.PawnStates != null)
-            {
-                for (int i = 0; i < player._allPawns.Count; i++)
-                {
-                    if (state.PawnStates[i].Position != -1)
-                    {
-                        player.PawnPath[state.PawnStates[i].Position].AddPawn(player._allPawns[i]);
-                        if (!player._enteredPawns.Contains(player._allPawns[i]))
-                        {
-                            player._enteredPawns.Add(player._allPawns[i]);
-                            player._myPawns.Remove(player._allPawns[i]);
-                        }
-
-                        player.PawnsInPlay = player._enteredPawns.Count;
-                    }
-
-                    player._allPawns[i].CurrentPositionIndex = state.PawnStates[i].Position;
-                }
-            }
-
-            if (state.DiceStates != null)
-            {
-                player.DiceManager.SetDiceSprite(state.DiceStates.DiceResult1, state.DiceStates.DiceResult2);
-                if (state.DiceStates.DiceState1 == true)
-                {
-                    player.PlayerDiceResults.Add(state.DiceStates.DiceResult1);
-                }
-
-                if (state.DiceStates.DiceState2 == true)
-                {
-                    player.PlayerDiceResults.Add(state.DiceStates.DiceResult2);
-                }
-
-                Debug.Log("Dice Collider for current player disabled");
-                player.DiceManager.DisableDiceCollider();
-            }
-
-
             player.IsMyTurn = state.IsMyTurn;
             player.WinPosition = state.WinPosition;
             player.MyIndex = state.MyIndex;
             player.HasBonusMove = state.HasBonusMoves;
             player.BonusMove = state.BonusMoves;
+            player.PlayerType = Util.GetPlayerEnumFromId(StaticDatas.PLAYERS_DATA_TYPES.playerDataList[player.MyIndex].TypeId);
+
+
+            if (player.MyIndex > state.PawnStates.Count)
+            {
+                return;
+            }
+            
+            if (state.PawnStates[player.MyIndex] != null)
+            {
+                for (int i = 0; i < player.AllPawns.Count; i++)
+                {
+                    if (state.PawnStates[i].Position != -1)
+                    {
+                        player.PawnPath[state.PawnStates[i].Position].AddPawn(player.AllPawns[i]);
+                        if (!player.EnteredPawns.Contains(player.AllPawns[i]))
+                        {
+                            player.EnteredPawns.Add(player.AllPawns[i]);
+                            player.HomePawns.Remove(player.AllPawns[i]);
+                        }
+
+                        player.PawnsInPlay = player.EnteredPawns.Count;
+                    }
+                    player.AllPawns[i].CurrentPositionIndex = state.PawnStates[i].Position;
+                }
+            }
+
+            if (state.DiceStates != null)
+            {
+                bool useSavedDataForDiceImage = false;
+                player.DiceStates = state.DiceStates;
+                Debug.Log("Dice Collider for current player disabled");
+                
+                foreach (var t in state.DiceStates)
+                {
+                    if (t.diceState)
+                    {
+                        useSavedDataForDiceImage = true;
+                    }
+                }
+                
+                if (state.IsMyTurn)
+                {
+                    player.DiceManager.ResetDiceImage();
+                    player.DiceManager.MakeSpriteNormalColor();
+                    if (useSavedDataForDiceImage)
+                    {
+                        Debug.Log("Chaaaaaaaange Dice Image on Loooaaad");
+                        Debug.Log(state.DiceStates[0].Value);
+                        Debug.Log(state.DiceStates[1].Value);
+                        player.DiceManager.ActivateDice();
+                        player.DiceManager.SetDiceSpriteToResult(state.DiceStates[0].Value, state.DiceStates[1].Value);
+                        player.DiceManager.DisableDiceCollider();
+                        player.DimDiceSprite();
+                    }
+                    else
+                    {
+                        player.DiceManager.ActivateDice();
+                        player.DiceManager.MakeSpriteNormalColor();
+                    }
+                }
+                else
+                {
+                    player.DiceManager.DeactivateDice();
+                }
+            }
+            
         }
     }
 }

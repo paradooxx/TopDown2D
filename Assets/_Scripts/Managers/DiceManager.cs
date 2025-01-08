@@ -1,9 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using _Scripts.Board;
-using _Scripts.Utils;
 using UnityEngine;
 using UnityEngine.Events;
 using Random = UnityEngine.Random;
@@ -12,14 +10,10 @@ namespace _Scripts.Managers
 {
     public class DiceManager : MonoBehaviour
     {
-        [SerializeField] private SpriteRenderer Dice1Sprite;
-        [SerializeField] private SpriteRenderer Dice2Sprite;
+        [SerializeField] private List<SpriteRenderer> DiceSprites = new List<SpriteRenderer>();
 
         [SerializeField] private Sprite[] DiceAnimationSprites;
         [SerializeField] private Sprite ResetDiceSprite;
-
-        public int Dice1Result;
-        public int Dice2Result;
 
         [SerializeField] private float TotalAnimationTime = 2.0f;
         [SerializeField] private float DiceSpriteChangeTime = 0.01f;
@@ -28,14 +22,12 @@ namespace _Scripts.Managers
         public UnityEvent OnDiceButtonClicked;
 
         public bool CustomDiceResult = true;
-        public List<DiceState> DiceStates = new List<DiceState>();
         public int CustomDice1Value = 5, CustomDice2Value = 2;
-        public List<int> DiceResults = new List<int>(2);
-        
+
 
         private void Start()
         {
-            ResetDiceImage();
+            // ResetDiceImage();
         }
 
         private void OnMouseDown()
@@ -43,83 +35,33 @@ namespace _Scripts.Managers
             OnDiceButtonClicked?.Invoke();
         }
 
-        public void RollDice(Action<int, int> onDiceRolled)
-        {
-            StartCoroutine(RollDiceTask(onDiceRolled));
-        }
 
-        // animating and deciding the dice roll result
-        public SerializableQueue previousSums = new SerializableQueue();
-
-        private IEnumerator RollDiceTask(Action<int, int> onDiceRolled)
+        public IEnumerator AnimateDiceTask(Action onDiceRolled, List<DiceState> diceStates)
         {
             float elapsedTime = 0.0f;
 
             // Animation loop
             while (elapsedTime < TotalAnimationTime)
             {
-                Dice1Sprite.sprite = DiceAnimationSprites[Random.Range(0, DiceAnimationSprites.Length)];
-                Dice2Sprite.sprite = DiceAnimationSprites[Random.Range(0, DiceAnimationSprites.Length)];
+                foreach (var s in DiceSprites)
+                {
+                    s.sprite = DiceAnimationSprites[Random.Range(0, DiceAnimationSprites.Length)];
+                }
 
                 yield return new WaitForSeconds(DiceSpriteChangeTime);
 
                 elapsedTime += DiceSpriteChangeTime;
             }
 
-            if (CustomDiceResult)
-            {
-                Dice1Result = CustomDice1Value;
-                Dice2Result = CustomDice2Value;
-            }
-            else
-            {
-                do
-                {
-                    Dice1Result = Random.Range(1, 7);
-                    Dice2Result = Random.Range(1, 7);
-                } while (IsThirdConsecutiveSum(Dice1Result + Dice2Result));
-
-                // Update sum history
-                previousSums.Enqueue(Dice1Result + Dice2Result);
-                if (previousSums.Count > 3)
-                {
-                    previousSums.Dequeue();
-                }
-            }
-
-            // Update sprites and invoke callback
-            Dice1Sprite.sprite = DiceAnimationSprites[Dice1Result - 1];
-            Dice2Sprite.sprite = DiceAnimationSprites[Dice2Result - 1];
-
-            DiceResults[0] = Dice1Result;
-            DiceResults[1] = Dice2Result;
-            
-            // DiceStates.Clear();
-            // AddDiceState(new DiceState(Dice1Result, true));
-            // AddDiceState(new DiceState(Dice2Result, true));
+            // for (int i = 0; i < DiceSprites.Count; i++)
+            // {
+            //     DiceSprites[i].sprite = DiceAnimationSprites[diceStates[i].Value - 1];
+            // }
+            DiceSprites[0].sprite = DiceAnimationSprites[diceStates[0].Value - 1];
+            DiceSprites[1].sprite = DiceAnimationSprites[diceStates[1].Value - 1];
 
 
-            onDiceRolled?.Invoke(Dice1Result, Dice2Result);
-        }
-
-        public void AddDiceState(DiceState diceState)
-        {
-            DiceStates.Add(diceState);
-        }
-
-        public void DisableDiceState(int result)
-        {
-            var find = DiceStates.Find(x => x.DiceResult1 == result);
-            if (find != null) find.DiceState1 = false;
-        }
-
-
-        private bool IsThirdConsecutiveSum(int currentSum)
-        {
-            if (previousSums.Count < 2)
-                return false;
-
-            return previousSums.Queue.All(sum => sum == currentSum);
+            onDiceRolled?.Invoke();
         }
 
 
@@ -137,8 +79,11 @@ namespace _Scripts.Managers
         {
             if (resetDice)
             {
-                Dice1Sprite.sprite = ResetDiceSprite;
-                Dice2Sprite.sprite = ResetDiceSprite;
+                foreach (var s in DiceSprites)
+                {
+                    s.sprite = ResetDiceSprite;
+                }
+
                 EnableDiceCollider();
             }
         }
@@ -154,6 +99,7 @@ namespace _Scripts.Managers
             CustomDiceResult = true;
             CustomDice2Value = value;
         }
+
         public void EnableDiceTouch()
         {
             DiceCollider.enabled = true;
@@ -167,22 +113,39 @@ namespace _Scripts.Managers
         public void ActivateDice()
         {
             gameObject.SetActive(true);
-            Dice1Sprite.gameObject.SetActive(true);
-            Dice2Sprite.gameObject.SetActive(true);
+            foreach (var s in DiceSprites)
+            {
+                s.gameObject.SetActive(true);
+            }
         }
 
         public void DeactivateDice()
         {
             DisableDiceTouch();
             gameObject.SetActive(false);
-            Dice1Sprite.gameObject.SetActive(false);
-            Dice2Sprite.gameObject.SetActive(false);
+            foreach (var s in DiceSprites)
+            {
+                s.gameObject.SetActive(false);
+            }
         }
 
-        public void SetDiceSprite(int diceResult1, int diceResult2)
+        public void MakeSpriteNormalColor()
         {
-            Dice1Sprite.sprite = DiceAnimationSprites[diceResult1];
-            Dice2Sprite.sprite = DiceAnimationSprites[diceResult2];
+            foreach (var s in DiceSprites)
+            {
+                s.color = Color.white;
+            }
+        }
+
+        public void SetDiceSpriteToResult(int index1, int index2)
+        {
+            DiceSprites[0].sprite = DiceAnimationSprites[index1 - 1];
+            DiceSprites[1].sprite = DiceAnimationSprites[index2 - 1];
+        }
+
+        public void DimSprite(int index)
+        {
+            DiceSprites[index].color = new Color(100f / 250f, 100f / 250f, 100f / 250f);
         }
     }
 }

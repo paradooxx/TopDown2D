@@ -11,14 +11,15 @@ namespace _Scripts.Player
         [SerializeField] private Button AddButton;
         [SerializeField] private Button RemoveButton;
 
+
         public void AddRemovePlayer()
         {
-            if (GameManager.GetInstance().StartingPlayers.Contains(MyPlayer) && GameManager.GetInstance().StartingPlayers.Count > 2)
+            if (GameManager.GetInstance().StartingPlayers.Contains(MyPlayer))
             {
                 AddButton.gameObject.SetActive(false);
                 RemoveButton.gameObject.SetActive(true);
             }
-            if(!GameManager.GetInstance().StartingPlayers.Contains(MyPlayer) && GameManager.GetInstance().StartingPlayers.Count < 4)
+            else
             {
                 AddButton.gameObject.SetActive(true);
                 RemoveButton.gameObject.SetActive(false);
@@ -32,12 +33,14 @@ namespace _Scripts.Player
         {
             MyPlayer.PlayerStateManager.AddNewPlayer(MyPlayer, AddIndex);
             AddButton.gameObject.SetActive(false);
+            RemoveButton.gameObject.SetActive(true);
         }
 
         private void RemoveButtonClicked()
         {
             MyPlayer.PlayerStateManager.RemovePlayer(MyPlayer);
             RemoveButton.gameObject.SetActive(false);
+            AddButton.gameObject.SetActive(true);
         }
     }
 }

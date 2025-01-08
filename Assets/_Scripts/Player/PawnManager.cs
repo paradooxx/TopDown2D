@@ -31,7 +31,7 @@ public class PawnManager : MonoBehaviour
     public List<Pawn> GetNotStartedPawns()
     {
         List<Pawn> notStartedPawns = new List<Pawn>();
-        foreach (var pawn in MyPlayer._myPawns)
+        foreach (var pawn in MyPlayer.HomePawns)
         {
             if (!pawn.IsInPlay && !pawn.IsHome) notStartedPawns.Add(pawn);
         }

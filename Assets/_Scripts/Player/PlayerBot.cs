@@ -25,21 +25,21 @@ namespace _Scripts.Player
             BestPawn(moveStep).MovePawn(moveStep);
         }
 
-        public void MakeBotPlayTwoSteps(int moveStep1, int moveStep2)
+        public void MakeBotPlayTwoSteps()
         {
             Pawn bestPawn = null;
             int bestMove = 1;
             int bestScore = Int32.MinValue;
 
-            foreach (Pawn p in MyPlayer._enteredPawns)
+            foreach (Pawn p in MyPlayer.EnteredPawns)
             {
-                if (p.CanPawnMove(moveStep1) && p.CanPawnMove(moveStep2))
+                if (p.CanPawnMove(MyPlayer.DiceStates[0].Value) && p.CanPawnMove(MyPlayer.DiceStates[1].Value))
                 {
-                    p.BotMoveScore = TotalScore(p, moveStep1, moveStep2);
+                    p.BotMoveScore = TotalScore(p, MyPlayer.DiceStates[0].Value, MyPlayer.DiceStates[1].Value);
 
-                    if (p.CanPawnMove(moveStep1 + moveStep2))
+                    if (p.CanPawnMove(MyPlayer.DiceStates[0].Value + MyPlayer.DiceStates[1].Value))
                     {
-                        p.BotTwoMovesScore = TotalScore(p, moveStep1 + moveStep2);
+                        p.BotTwoMovesScore = TotalScore(p, MyPlayer.DiceStates[0].Value + MyPlayer.DiceStates[1].Value);
                     }
 
                     // find the best move and pawn
@@ -62,38 +62,38 @@ namespace _Scripts.Player
             // Perform the best move
             if (bestMove == 1)
             {
-                Debug.Log("Best Pawn Move 1 : " + bestPawn.TakeStep1);
-                Debug.Log("Best Pawn Move 2 : " + bestPawn.TakeStep2);
-                if (bestPawn.TakeStep1 > bestPawn.TakeStep2)
+                Debug.Log("Best Pawn Move 1 : " + bestPawn.TakeStep[0]);
+                Debug.Log("Best Pawn Move 2 : " + bestPawn.TakeStep[1]);
+                if (bestPawn.TakeStep[0] > bestPawn.TakeStep[1])
                 {
-                    bestPawn.MovePawn(moveStep1);
+                    bestPawn.MovePawn(MyPlayer.DiceStates[0].Value);
                 }
-                else if (bestPawn.TakeStep1 > bestPawn.TakeStep2)
+                else if (bestPawn.TakeStep[0] > bestPawn.TakeStep[1])
                 {
-                    bestPawn.MovePawn(moveStep2);
+                    bestPawn.MovePawn(MyPlayer.DiceStates[1].Value);
                 }
                 else
                 {
-                    if (moveStep1 >= moveStep2)
+                    if (MyPlayer.DiceStates[0].Value >= MyPlayer.DiceStates[1].Value)
                     {
-                        bestPawn.MovePawn(moveStep1);
+                        bestPawn.MovePawn(MyPlayer.DiceStates[0].Value);
                     }
                     else
                     {
-                        bestPawn.MovePawn(moveStep2);
+                        bestPawn.MovePawn(MyPlayer.DiceStates[1].Value);
                     }
                 }
             }
             else if (bestMove == 2)
             {
-                MyPlayer.PlayerDiceResults.Clear();
-                bestPawn.MovePawn(moveStep1 + moveStep2);
+                MyPlayer.ResetDiceStates();
+                bestPawn.MovePawn(MyPlayer.DiceStates[0].Value + MyPlayer.DiceStates[1].Value);
             }
 
-            foreach (Pawn p in MyPlayer._enteredPawns)
+            foreach (Pawn p in MyPlayer.EnteredPawns)
             {
-                p.TakeStep1 = 0;
-                p.TakeStep2 = 0;
+                p.TakeStep[0] = 0;
+                p.TakeStep[1] = 0;
             }
         }
 
@@ -102,7 +102,7 @@ namespace _Scripts.Player
         {
             Pawn bestPawn = null;
             List<Pawn> canMovePawns = new List<Pawn>();
-            foreach (Pawn p in MyPlayer._enteredPawns)
+            foreach (Pawn p in MyPlayer.EnteredPawns)
             {
                 if (p.CanPawnMove(moveStep))
                 {
@@ -218,7 +218,7 @@ namespace _Scripts.Player
                 if (nearestEnemyAheadFromCurrentPos == firstMoveToPlay)
                 {
                     killScore1 += (int)Mathf.Pow(KillPawnWeight, 4);
-                    p.TakeStep1++;
+                    p.TakeStep[0]++;
                 }
             }
 
@@ -232,12 +232,12 @@ namespace _Scripts.Player
                 if (nearestEnemyAheadFromCurrentPos == firstMoveToPlay)
                 {
                     killScore2 += (int)Mathf.Pow(KillPawnWeight, 4);
-                    p.TakeStep2++;
+                    p.TakeStep[1]++;
                 }
             }
 
-            if (killScore1 > killScore2) p.TakeStep1++;
-            else p.TakeStep2++;
+            if (killScore1 > killScore2) p.TakeStep[0]++;
+            else p.TakeStep[1]++;
 
             return killScore1 > killScore2 ? killScore1 : killScore2;
         }
@@ -273,7 +273,7 @@ namespace _Scripts.Player
                 if (nearestSafePlaceFromCurrentPos == firstMoveToPlay)
                 {
                     safeScore1 += SafePlaceWeight * SafePlaceWeight;
-                    p.TakeStep1++;
+                    p.TakeStep[0]++;
                 }
             }
 
@@ -287,12 +287,12 @@ namespace _Scripts.Player
                 if (nearestSafePlaceFromCurrentPos == firstMoveToPlay)
                 {
                     safeScore2 += SafePlaceWeight * SafePlaceWeight;
-                    p.TakeStep2++;
+                    p.TakeStep[1]++;
                 }
             }
 
-            if (safeScore1 > safeScore2) p.TakeStep1++;
-            else p.TakeStep2++;
+            if (safeScore1 > safeScore2) p.TakeStep[0]++;
+            else p.TakeStep[1]++;
 
             return safeScore1 > safeScore2 ? safeScore1 : safeScore2;
         }
@@ -335,8 +335,8 @@ namespace _Scripts.Player
                 runScore2 += RunFromPawnWeight * (nextMoveToPlay - nextNearestEnemyOnPreviousPath) / nextMoveToPlay;
             }
 
-            if (runScore1 > runScore2) p.TakeStep1++;
-            else p.TakeStep2++;
+            if (runScore1 > runScore2) p.TakeStep[0]++;
+            else p.TakeStep[1]++;
 
             return runScore1 > runScore2 ? runScore1 : runScore2;
         }
@@ -353,7 +353,7 @@ namespace _Scripts.Player
                 if (finishDistanceFromCurrentPos == step1)
                 {
                     victoryScore1 += (int)Mathf.Pow(VictoryWeight, 4);
-                    p.TakeStep1++;
+                    p.TakeStep[0]++;
                 }
                 return victoryScore1;
             }
@@ -371,7 +371,7 @@ namespace _Scripts.Player
                 if (finishDistanceFromCurrentPos == step1)
                 {
                     victoryScore1 += (int)Mathf.Pow(VictoryWeight, 4);
-                    p.TakeStep1++;
+                    p.TakeStep[0]++;
                 }
             }
 
@@ -383,12 +383,12 @@ namespace _Scripts.Player
                 if (finishDistanceFromCurrentPos == step2)
                 {
                     victoryScore2 += (int)Mathf.Pow(VictoryWeight, 4);
-                    p.TakeStep2++;
+                    p.TakeStep[1]++;
                 }
             }
 
-            if (victoryScore1 > victoryScore2) p.TakeStep1++;
-            else p.TakeStep2++;
+            if (victoryScore1 > victoryScore2) p.TakeStep[0]++;
+            else p.TakeStep[1]++;
 
             return victoryScore1 > victoryScore2 ? victoryScore1 : victoryScore2;
         }

@@ -31,6 +31,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7528677367577682454}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -167,6 +168,7 @@ RectTransform:
   m_Children:
   - {fileID: 8131545972302197098}
   m_Father: {fileID: 3194967101244796306}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -254,19 +256,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1333692405237995385}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1044848525547524774}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &1824771519130246411
 GameObject:
   m_ObjectHideFlags: 0
@@ -294,7 +284,6 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1824771519130246411}
-  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -8.93, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -304,6 +293,7 @@ Transform:
   - {fileID: 5532785415314455892}
   - {fileID: 3119081592233217227}
   m_Father: {fileID: 0}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &130889670643526658
 MonoBehaviour:
@@ -320,10 +310,11 @@ MonoBehaviour:
   PlayerType: 0
   PawnPath: []
   HomePosition: []
-  _allPawns: []
-  _myPawns: []
-  _enteredPawns: []
-  _myPawnsColliders: []
+  DiceStates: []
+  AllPawns: []
+  HomePawns: []
+  EnteredPawns: []
+  HomePawnsColliders: []
   PawnPrefab: {fileID: 0}
   PawnSprite: {fileID: 0}
   DiceResultSprites: []
@@ -332,7 +323,6 @@ MonoBehaviour:
   MyDicePosition: {fileID: 5532785415314455892}
   GameManager: {fileID: 0}
   PlayerCanvaManager: {fileID: 7177616531865162562}
-  PlayerDiceResults: 
   IsMyTurn: 0
   HasBonusMove: 0
   PawnsInPlay: 0
@@ -412,13 +402,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2314839651437843130}
-  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.8, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3119081592233217227}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8131681362119373182
 SpriteRenderer:
@@ -497,7 +487,6 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2909854219327136773}
-  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -4.05, y: 2.3300004, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -506,6 +495,7 @@ Transform:
   - {fileID: 7271016306667530653}
   - {fileID: 8473083824898240067}
   m_Father: {fileID: 1067725320249785416}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &2144889303561304196
 BoxCollider2D:
@@ -517,25 +507,6 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -564,8 +535,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2f56acc7484244008dfeb928d7d1e69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Dice1Sprite: {fileID: 4749451032832253519}
-  Dice2Sprite: {fileID: 8131681362119373182}
+  DiceSprites:
+  - {fileID: 4749451032832253519}
+  - {fileID: 8131681362119373182}
   DiceAnimationSprites:
   - {fileID: 21300000, guid: f6b4e3ec6dff84ea29545929f26d2d35, type: 3}
   - {fileID: 21300000, guid: 62f2d73b15dc343bab6b0ee4254ea6c9, type: 3}
@@ -582,8 +554,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: fa778fb9bd8b847aa975fcb0cd531944, type: 3}
   - {fileID: 21300000, guid: e23e4c3441db34534a3673c58abfc64e, type: 3}
   ResetDiceSprite: {fileID: 21300000, guid: 384ebc0bdd7e349b29c6864937ca36a1, type: 3}
-  Dice1Result: 0
-  Dice2Result: 0
   TotalAnimationTime: 0.6
   DiceSpriteChangeTime: 0.01
   DiceCollider: {fileID: 2144889303561304196}
@@ -615,12 +585,8 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   CustomDiceResult: 0
-  DiceStates: []
   CustomDice1Value: 5
   CustomDice2Value: 2
-  DiceResults: 0000000000000000
-  previousSums:
-    queueList: 
 --- !u!1 &3703121468044887261
 GameObject:
   m_ObjectHideFlags: 0
@@ -652,6 +618,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6355156576397088722}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -778,13 +745,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5058761896704187504}
-  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1067725320249785416}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5132022829525868737
 GameObject:
@@ -822,6 +789,7 @@ RectTransform:
   - {fileID: 4768913049836104045}
   - {fileID: 7528677367577682454}
   m_Father: {fileID: 1067725320249785416}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -845,9 +813,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
-  m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 1
   m_TargetDisplay: 0
@@ -931,13 +897,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5990940233858863326}
-  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.8, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3119081592233217227}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &4749451032832253519
 SpriteRenderer:
@@ -1024,6 +990,7 @@ RectTransform:
   m_Children:
   - {fileID: 713435249960637611}
   m_Father: {fileID: 3194967101244796306}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1111,19 +1078,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8937278914631378686}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8036184202207899677}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &8750811052117186515
 GameObject:
   m_ObjectHideFlags: 0
@@ -1156,6 +1111,7 @@ RectTransform:
   m_Children:
   - {fileID: 365727767303994467}
   m_Father: {fileID: 3194967101244796306}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1231,6 +1187,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4768913049836104045}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
